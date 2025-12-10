@@ -1,0 +1,44 @@
+{
+  "$schema": "https://tree-sitter.github.io/tree-sitter/assets/schemas/config.schema.json",
+  "grammars": [
+    {
+      "name": "masm",
+      "camelcase": "Masm",
+      "title": "masm",
+      "scope": "source.masm",
+      "file-types": [
+        "asm",
+        "inc",
+        "s"
+      ],
+      "injection-regex": "^masm$",
+      "class-name": "TreeSitterMasm"
+    }
+  ],
+  "metadata": {
+    "version": "0.1.0",
+    "license": "MIT",
+    "description": "Microsoft Macro Assembler x86 syntax",
+    "authors": [
+      {
+        "name": "Taylor Plewe",
+        "email": "tplewe@outlook.com",
+        "url": "https://github.com/taylorplewe"
+      }
+    ],
+    "links": {
+      "repository": "https://github.com/taylorplewe/tree-sitter-masm",
+      "funding": ""
+    }
+  },
+  "bindings": {
+    "c": true,
+    "go": true,
+    "java": false,
+    "node": false,
+    "python": false,
+    "rust": true,
+    "swift": false,
+    "zig": true
+  }
+}
