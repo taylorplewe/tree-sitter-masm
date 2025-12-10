@@ -1,8 +1,1 @@
-.code
-
-main proc
-	mov eax, 4
-	ret
-main endp
-
-end
+faowij, abcde, a342

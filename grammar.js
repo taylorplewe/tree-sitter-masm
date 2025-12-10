@@ -7,21 +7,47 @@
 /// <reference types="tree-sitter-cli/dsl" />
 // @ts-check
 
+const ALPHA = /[a-zA-Z]|@|_|\$|\?/;
+const DEC_DIGIT = /[0-9]/;
+const HEX_DIGIT = /[a-fA-F]/;
+
 export default grammar({
   name: "masm",
 
+  extras: $ => [
+    /\s/,
+  ],
+
   rules: {
-    source_file: $ => "hello",
+    source_file: $ => $.id_list,
+
+
+    id: $ => seq(ALPHA, repeat(choice(ALPHA, DEC_DIGIT))),
+    id_list: $ => seq($.id, repeat(seq(",", $.id))),
+
+
+    // id aliases
+
+    group_id: $ => alias($.group_id, $.id),
+    type_id: $ => alias($.type_id, $.id),
+    alt_id: $ => alias($.alt_id, $.id),
+    bit_field_id: $ => alias($.bit_field_id, $.id),
+    macro_func_id: $ => alias($.macro_func_id, $.id),
+    macro_label: $ => alias($.macro_label, $.id),
+    macro_proc_id: $ => alias($.macro_proc_id, $.id),
+    text_macro_id: $ => alias($.text_macro_id, $.id),
+    parm_id: $ => alias($.parm_id, $.id),
+    proc_id: $ => alias($.proc_id, $.id),
+    seg_id: $ => alias($.seg_id, $.id),
+    record_tag: $ => alias($.record_tag, $.id),
+    struct_tag: $ => alias($.struct_tag, $.id),
+    union_tag: $ => alias($.union_tag, $.id),
 
 
     // terminals
 
-    alpha: _ => /[a-z]|@|_|\$|\?/,
-
     context_item: _ => choice("assumes", "radix", "listing", "cpu", "all"),
     data_type: _ => choice("byte", "sbyte", "word", "sword", "dword", "sdword", "fword", "qword", "sqword", "tbyte", "oword", "real4", "real8", "real10", "mmword", "xmmword", "ymmword"),
-    dec_digit: _ => choice("0", "1", "2", "3", "4", "5", "6", "7", "8", "9"),
-    hex_digit: _ => choice("a", "b", "c", "d", "e", "f"),
     radix_override: _ => choice("h", "o", "q", "t", "y"),
 
     sign: _ => choice("+", "-"),
@@ -31,6 +57,7 @@ export default grammar({
     rel_op: _ => choice("eq", "ne", "lt", "le", "gt", "ge"),
     shift_op: _ => choice("shr", "shl"),
     quote: _ => choice(`"`, "'"),
+    bool: _ => choice("true", "false"),
 
     coprocessor: _ => choice(".8087", ".287", ".387", ".NO87"),
     processor: _ => choice(".386", ".386p", ".486", ".486P", ".586", ".586P", ".686", ".686P", ".387"),
@@ -48,6 +75,7 @@ export default grammar({
     stack_option: _ => choice("nearstack", "farstack"),
     offset_type: _ => choice("group", "segment", "flat"),
     extern_key: _ => choice("extrn", "extern", "externdef"),
+    repeat_dir: _ => choice("repeat", "rept"),
     for_dir: _ => choice("for", "irp"),
     forc_dir: _ => choice("forc", "irpc"),
     instr_prefix: _ => choice("rep", "repe", "repz", "repne", "repnz", "lock"),
