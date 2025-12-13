@@ -7,41 +7,191 @@
 /// <reference types="tree-sitter-cli/dsl" />
 // @ts-check
 
+const CHARACTER = /[^\n]/;
+const NON_WHITESPACE_CHARACTER = /[^\s\n]/;
+const ANY_CHAR_EXCEPT_QUOTE = /[^'"\n]/;
 const ALPHA = /[a-zA-Z]|@|_|\$|\?/;
 const DEC_DIGIT = /[0-9]/;
 const HEX_DIGIT = /[a-fA-F]/;
+const DELIMITER = /\S/;
 
 export default grammar({
   name: "masm",
 
   extras: $ => [
-    /\s/,
+    /[ \t\s]+/,
+    $.comment_line,
+  ],
+
+  conflicts: $ => [
+    [$.struct_tag, $.union_tag, $.record_tag, $.type_id],
   ],
 
   rules: {
-    source_file: $ => $.id_list,
+    // NOTE: will be 'module'
+    source_file: $ => $.frame_expr,
+
+    eol: $ => choice($.comment_line, /\n/),
 
 
+    // building blocks
+    
+    dec_number: _ => repeat1(DEC_DIGIT),
     id: $ => seq(ALPHA, repeat(choice(ALPHA, DEC_DIGIT))),
-    id_list: $ => seq($.id, repeat(seq(",", $.id))),
+    id_list: $ => seq($.id, repeat(seq(",", $.id))), // list
+    char_list: _ => repeat1(CHARACTER),
+    stext: $ => repeat1(ANY_CHAR_EXCEPT_QUOTE),
+    string: $ => seq($.quote, optional($.stext), $.quote, $.eol),
+    text: $ => seq(optional("!"), repeat1(CHARACTER)), // TODO: the MASM BNF grammar actually states that "text" can itself contain "text_literal"s
+    text_literal: $ => seq("<", $.text, ">", $.eol),
+    digits: _ => seq(DEC_DIGIT, repeat(choice(DEC_DIGIT, HEX_DIGIT))),
+    exponent: $ => seq("e", optional($.sign), $.dec_number),
+    float_number: $ => choice(
+      seq(optional($.sign), $.dec_number, ".", optional($.dec_number), optional($.exponent)),
+      seq($.digits, "r"),
+    ),
+
+
+    // idk
+
+    cref_option: $ => choice(
+      ".cref",
+      seq(".xcref", optional($.id_list)),
+      seq(".nocref", optional($.id_list)),
+    ),
+    data_decl: $ => choice("db", "dw", "dd", "df", "dq", "dt", $.data_type, $.type_id),
+    distance: $ => choice($.near_far, "near16", "near32", "far16", "far32"),
+    type: $ => choice(
+      $.struct_tag,
+      $.union_tag,
+      $.record_tag,
+      $.distance,
+      $.data_type,
+      $.type_id,
+    ),
+    qualified_type: $ => choice(
+      $.type,
+      seq(optional($.distance), "ptr", optional($.qualified_type)),
+    ),
+
+    proto_arg: $ => seq(optional($.id), ":", $.qualified_type),
+    proto_arg_list: $ => seq(
+      optional(seq(",", optional($.eol), $.proto_list)),
+      optional(seq(",", optional($.eol), optional($.id), ":vararg")),
+    ),
+    proto_list: $ => seq($.proto_arg, repeat(seq(",", optional($.eol), $.proto_arg))), // list with eol
+    proto_spec: $ => choice(
+      seq(optional($.distance), optional($.lang_type), optional($.proto_arg_list)),
+      $.type_id,
+    ),
+    proto_type_dir: $ => seq($.id, "proto", $.proto_spec),
+
+    pub_def: $ => seq(optional($.lang_type), $.id),
+    pub_list: $ => seq($.pub_def, repeat(seq(",", optional($.eol), $.pub_def))), // list with eol
+    public_dir: $ => seq("public", $.pub_list, $.eol),
+
+    macro_id: $ => choice($.macro_proc_id, $.macro_func_id),
+    macro_id_list: $ => seq($.macro_id, repeat(seq(",", $.macro_id))), // list
+
+    parm_type: $ => choice(
+      "req",
+      seq("=", $.text_literal),
+      "vararg",
+    ),
+    macro_parm: $ => seq($.id, optional(seq(":", $.parm_type))),
+    macro_parm_list: $ => seq($.macro_parm, repeat(seq(",", optional($.eol), $.macro_parm))), // list with eol
+
+    model_opt: $ => choice($.lang_type, $.stack_option),
+    model_opt_list: $ => seq($.model_opt, repeat(seq(",", $.model_opt))), // list
+    model_dir: $ => seq(".model", $.mem_option, optional(seq(",", $.model_opt_list)), $.eol),
+
+    name_dir: $ => seq("name", $.id, $.eol),
+
+    p_options: $ => seq(optional($.distance), optional($.lang_type), optional($.o_visibility)),
+
+    for_parm_type: $ => choice("req", seq("=", $.text_literal)),
+    for_parm: $ => seq($.id, optional(seq(":", $.for_parm_type))),
+
+    frame_expr: $ => choice(
+      seq("seg", $.id),
+      seq("dgroup", ":", $.id),
+      seq($.segment_register, ":", $.id),
+      $.id,
+    ),
+
+    seg_id_list: $ => seq($.seg_id, repeat(seq(",", $.seg_id))),
+    group_dir: $ => seq($.group_id, "group", $.seg_id_list),
+
+    // fpu_register: $ => seq("st", $.expr),
+    // register: $ => choice(
+    //   $.special_register,
+    //   $.gp_register,
+    //   $.byte_register,
+    //   $.qword_register,
+    //   $.fpu_register,
+    //   $.simd_register,
+    //   $.segment_register
+    // ),
+
+
+    // option
+
+    option_item: $ => choice(
+      seq("casemap", ":", $.map_type),
+      "dotname",
+      "nodotname",
+      "emulator",
+      "noemulator",
+      seq("epilogue", ":", $.macro_id),
+      "expr16",
+      "expr32",
+      seq("language", ":", $.lang_type),
+      "ljmp",
+      "noljmp",
+      "m510",
+      "nom510",
+      seq("nokeyword", ":", "<", $.id_list, ">"), // NOTE: in the bnf grammar this is a "keyword list"--a list of "keywords"--which are just "any reserved word". Might come back and properly implmenet that later, but this is sufficient for now
+      "nosignextend",
+      seq("offset", ":", $.offset_type),
+      "oldmacros",
+      "nooldmacros",
+      "oldstructs",
+      "nooldstructs",
+      seq("proc", ":", $.o_visibility),
+      seq("prologue", ":", $.macro_id),
+      "readonly",
+      "noreadonly",
+      "scoped",
+      "noscoped",
+      seq("segment", ":", $.seg_size),
+      seq("setif2", ":", $.bool),
+    ),
+    option_list: $ => seq($.option_item, repeat(seq(",", optional($.eol), $.option_item))),
 
 
     // id aliases
 
-    group_id: $ => alias($.group_id, $.id),
-    type_id: $ => alias($.type_id, $.id),
-    alt_id: $ => alias($.alt_id, $.id),
-    bit_field_id: $ => alias($.bit_field_id, $.id),
-    macro_func_id: $ => alias($.macro_func_id, $.id),
-    macro_label: $ => alias($.macro_label, $.id),
-    macro_proc_id: $ => alias($.macro_proc_id, $.id),
-    text_macro_id: $ => alias($.text_macro_id, $.id),
-    parm_id: $ => alias($.parm_id, $.id),
-    proc_id: $ => alias($.proc_id, $.id),
-    seg_id: $ => alias($.seg_id, $.id),
-    record_tag: $ => alias($.record_tag, $.id),
-    struct_tag: $ => alias($.struct_tag, $.id),
-    union_tag: $ => alias($.union_tag, $.id),
+    group_id: $ => alias($.id, $.group_id),
+    type_id: $ => alias($.id, $.type_id),
+    alt_id: $ => alias($.id, $.alt_id),
+    bit_field_id: $ => alias($.id, $.bit_field_id),
+    macro_func_id: $ => alias($.id, $.macro_func_id),
+    macro_label: $ => alias($.id, $.macro_label),
+    macro_proc_id: $ => alias($.id, $.macro_proc_id),
+    text_macro_id: $ => alias($.id, $.text_macro_id),
+    parm_id: $ => alias($.id, $.parm_id),
+    proc_id: $ => alias($.id, $.proc_id),
+    seg_id: $ => alias($.id, $.seg_id),
+    record_tag: $ => alias($.id, $.record_tag),
+    struct_tag: $ => alias($.id, $.struct_tag),
+    union_tag: $ => alias($.id, $.union_tag),
+
+
+    // other aliases
+
+    arbitrary_text: $ => alias($.char_list, $.arbitrary_text),
+    class_name: $ => alias($.string, $.class_name),
+    file_char: _ => DELIMITER,
 
 
     // terminals
@@ -59,8 +209,12 @@ export default grammar({
     quote: _ => choice(`"`, "'"),
     bool: _ => choice("true", "false"),
 
-    coprocessor: _ => choice(".8087", ".287", ".387", ".NO87"),
     processor: _ => choice(".386", ".386p", ".486", ".486P", ".586", ".586P", ".686", ".686P", ".387"),
+    coprocessor: _ => choice(".8087", ".287", ".387", ".NO87"),
+    processor_dir: $ => choice(
+      seq($.processor, $.eol),
+      seq($.coprocessor, $.eol),
+    ),
 
     byte_register: _ => choice("al", "ah", "cl", "ch", "dl", "dh", "bl", "bh", "r8b", "r9b", "r10b", "r11b", "r12b", "r13b", "r14b", "r15b"),
     gp_register: _ => choice("ax", "eax", "cx", "ecx", "dx", "edx", "bx", "ebx",  "di", "edi", "si", "esi", "bp", "ebp", "sp", "esp", "r8w", "r8d", "r9w", "r9d", "r12d", "r13w", "r13d", "r14w", "r14d"),
@@ -88,5 +242,18 @@ export default grammar({
     seg_ro: _ => "readonly",
     seg_size: _ => choice("use16", "use32", "flat"),
     title_type: _ => choice("title", "subtitle", "subttl"),
+    lang_type: _ => choice("c", "pascal", "fortran", "basic", "syscall", "stdcall"),
+    map_type: _ => choice("all", "none", "notpublic"),
+    flag_name: _ => choice("zero?", "carry?", "overflow?", "sign?", "parity?"),
+
+
+    // comments
+
+    comment_line: _ => /;.*/,
+
+    // TODO: MASM's COMMENT directive is gross and probably requires an external scanner to properly parse it
+    // comment_dir: $ => seq("comment", DELIMITER, "\n", repeat(seq($.text, "\n")), repeat(NON_WHITESPACE_CHARACTER), DELIMITER, $.text, $.eol),
+    // comment_dir: $ => seq("comment", DELIMITER, "\n", repeat(seq($.text, "\n")), repeat(NON_WHITESPACE_CHARACTER), DELIMITER, $.text, $.eol),
+    // comment_dir: _ => /comment\s+(\S)\n([^\n]*\n)*$1/,
   }
 });

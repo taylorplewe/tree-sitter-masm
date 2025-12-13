@@ -1,11 +1,6 @@
 [
   {
-    "type": "id",
-    "named": true,
-    "fields": {}
-  },
-  {
-    "type": "id_list",
+    "type": "frame_expr",
     "named": true,
     "fields": {},
     "children": {
@@ -15,9 +10,23 @@
         {
           "type": "id",
           "named": true
+        },
+        {
+          "type": "segment_register",
+          "named": true
         }
       ]
     }
+  },
+  {
+    "type": "id",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "segment_register",
+    "named": true,
+    "fields": {}
   },
   {
     "type": "source_file",
@@ -29,14 +38,51 @@
       "required": true,
       "types": [
         {
-          "type": "id_list",
+          "type": "frame_expr",
           "named": true
         }
       ]
     }
   },
   {
-    "type": ",",
+    "type": ":",
+    "named": false
+  },
+  {
+    "type": "comment_line",
+    "named": true,
+    "extra": true
+  },
+  {
+    "type": "cs",
+    "named": false
+  },
+  {
+    "type": "dgroup",
+    "named": false
+  },
+  {
+    "type": "ds",
+    "named": false
+  },
+  {
+    "type": "es",
+    "named": false
+  },
+  {
+    "type": "fs",
+    "named": false
+  },
+  {
+    "type": "gs",
+    "named": false
+  },
+  {
+    "type": "seg",
+    "named": false
+  },
+  {
+    "type": "ss",
     "named": false
   }
 ]
