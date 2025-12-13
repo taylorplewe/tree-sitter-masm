@@ -55,6 +55,7 @@ export default grammar({
       seq($.digits, "r"),
     ),
     bcd_const: $ => seq(optional($.sign), $.dec_number),
+    constant: $ => seq($.digits, optional($.radix_override)),
 
 
     // idk
@@ -182,6 +183,11 @@ export default grammar({
     seg_option_list: $ => repeat1($.seg_option),
     segment_dir: $ => seq($.seg_id, "segment", optional($.seg_option_list), $.eol),
 
+    context_dir: $ => choice(
+      seq("pushcontext", $.context_item_list, $.eol),
+      seq("popcontext", $.context_item_list, $.eol),
+    )
+
 
     // option
 
@@ -247,6 +253,7 @@ export default grammar({
     // terminals
 
     context_item: _ => choice("assumes", "radix", "listing", "cpu", "all"),
+    context_item_list: $ => list($.context_item),
     data_type: _ => choice("byte", "sbyte", "word", "sword", "dword", "sdword", "fword", "qword", "sqword", "tbyte", "oword", "real4", "real8", "real10", "mmword", "xmmword", "ymmword"),
     radix_override: _ => choice("h", "o", "q", "t", "y"),
 
