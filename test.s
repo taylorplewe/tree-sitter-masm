@@ -1,1 +1,2 @@
-dgroup : aaaahh
+urmom segment readonly common memory
+

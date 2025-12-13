@@ -1,6 +1,6 @@
 [
   {
-    "type": "frame_expr",
+    "type": "class_name",
     "named": true,
     "fields": {},
     "children": {
@@ -8,25 +8,142 @@
       "required": true,
       "types": [
         {
-          "type": "id",
+          "type": "class_name",
           "named": true
         },
         {
-          "type": "segment_register",
+          "type": "eol",
+          "named": true
+        },
+        {
+          "type": "quote",
+          "named": true
+        },
+        {
+          "type": "stext",
           "named": true
         }
       ]
     }
   },
   {
-    "type": "id",
+    "type": "eol",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": false,
+      "types": [
+        {
+          "type": "comment_line",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "quote",
     "named": true,
     "fields": {}
   },
   {
-    "type": "segment_register",
+    "type": "seg_align",
     "named": true,
     "fields": {}
+  },
+  {
+    "type": "seg_attrib",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "seg_id",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": false,
+      "types": [
+        {
+          "type": "seg_id",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "seg_option",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "class_name",
+          "named": true
+        },
+        {
+          "type": "seg_align",
+          "named": true
+        },
+        {
+          "type": "seg_attrib",
+          "named": true
+        },
+        {
+          "type": "seg_ro",
+          "named": true
+        },
+        {
+          "type": "seg_size",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "seg_option_list",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "seg_option",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "seg_size",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "segment_dir",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "eol",
+          "named": true
+        },
+        {
+          "type": "seg_id",
+          "named": true
+        },
+        {
+          "type": "seg_option_list",
+          "named": true
+        }
+      ]
+    }
   },
   {
     "type": "source_file",
@@ -38,14 +155,31 @@
       "required": true,
       "types": [
         {
-          "type": "frame_expr",
+          "type": "segment_dir",
           "named": true
         }
       ]
     }
   },
   {
-    "type": ":",
+    "type": "stext",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "\"",
+    "named": false
+  },
+  {
+    "type": "'",
+    "named": false
+  },
+  {
+    "type": "at",
+    "named": false
+  },
+  {
+    "type": "byte",
     "named": false
   },
   {
@@ -54,35 +188,59 @@
     "extra": true
   },
   {
-    "type": "cs",
+    "type": "common",
     "named": false
   },
   {
-    "type": "dgroup",
+    "type": "dword",
     "named": false
   },
   {
-    "type": "ds",
+    "type": "flat",
     "named": false
   },
   {
-    "type": "es",
+    "type": "memory",
     "named": false
   },
   {
-    "type": "fs",
+    "type": "page",
     "named": false
   },
   {
-    "type": "gs",
+    "type": "para",
     "named": false
   },
   {
-    "type": "seg",
+    "type": "private",
     "named": false
   },
   {
-    "type": "ss",
+    "type": "public",
+    "named": false
+  },
+  {
+    "type": "seg_ro",
+    "named": true
+  },
+  {
+    "type": "segment",
+    "named": false
+  },
+  {
+    "type": "stack",
+    "named": false
+  },
+  {
+    "type": "use16",
+    "named": false
+  },
+  {
+    "type": "use32",
+    "named": false
+  },
+  {
+    "type": "word",
     "named": false
   }
 ]

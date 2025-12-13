@@ -15,6 +15,9 @@ const DEC_DIGIT = /[0-9]/;
 const HEX_DIGIT = /[a-fA-F]/;
 const DELIMITER = /\S/;
 
+const list = listItem => seq(listItem, repeat(seq(",", listItem)));
+const listWithEol = (listItem, eol) => seq(listItem, repeat(seq(",", optional(eol), listItem)));
+
 export default grammar({
   name: "masm",
 
@@ -25,11 +28,12 @@ export default grammar({
 
   conflicts: $ => [
     [$.struct_tag, $.union_tag, $.record_tag, $.type_id],
+    [$.register, $.assume_seg_reg],
   ],
 
   rules: {
     // NOTE: will be 'module'
-    source_file: $ => $.frame_expr,
+    source_file: $ => $.segment_dir,
 
     eol: $ => choice($.comment_line, /\n/),
 
@@ -38,7 +42,7 @@ export default grammar({
     
     dec_number: _ => repeat1(DEC_DIGIT),
     id: $ => seq(ALPHA, repeat(choice(ALPHA, DEC_DIGIT))),
-    id_list: $ => seq($.id, repeat(seq(",", $.id))), // list
+    id_list: $ => list($.id),
     char_list: _ => repeat1(CHARACTER),
     stext: $ => repeat1(ANY_CHAR_EXCEPT_QUOTE),
     string: $ => seq($.quote, optional($.stext), $.quote, $.eol),
@@ -50,6 +54,7 @@ export default grammar({
       seq(optional($.sign), $.dec_number, ".", optional($.dec_number), optional($.exponent)),
       seq($.digits, "r"),
     ),
+    bcd_const: $ => seq(optional($.sign), $.dec_number),
 
 
     // idk
@@ -79,7 +84,7 @@ export default grammar({
       optional(seq(",", optional($.eol), $.proto_list)),
       optional(seq(",", optional($.eol), optional($.id), ":vararg")),
     ),
-    proto_list: $ => seq($.proto_arg, repeat(seq(",", optional($.eol), $.proto_arg))), // list with eol
+    proto_list: $ => listWithEol($.proto_arg, $.eol),
     proto_spec: $ => choice(
       seq(optional($.distance), optional($.lang_type), optional($.proto_arg_list)),
       $.type_id,
@@ -87,11 +92,11 @@ export default grammar({
     proto_type_dir: $ => seq($.id, "proto", $.proto_spec),
 
     pub_def: $ => seq(optional($.lang_type), $.id),
-    pub_list: $ => seq($.pub_def, repeat(seq(",", optional($.eol), $.pub_def))), // list with eol
+    pub_list: $ => listWithEol($.pub_def, $.eol),
     public_dir: $ => seq("public", $.pub_list, $.eol),
 
     macro_id: $ => choice($.macro_proc_id, $.macro_func_id),
-    macro_id_list: $ => seq($.macro_id, repeat(seq(",", $.macro_id))), // list
+    macro_id_list: $ => list($.macro_id),
 
     parm_type: $ => choice(
       "req",
@@ -99,10 +104,10 @@ export default grammar({
       "vararg",
     ),
     macro_parm: $ => seq($.id, optional(seq(":", $.parm_type))),
-    macro_parm_list: $ => seq($.macro_parm, repeat(seq(",", optional($.eol), $.macro_parm))), // list with eol
+    macro_parm_list: $ => listWithEol($.macro_parm, $.eol),
 
     model_opt: $ => choice($.lang_type, $.stack_option),
-    model_opt_list: $ => seq($.model_opt, repeat(seq(",", $.model_opt))), // list
+    model_opt_list: $ => list($.model_opt),
     model_dir: $ => seq(".model", $.mem_option, optional(seq(",", $.model_opt_list)), $.eol),
 
     name_dir: $ => seq("name", $.id, $.eol),
@@ -119,19 +124,63 @@ export default grammar({
       $.id,
     ),
 
-    seg_id_list: $ => seq($.seg_id, repeat(seq(",", $.seg_id))),
+    seg_id_list: $ => list($.seg_id),
     group_dir: $ => seq($.group_id, "group", $.seg_id_list),
 
-    // fpu_register: $ => seq("st", $.expr),
-    // register: $ => choice(
-    //   $.special_register,
-    //   $.gp_register,
-    //   $.byte_register,
-    //   $.qword_register,
-    //   $.fpu_register,
-    //   $.simd_register,
-    //   $.segment_register
-    // ),
+    file_char_list: $ => repeat1($.file_char),
+    file_spec: $ => choice($.file_char_list, $.text_literal),
+    include_dir: $ => seq("include", $.file_spec, $.eol),
+    include_lib_dir: $ => seq("includelib", $.file_spec, $.eol),
+
+    label_def: $ => choice(
+      seq($.id, ":"),
+      seq($.id, "::"),
+      "@@:",
+    ),
+    label_dir: $ => seq($.id, "label", $.qualified_type, $.eol),
+
+    assume_val: $ => choice($.qualified_type, "nothing", "error"),
+    assume_seg_val: $ => choice($.frame_expr, "nothing", "error"),
+    assume_seg_reg: $ => seq($.segment_register, ":", $.assume_seg_val),
+    assume_register: $ => choice($.assume_seg_reg, $.assume_reg),
+    assume_reg: $ => seq($.register, ":", $.assume_val),
+    assume_list: $ => list($.assume_register),
+    assume_dir: $ => choice(
+      seq("assume", $.assume_list, $.eol),
+      seq("assume nothing", $.eol),
+    ),
+
+
+    // fpu_register: $ => seq("st", $.expr), // TODO
+    fpu_register: $ => seq("st"),
+    register: $ => choice(
+      $.special_register,
+      $.gp_register,
+      $.byte_register,
+      $.qword_register,
+      $.fpu_register,
+      $.simd_register,
+      $.segment_register
+    ),
+    reg_list: $ => repeat1($.register),
+
+    seg_attrib: $ => choice(
+      "public",
+      "stack",
+      "common",
+      "memory",
+      "at", // TODO: constExpr
+      "private",
+    ),
+    seg_option: $ => choice(
+      $.seg_align,
+      $.seg_ro,
+      $.seg_attrib,
+      $.seg_size,
+      $.class_name,
+    ),
+    seg_option_list: $ => repeat1($.seg_option),
+    segment_dir: $ => seq($.seg_id, "segment", optional($.seg_option_list), $.eol),
 
 
     // option
@@ -166,7 +215,8 @@ export default grammar({
       seq("segment", ":", $.seg_size),
       seq("setif2", ":", $.bool),
     ),
-    option_list: $ => seq($.option_item, repeat(seq(",", optional($.eol), $.option_item))),
+    // option_list: $ => seq($.option_item, repeat(seq(",", optional($.eol), $.option_item))),
+    option_list: $ => listWithEol($.option_item, $.eol),
 
 
     // id aliases
