@@ -1,26 +1,34 @@
 [
   {
-    "type": "class_name",
+    "type": "alt_id",
     "named": true,
     "fields": {},
     "children": {
-      "multiple": true,
-      "required": true,
+      "multiple": false,
+      "required": false,
       "types": [
         {
-          "type": "class_name",
+          "type": "alt_id",
           "named": true
-        },
+        }
+      ]
+    }
+  },
+  {
+    "type": "data_type",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "distance",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": false,
+      "types": [
         {
-          "type": "eol",
-          "named": true
-        },
-        {
-          "type": "quote",
-          "named": true
-        },
-        {
-          "type": "stext",
+          "type": "near_far",
           "named": true
         }
       ]
@@ -42,68 +50,7 @@
     }
   },
   {
-    "type": "quote",
-    "named": true,
-    "fields": {}
-  },
-  {
-    "type": "seg_align",
-    "named": true,
-    "fields": {}
-  },
-  {
-    "type": "seg_attrib",
-    "named": true,
-    "fields": {}
-  },
-  {
-    "type": "seg_id",
-    "named": true,
-    "fields": {},
-    "children": {
-      "multiple": false,
-      "required": false,
-      "types": [
-        {
-          "type": "seg_id",
-          "named": true
-        }
-      ]
-    }
-  },
-  {
-    "type": "seg_option",
-    "named": true,
-    "fields": {},
-    "children": {
-      "multiple": false,
-      "required": true,
-      "types": [
-        {
-          "type": "class_name",
-          "named": true
-        },
-        {
-          "type": "seg_align",
-          "named": true
-        },
-        {
-          "type": "seg_attrib",
-          "named": true
-        },
-        {
-          "type": "seg_ro",
-          "named": true
-        },
-        {
-          "type": "seg_size",
-          "named": true
-        }
-      ]
-    }
-  },
-  {
-    "type": "seg_option_list",
+    "type": "extern_def",
     "named": true,
     "fields": {},
     "children": {
@@ -111,19 +58,26 @@
       "required": true,
       "types": [
         {
-          "type": "seg_option",
+          "type": "alt_id",
+          "named": true
+        },
+        {
+          "type": "extern_type",
+          "named": true
+        },
+        {
+          "type": "id",
+          "named": true
+        },
+        {
+          "type": "lang_type",
           "named": true
         }
       ]
     }
   },
   {
-    "type": "seg_size",
-    "named": true,
-    "fields": {}
-  },
-  {
-    "type": "segment_dir",
+    "type": "extern_dir",
     "named": true,
     "fields": {},
     "children": {
@@ -135,11 +89,103 @@
           "named": true
         },
         {
-          "type": "seg_id",
+          "type": "extern_key",
           "named": true
         },
         {
-          "type": "seg_option_list",
+          "type": "extern_list",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "extern_key",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "extern_list",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "eol",
+          "named": true
+        },
+        {
+          "type": "extern_def",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "extern_type",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": false,
+      "types": [
+        {
+          "type": "qualified_type",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "id",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "lang_type",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "near_far",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "qualified_type",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "distance",
+          "named": true
+        },
+        {
+          "type": "qualified_type",
+          "named": true
+        },
+        {
+          "type": "type",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "record_tag",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": false,
+      "types": [
+        {
+          "type": "record_tag",
           "named": true
         }
       ]
@@ -155,31 +201,122 @@
       "required": true,
       "types": [
         {
-          "type": "segment_dir",
+          "type": "extern_dir",
           "named": true
         }
       ]
     }
   },
   {
-    "type": "stext",
+    "type": "struct_tag",
     "named": true,
-    "fields": {}
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": false,
+      "types": [
+        {
+          "type": "struct_tag",
+          "named": true
+        }
+      ]
+    }
   },
   {
-    "type": "\"",
+    "type": "type",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "data_type",
+          "named": true
+        },
+        {
+          "type": "distance",
+          "named": true
+        },
+        {
+          "type": "record_tag",
+          "named": true
+        },
+        {
+          "type": "struct_tag",
+          "named": true
+        },
+        {
+          "type": "type_id",
+          "named": true
+        },
+        {
+          "type": "union_tag",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "type_id",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": false,
+      "types": [
+        {
+          "type": "type_id",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "union_tag",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": false,
+      "types": [
+        {
+          "type": "union_tag",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "(",
     "named": false
   },
   {
-    "type": "'",
+    "type": ")",
     "named": false
   },
   {
-    "type": "at",
+    "type": ",",
+    "named": false
+  },
+  {
+    "type": ":",
+    "named": false
+  },
+  {
+    "type": "abs",
+    "named": false
+  },
+  {
+    "type": "basic",
     "named": false
   },
   {
     "type": "byte",
+    "named": false
+  },
+  {
+    "type": "c",
     "named": false
   },
   {
@@ -188,59 +325,123 @@
     "extra": true
   },
   {
-    "type": "common",
-    "named": false
-  },
-  {
     "type": "dword",
     "named": false
   },
   {
-    "type": "flat",
+    "type": "extern",
     "named": false
   },
   {
-    "type": "memory",
+    "type": "externdef",
     "named": false
   },
   {
-    "type": "page",
+    "type": "extrn",
     "named": false
   },
   {
-    "type": "para",
+    "type": "far",
     "named": false
   },
   {
-    "type": "private",
+    "type": "far16",
     "named": false
   },
   {
-    "type": "public",
+    "type": "far32",
     "named": false
   },
   {
-    "type": "seg_ro",
-    "named": true
-  },
-  {
-    "type": "segment",
+    "type": "fortran",
     "named": false
   },
   {
-    "type": "stack",
+    "type": "fword",
     "named": false
   },
   {
-    "type": "use16",
+    "type": "mmword",
     "named": false
   },
   {
-    "type": "use32",
+    "type": "near",
+    "named": false
+  },
+  {
+    "type": "near16",
+    "named": false
+  },
+  {
+    "type": "near32",
+    "named": false
+  },
+  {
+    "type": "oword",
+    "named": false
+  },
+  {
+    "type": "pascal",
+    "named": false
+  },
+  {
+    "type": "ptr",
+    "named": false
+  },
+  {
+    "type": "qword",
+    "named": false
+  },
+  {
+    "type": "real10",
+    "named": false
+  },
+  {
+    "type": "real4",
+    "named": false
+  },
+  {
+    "type": "real8",
+    "named": false
+  },
+  {
+    "type": "sbyte",
+    "named": false
+  },
+  {
+    "type": "sdword",
+    "named": false
+  },
+  {
+    "type": "sqword",
+    "named": false
+  },
+  {
+    "type": "stdcall",
+    "named": false
+  },
+  {
+    "type": "sword",
+    "named": false
+  },
+  {
+    "type": "syscall",
+    "named": false
+  },
+  {
+    "type": "tbyte",
     "named": false
   },
   {
     "type": "word",
+    "named": false
+  },
+  {
+    "type": "xmmword",
+    "named": false
+  },
+  {
+    "type": "ymmword",
     "named": false
   }
 ]

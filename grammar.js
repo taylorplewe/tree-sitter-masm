@@ -33,7 +33,7 @@ export default grammar({
 
   rules: {
     // NOTE: will be 'module'
-    source_file: $ => $.segment_dir,
+    source_file: $ => $.extern_dir,
 
     eol: $ => choice($.comment_line, /\n/),
 
@@ -140,6 +140,19 @@ export default grammar({
     ),
     label_dir: $ => seq($.id, "label", $.qualified_type, $.eol),
 
+    qualifier: $ => choice(
+      $.qualified_type,
+      seq("proto", $.proto_spec),
+    ),
+    typedef_dir: $ => seq($.type_id, "typedef", $.qualifier),
+
+    // NOTE: I think the bnf grammar might be incorrect. There's no way to get from "extern" to "proto" in the grammar.
+    // If instead of `qualified_type`, it was `qualifier`, then it would make sense.
+    extern_type: $ => choice("abs", $.qualified_type), 
+    extern_def: $ => seq(optional($.lang_type), $.id, optional(seq("(", $.alt_id, ")")), ":", $.extern_type),
+    extern_list: $ => listWithEol($.extern_def, $.eol),
+    extern_dir: $ => seq($.extern_key, $.extern_list, $.eol),
+
     assume_val: $ => choice($.qualified_type, "nothing", "error"),
     assume_seg_val: $ => choice($.frame_expr, "nothing", "error"),
     assume_seg_reg: $ => seq($.segment_register, ":", $.assume_seg_val),
@@ -186,7 +199,14 @@ export default grammar({
     context_dir: $ => choice(
       seq("pushcontext", $.context_item_list, $.eol),
       seq("popcontext", $.context_item_list, $.eol),
-    )
+    ),
+
+    endp_dir: $ => seq($.proc_id, "endp", $.eol),
+    ends_dir: $ => seq($.id, "ends", $.eol),
+    // exitm_dir: $ => choice(
+    //   seq(":", "exitm"),
+    //   seq("exitm", $.text_item),
+    // )
 
 
     // option

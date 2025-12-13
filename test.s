@@ -1,2 +1,1 @@
-urmom segment readonly common memory
-
+extern SDL_CreateWindow : proto :ptr, :ptr, :ptr

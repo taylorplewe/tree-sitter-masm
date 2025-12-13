@@ -4,7 +4,7 @@
   "rules": {
     "source_file": {
       "type": "SYMBOL",
-      "name": "segment_dir"
+      "name": "extern_dir"
     },
     "eol": {
       "type": "CHOICE",
@@ -299,6 +299,27 @@
         {
           "type": "SYMBOL",
           "name": "dec_number"
+        }
+      ]
+    },
+    "constant": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "digits"
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "radix_override"
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
         }
       ]
     },
@@ -1298,6 +1319,166 @@
         }
       ]
     },
+    "qualifier": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "qualified_type"
+        },
+        {
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "STRING",
+              "value": "proto"
+            },
+            {
+              "type": "SYMBOL",
+              "name": "proto_spec"
+            }
+          ]
+        }
+      ]
+    },
+    "typedef_dir": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "type_id"
+        },
+        {
+          "type": "STRING",
+          "value": "typedef"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "qualifier"
+        }
+      ]
+    },
+    "extern_type": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "STRING",
+          "value": "abs"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "qualified_type"
+        }
+      ]
+    },
+    "extern_def": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "lang_type"
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        },
+        {
+          "type": "SYMBOL",
+          "name": "id"
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SEQ",
+              "members": [
+                {
+                  "type": "STRING",
+                  "value": "("
+                },
+                {
+                  "type": "SYMBOL",
+                  "name": "alt_id"
+                },
+                {
+                  "type": "STRING",
+                  "value": ")"
+                }
+              ]
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        },
+        {
+          "type": "STRING",
+          "value": ":"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "extern_type"
+        }
+      ]
+    },
+    "extern_list": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "extern_def"
+        },
+        {
+          "type": "REPEAT",
+          "content": {
+            "type": "SEQ",
+            "members": [
+              {
+                "type": "STRING",
+                "value": ","
+              },
+              {
+                "type": "CHOICE",
+                "members": [
+                  {
+                    "type": "SYMBOL",
+                    "name": "eol"
+                  },
+                  {
+                    "type": "BLANK"
+                  }
+                ]
+              },
+              {
+                "type": "SYMBOL",
+                "name": "extern_def"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "extern_dir": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "extern_key"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "extern_list"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "eol"
+        }
+      ]
+    },
     "assume_val": {
       "type": "CHOICE",
       "members": [
@@ -1571,6 +1752,79 @@
               "type": "BLANK"
             }
           ]
+        },
+        {
+          "type": "SYMBOL",
+          "name": "eol"
+        }
+      ]
+    },
+    "context_dir": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "STRING",
+              "value": "pushcontext"
+            },
+            {
+              "type": "SYMBOL",
+              "name": "context_item_list"
+            },
+            {
+              "type": "SYMBOL",
+              "name": "eol"
+            }
+          ]
+        },
+        {
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "STRING",
+              "value": "popcontext"
+            },
+            {
+              "type": "SYMBOL",
+              "name": "context_item_list"
+            },
+            {
+              "type": "SYMBOL",
+              "name": "eol"
+            }
+          ]
+        }
+      ]
+    },
+    "endp_dir": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "proc_id"
+        },
+        {
+          "type": "STRING",
+          "value": "endp"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "eol"
+        }
+      ]
+    },
+    "ends_dir": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "id"
+        },
+        {
+          "type": "STRING",
+          "value": "ends"
         },
         {
           "type": "SYMBOL",
@@ -2027,6 +2281,31 @@
         {
           "type": "STRING",
           "value": "all"
+        }
+      ]
+    },
+    "context_item_list": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "context_item"
+        },
+        {
+          "type": "REPEAT",
+          "content": {
+            "type": "SEQ",
+            "members": [
+              {
+                "type": "STRING",
+                "value": ","
+              },
+              {
+                "type": "SYMBOL",
+                "name": "context_item"
+              }
+            ]
+          }
         }
       ]
     },
