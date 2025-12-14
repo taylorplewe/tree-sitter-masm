@@ -29,11 +29,16 @@ export default grammar({
   conflicts: $ => [
     [$.struct_tag, $.union_tag, $.record_tag, $.type_id],
     [$.register, $.assume_seg_reg],
+    [$.proto_spec],
+    [$.proto_list],
+    [$.proto_arg_list],
+    [$.qualifier],
+    [$.macro_proc_id, $.macro_func_id],
   ],
 
   rules: {
     // NOTE: will be 'module'
-    source_file: $ => $.extern_dir,
+    source_file: $ => $.uses_regs,
 
     eol: $ => choice($.comment_line, /\n/),
 
@@ -81,16 +86,42 @@ export default grammar({
     ),
 
     proto_arg: $ => seq(optional($.id), ":", $.qualified_type),
-    proto_arg_list: $ => seq(
-      optional(seq(",", optional($.eol), $.proto_list)),
-      optional(seq(",", optional($.eol), optional($.id), ":vararg")),
-    ),
+    // proto_arg_list: $ => choice(
+    //   seq(
+    //     seq(",", optional($.eol), $.proto_list),
+    //     optional(seq(",", optional($.eol), optional($.id), ":vararg")),
+    //   ),
+    // ),
+    // proto_arg_list_scalar: $ => seq(",", optional($.eol), $.proto_list),
+    // proto_arg_list_vararg: $ => seq(",", optional($.eol), optional($.id), ":vararg"),
     proto_list: $ => listWithEol($.proto_arg, $.eol),
+    proto_arg_list: $ => seq(
+      optional(seq(",", optional($.eol))),
+      choice(
+        seq($.proto_list, optional(seq(",", optional($.eol), optional($.id), ":vararg"))),
+        seq(optional($.id), ":vararg"),
+      ),
+    ),
     proto_spec: $ => choice(
-      seq(optional($.distance), optional($.lang_type), optional($.proto_arg_list)),
+      // the masm bnf grammar has the following as a possible `protoSpec` rule:
+      //   ⟦distance⟧ ⟦langType⟧ ⟦protoArgList⟧
+      // the problem is that this can match an empty string. The following is how I got around that
+      choice(
+        seq($.distance, optional($.lang_type), optional($.proto_arg_list)),
+        seq($.lang_type, optional($.proto_arg_list)),
+        $.proto_arg_list,
+      ),
       $.type_id,
     ),
-    proto_type_dir: $ => seq($.id, "proto", $.proto_spec),
+    proto_type_dir: $ => seq($.id, "proto", optional($.proto_spec)),
+
+    // proc_parm_list: $ => seq(
+    //   optional(seq(",", optional($.eol))),
+    //   choice(
+    //     seq($.parm_list, optional(seq(",", optional($.eol), optional($.parm_id), ":vararg"))),
+    //     seq(optional($.parm_id), ":vararg"),
+    //   ),
+    // ),
 
     pub_def: $ => seq(optional($.lang_type), $.id),
     pub_list: $ => listWithEol($.pub_def, $.eol),
@@ -98,6 +129,8 @@ export default grammar({
 
     macro_id: $ => choice($.macro_proc_id, $.macro_func_id),
     macro_id_list: $ => list($.macro_id),
+
+    purge_dir: $ => seq("purge", $.macro_id_list),
 
     parm_type: $ => choice(
       "req",
@@ -113,7 +146,11 @@ export default grammar({
 
     name_dir: $ => seq("name", $.id, $.eol),
 
-    p_options: $ => seq(optional($.distance), optional($.lang_type), optional($.o_visibility)),
+    p_options: $ => choice(
+      seq($.distance, optional($.lang_type), optional($.o_visibility)),
+      seq($.lang_type, optional($.o_visibility)),
+      $.o_visibility,
+    ),
 
     for_parm_type: $ => choice("req", seq("=", $.text_literal)),
     for_parm: $ => seq($.id, optional(seq(":", $.for_parm_type))),
@@ -142,13 +179,13 @@ export default grammar({
 
     qualifier: $ => choice(
       $.qualified_type,
-      seq("proto", $.proto_spec),
+      seq("proto", optional($.proto_spec)),
     ),
     typedef_dir: $ => seq($.type_id, "typedef", $.qualifier),
 
     // NOTE: I think the bnf grammar might be incorrect. There's no way to get from "extern" to "proto" in the grammar.
     // If instead of `qualified_type`, it was `qualifier`, then it would make sense.
-    extern_type: $ => choice("abs", $.qualified_type), 
+    extern_type: $ => choice("abs", $.qualifier), 
     extern_def: $ => seq(optional($.lang_type), $.id, optional(seq("(", $.alt_id, ")")), ":", $.extern_type),
     extern_list: $ => listWithEol($.extern_def, $.eol),
     extern_dir: $ => seq($.extern_key, $.extern_list, $.eol),
@@ -164,6 +201,16 @@ export default grammar({
       seq("assume nothing", $.eol),
     ),
 
+    // another error in the bnf grammar--it omits an `|` indicating a choice between "echo" and "%out"
+    echo_dir: $ => choice(
+      seq("echo", $.arbitrary_text, $.eol),
+      seq("%out", $.arbitrary_text, $.eol),
+    ),
+
+    list_dir: $ => seq($.list_option, $.eol),
+
+    local_def: $ => seq("local", $.id_list, $.eol),
+    local_list: $ => repeat1($.local_def),
 
     // fpu_register: $ => seq("st", $.expr), // TODO
     fpu_register: $ => seq("st"),
@@ -208,6 +255,12 @@ export default grammar({
     //   seq("exitm", $.text_item),
     // )
 
+    special_chars: _ => /:|\.|\[|\]|\(|\)|<|>|\{|\}|\+|-|\/|\*|&|%|!|'|\\|=|;|,|"|\n/,
+
+    startup_dir: $ => seq(".startup", $.eol),
+
+    uses_regs: $ => seq("uses", $.reg_list),
+
 
     // option
 
@@ -241,8 +294,8 @@ export default grammar({
       seq("segment", ":", $.seg_size),
       seq("setif2", ":", $.bool),
     ),
-    // option_list: $ => seq($.option_item, repeat(seq(",", optional($.eol), $.option_item))),
     option_list: $ => listWithEol($.option_item, $.eol),
+    option_dir: $ => seq("option", $.option_list, $.eol),
 
 
     // id aliases

@@ -1,56 +1,26 @@
 [
   {
-    "type": "alt_id",
-    "named": true,
-    "fields": {},
-    "children": {
-      "multiple": false,
-      "required": false,
-      "types": [
-        {
-          "type": "alt_id",
-          "named": true
-        }
-      ]
-    }
-  },
-  {
-    "type": "data_type",
+    "type": "byte_register",
     "named": true,
     "fields": {}
   },
   {
-    "type": "distance",
+    "type": "fpu_register",
     "named": true,
-    "fields": {},
-    "children": {
-      "multiple": false,
-      "required": false,
-      "types": [
-        {
-          "type": "near_far",
-          "named": true
-        }
-      ]
-    }
+    "fields": {}
   },
   {
-    "type": "eol",
+    "type": "gp_register",
     "named": true,
-    "fields": {},
-    "children": {
-      "multiple": false,
-      "required": false,
-      "types": [
-        {
-          "type": "comment_line",
-          "named": true
-        }
-      ]
-    }
+    "fields": {}
   },
   {
-    "type": "extern_def",
+    "type": "qword_register",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "reg_list",
     "named": true,
     "fields": {},
     "children": {
@@ -58,73 +28,58 @@
       "required": true,
       "types": [
         {
-          "type": "alt_id",
-          "named": true
-        },
-        {
-          "type": "extern_type",
-          "named": true
-        },
-        {
-          "type": "id",
-          "named": true
-        },
-        {
-          "type": "lang_type",
+          "type": "register",
           "named": true
         }
       ]
     }
   },
   {
-    "type": "extern_dir",
+    "type": "register",
     "named": true,
     "fields": {},
     "children": {
-      "multiple": true,
+      "multiple": false,
       "required": true,
       "types": [
         {
-          "type": "eol",
+          "type": "byte_register",
           "named": true
         },
         {
-          "type": "extern_key",
+          "type": "fpu_register",
           "named": true
         },
         {
-          "type": "extern_list",
+          "type": "gp_register",
+          "named": true
+        },
+        {
+          "type": "qword_register",
+          "named": true
+        },
+        {
+          "type": "segment_register",
+          "named": true
+        },
+        {
+          "type": "simd_register",
+          "named": true
+        },
+        {
+          "type": "special_register",
           "named": true
         }
       ]
     }
   },
   {
-    "type": "extern_key",
+    "type": "segment_register",
     "named": true,
     "fields": {}
   },
   {
-    "type": "extern_list",
-    "named": true,
-    "fields": {},
-    "children": {
-      "multiple": true,
-      "required": true,
-      "types": [
-        {
-          "type": "eol",
-          "named": true
-        },
-        {
-          "type": "extern_def",
-          "named": true
-        }
-      ]
-    }
-  },
-  {
-    "type": "extern_type",
+    "type": "simd_register",
     "named": true,
     "fields": {},
     "children": {
@@ -132,60 +87,7 @@
       "required": false,
       "types": [
         {
-          "type": "qualified_type",
-          "named": true
-        }
-      ]
-    }
-  },
-  {
-    "type": "id",
-    "named": true,
-    "fields": {}
-  },
-  {
-    "type": "lang_type",
-    "named": true,
-    "fields": {}
-  },
-  {
-    "type": "near_far",
-    "named": true,
-    "fields": {}
-  },
-  {
-    "type": "qualified_type",
-    "named": true,
-    "fields": {},
-    "children": {
-      "multiple": true,
-      "required": false,
-      "types": [
-        {
-          "type": "distance",
-          "named": true
-        },
-        {
-          "type": "qualified_type",
-          "named": true
-        },
-        {
-          "type": "type",
-          "named": true
-        }
-      ]
-    }
-  },
-  {
-    "type": "record_tag",
-    "named": true,
-    "fields": {},
-    "children": {
-      "multiple": false,
-      "required": false,
-      "types": [
-        {
-          "type": "record_tag",
+          "type": "xmm_register",
           "named": true
         }
       ]
@@ -201,29 +103,19 @@
       "required": true,
       "types": [
         {
-          "type": "extern_dir",
+          "type": "uses_regs",
           "named": true
         }
       ]
     }
   },
   {
-    "type": "struct_tag",
+    "type": "special_register",
     "named": true,
-    "fields": {},
-    "children": {
-      "multiple": false,
-      "required": false,
-      "types": [
-        {
-          "type": "struct_tag",
-          "named": true
-        }
-      ]
-    }
+    "fields": {}
   },
   {
-    "type": "type",
+    "type": "uses_regs",
     "named": true,
     "fields": {},
     "children": {
@@ -231,92 +123,51 @@
       "required": true,
       "types": [
         {
-          "type": "data_type",
-          "named": true
-        },
-        {
-          "type": "distance",
-          "named": true
-        },
-        {
-          "type": "record_tag",
-          "named": true
-        },
-        {
-          "type": "struct_tag",
-          "named": true
-        },
-        {
-          "type": "type_id",
-          "named": true
-        },
-        {
-          "type": "union_tag",
+          "type": "reg_list",
           "named": true
         }
       ]
     }
   },
   {
-    "type": "type_id",
+    "type": "xmm_register",
     "named": true,
-    "fields": {},
-    "children": {
-      "multiple": false,
-      "required": false,
-      "types": [
-        {
-          "type": "type_id",
-          "named": true
-        }
-      ]
-    }
+    "fields": {}
   },
   {
-    "type": "union_tag",
-    "named": true,
-    "fields": {},
-    "children": {
-      "multiple": false,
-      "required": false,
-      "types": [
-        {
-          "type": "union_tag",
-          "named": true
-        }
-      ]
-    }
-  },
-  {
-    "type": "(",
+    "type": "ah",
     "named": false
   },
   {
-    "type": ")",
+    "type": "al",
     "named": false
   },
   {
-    "type": ",",
+    "type": "ax",
     "named": false
   },
   {
-    "type": ":",
+    "type": "bh",
     "named": false
   },
   {
-    "type": "abs",
+    "type": "bl",
     "named": false
   },
   {
-    "type": "basic",
+    "type": "bp",
     "named": false
   },
   {
-    "type": "byte",
+    "type": "bx",
     "named": false
   },
   {
-    "type": "c",
+    "type": "ch",
+    "named": false
+  },
+  {
+    "type": "cl",
     "named": false
   },
   {
@@ -325,123 +176,443 @@
     "extra": true
   },
   {
-    "type": "dword",
+    "type": "cr0",
     "named": false
   },
   {
-    "type": "extern",
+    "type": "cr2",
     "named": false
   },
   {
-    "type": "externdef",
+    "type": "cr3",
     "named": false
   },
   {
-    "type": "extrn",
+    "type": "cs",
     "named": false
   },
   {
-    "type": "far",
+    "type": "cx",
     "named": false
   },
   {
-    "type": "far16",
+    "type": "dh",
     "named": false
   },
   {
-    "type": "far32",
+    "type": "di",
     "named": false
   },
   {
-    "type": "fortran",
+    "type": "dl",
     "named": false
   },
   {
-    "type": "fword",
+    "type": "dr0",
     "named": false
   },
   {
-    "type": "mmword",
+    "type": "dr1",
     "named": false
   },
   {
-    "type": "near",
+    "type": "dr2",
     "named": false
   },
   {
-    "type": "near16",
+    "type": "dr3",
     "named": false
   },
   {
-    "type": "near32",
+    "type": "dr6",
     "named": false
   },
   {
-    "type": "oword",
+    "type": "dr7",
     "named": false
   },
   {
-    "type": "pascal",
+    "type": "ds",
     "named": false
   },
   {
-    "type": "ptr",
+    "type": "dx",
     "named": false
   },
   {
-    "type": "qword",
+    "type": "eax",
     "named": false
   },
   {
-    "type": "real10",
+    "type": "ebp",
     "named": false
   },
   {
-    "type": "real4",
+    "type": "ebx",
     "named": false
   },
   {
-    "type": "real8",
+    "type": "ecx",
     "named": false
   },
   {
-    "type": "sbyte",
+    "type": "edi",
     "named": false
   },
   {
-    "type": "sdword",
+    "type": "edx",
     "named": false
   },
   {
-    "type": "sqword",
+    "type": "es",
     "named": false
   },
   {
-    "type": "stdcall",
+    "type": "esi",
     "named": false
   },
   {
-    "type": "sword",
+    "type": "esp",
     "named": false
   },
   {
-    "type": "syscall",
+    "type": "fs",
     "named": false
   },
   {
-    "type": "tbyte",
+    "type": "gs",
     "named": false
   },
   {
-    "type": "word",
+    "type": "mm0",
     "named": false
   },
   {
-    "type": "xmmword",
+    "type": "mm1",
     "named": false
   },
   {
-    "type": "ymmword",
+    "type": "mm2",
+    "named": false
+  },
+  {
+    "type": "mm3",
+    "named": false
+  },
+  {
+    "type": "mm4",
+    "named": false
+  },
+  {
+    "type": "mm5",
+    "named": false
+  },
+  {
+    "type": "mm6",
+    "named": false
+  },
+  {
+    "type": "mm7",
+    "named": false
+  },
+  {
+    "type": "r10",
+    "named": false
+  },
+  {
+    "type": "r10b",
+    "named": false
+  },
+  {
+    "type": "r11",
+    "named": false
+  },
+  {
+    "type": "r11b",
+    "named": false
+  },
+  {
+    "type": "r12",
+    "named": false
+  },
+  {
+    "type": "r12b",
+    "named": false
+  },
+  {
+    "type": "r12d",
+    "named": false
+  },
+  {
+    "type": "r13",
+    "named": false
+  },
+  {
+    "type": "r13b",
+    "named": false
+  },
+  {
+    "type": "r13d",
+    "named": false
+  },
+  {
+    "type": "r13w",
+    "named": false
+  },
+  {
+    "type": "r14",
+    "named": false
+  },
+  {
+    "type": "r14b",
+    "named": false
+  },
+  {
+    "type": "r14d",
+    "named": false
+  },
+  {
+    "type": "r14w",
+    "named": false
+  },
+  {
+    "type": "r15",
+    "named": false
+  },
+  {
+    "type": "r15b",
+    "named": false
+  },
+  {
+    "type": "r8",
+    "named": false
+  },
+  {
+    "type": "r8b",
+    "named": false
+  },
+  {
+    "type": "r8d",
+    "named": false
+  },
+  {
+    "type": "r8w",
+    "named": false
+  },
+  {
+    "type": "r9",
+    "named": false
+  },
+  {
+    "type": "r9b",
+    "named": false
+  },
+  {
+    "type": "r9d",
+    "named": false
+  },
+  {
+    "type": "r9w",
+    "named": false
+  },
+  {
+    "type": "rax",
+    "named": false
+  },
+  {
+    "type": "rbp",
+    "named": false
+  },
+  {
+    "type": "rbx",
+    "named": false
+  },
+  {
+    "type": "rcx",
+    "named": false
+  },
+  {
+    "type": "rdi",
+    "named": false
+  },
+  {
+    "type": "rdx",
+    "named": false
+  },
+  {
+    "type": "rsi",
+    "named": false
+  },
+  {
+    "type": "rsp",
+    "named": false
+  },
+  {
+    "type": "si",
+    "named": false
+  },
+  {
+    "type": "sp",
+    "named": false
+  },
+  {
+    "type": "ss",
+    "named": false
+  },
+  {
+    "type": "st",
+    "named": false
+  },
+  {
+    "type": "tr3",
+    "named": false
+  },
+  {
+    "type": "tr4",
+    "named": false
+  },
+  {
+    "type": "tr5",
+    "named": false
+  },
+  {
+    "type": "tr6",
+    "named": false
+  },
+  {
+    "type": "tr7",
+    "named": false
+  },
+  {
+    "type": "uses",
+    "named": false
+  },
+  {
+    "type": "xmm0",
+    "named": false
+  },
+  {
+    "type": "xmm1",
+    "named": false
+  },
+  {
+    "type": "xmm10",
+    "named": false
+  },
+  {
+    "type": "xmm11",
+    "named": false
+  },
+  {
+    "type": "xmm12",
+    "named": false
+  },
+  {
+    "type": "xmm13",
+    "named": false
+  },
+  {
+    "type": "xmm14",
+    "named": false
+  },
+  {
+    "type": "xmm15",
+    "named": false
+  },
+  {
+    "type": "xmm2",
+    "named": false
+  },
+  {
+    "type": "xmm3",
+    "named": false
+  },
+  {
+    "type": "xmm4",
+    "named": false
+  },
+  {
+    "type": "xmm5",
+    "named": false
+  },
+  {
+    "type": "xmm6",
+    "named": false
+  },
+  {
+    "type": "xmm7",
+    "named": false
+  },
+  {
+    "type": "xmm8",
+    "named": false
+  },
+  {
+    "type": "xmm9",
+    "named": false
+  },
+  {
+    "type": "ymm0",
+    "named": false
+  },
+  {
+    "type": "ymm1",
+    "named": false
+  },
+  {
+    "type": "ymm10",
+    "named": false
+  },
+  {
+    "type": "ymm11",
+    "named": false
+  },
+  {
+    "type": "ymm12",
+    "named": false
+  },
+  {
+    "type": "ymm13",
+    "named": false
+  },
+  {
+    "type": "ymm14",
+    "named": false
+  },
+  {
+    "type": "ymm15",
+    "named": false
+  },
+  {
+    "type": "ymm2",
+    "named": false
+  },
+  {
+    "type": "ymm3",
+    "named": false
+  },
+  {
+    "type": "ymm4",
+    "named": false
+  },
+  {
+    "type": "ymm5",
+    "named": false
+  },
+  {
+    "type": "ymm6",
+    "named": false
+  },
+  {
+    "type": "ymm7",
+    "named": false
+  },
+  {
+    "type": "ymm8",
+    "named": false
+  },
+  {
+    "type": "ymm9",
     "named": false
   }
 ]

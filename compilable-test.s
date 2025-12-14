@@ -1,4 +1,15 @@
+.model small
+
 .code
+
+urmom proto c,
+			urman:byte,
+			urman2: dword,
+			:qword,
+			cheese: sword,
+			:vararg
+
+urmom2 proto
 
 comment &
 yaboiiiiii aofjiei owief oifowefj
@@ -8,7 +19,7 @@ anythingggggg
 &
 
 main proc
-	mov rax, 3
+	mov eax, 3
 	ret
 main endp
 
