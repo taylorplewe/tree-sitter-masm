@@ -168,6 +168,31 @@ export default grammar({
 
       exprList
         expr | exprList , expr
+
+
+    THE WAY RUST TREE SITTER DOES IT
+
+      binary_expression: $ => {
+        const table = [
+          [PREC.and, '&&'],
+          [PREC.or, '||'],
+          [PREC.bitand, '&'],
+          [PREC.bitor, '|'],
+          [PREC.bitxor, '^'],
+          [PREC.comparative, choice('==', '!=', '<', '<=', '>', '>=')],
+          [PREC.shift, choice('<<', '>>')],
+          [PREC.additive, choice('+', '-')],
+          [PREC.multiplicative, choice('*', '/', '%')],
+        ];
+
+        // @ts-ignore
+        return choice(...table.map(([precedence, operator]) => prec.left(precedence, seq(
+          field('left', $._expression),
+          // @ts-ignore
+          field('operator', operator),
+          field('right', $._expression),
+        ))));
+      },
         
     */
 
