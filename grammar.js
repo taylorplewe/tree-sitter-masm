@@ -63,6 +63,31 @@ export default grammar({
     constant: $ => seq($.digits, optional($.radix_override)),
 
 
+    // expressions
+
+    /*
+    masm bnf grammar hierarchy:
+
+      cExpr
+        aExpr | cExpr || aExpr
+
+      aExpr
+        term | aExpr && term
+
+      term
+        simpleExpr | ! simpleExpr
+      
+      simpleExpr
+        ( cExpr ) | primary
+
+      expr
+        SHORT e05
+        | .TYPE e01
+        | OPATTR e01
+        | e01
+    */
+
+
     // idk
 
     cref_option: $ => choice(
