@@ -152,6 +152,23 @@ export default grammar({
         | ST
         | ST ( expr )    // masm bnf grammar hierarchy:
         
+    OTHER
+
+      cxzExpr
+        expr
+        | ! expr
+        | expr == expr
+        | expr != expr
+
+      constExpr
+        expr
+
+      immExpr
+        expr
+
+      exprList
+        expr | exprList , expr
+        
     */
 
 
