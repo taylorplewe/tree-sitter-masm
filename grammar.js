@@ -80,11 +80,78 @@ export default grammar({
       simpleExpr
         ( cExpr ) | primary
 
+      primary
+        expr binaryOp expr | flagName | expr
+
       expr
         SHORT e05
         | .TYPE e01
         | OPATTR e01
         | e01
+        
+      e01
+        e01 orOp e02 | e02
+
+      e02
+        e02 AND e03 | e03
+
+      e03
+        NOT e04 | e04
+
+      e04
+        e04 relOp e05 | e05
+
+      e05
+        e05 addOp e06 | e06
+
+      e06
+        e06 mulOp e07 | e06 shiftOp e07 | e07
+
+      e07
+        e07 addOp e08 | e08
+
+      e08
+        HIGH e09
+        | LOW e09
+        | HIGHWORD e09
+        | LOWWORD e09
+        | e09
+
+      e09
+        OFFSET e10
+        | SEG e10
+        | LROFFSET e10
+        | TYPE e10
+        | THIS e10
+        | e09 PTR e10
+        | e09 : e10
+        | e10
+
+      e10
+        e10 . e11
+        | e10 ⟦ expr ⟧
+        | e11
+
+      e11
+        ( expr )
+        | ⟦ expr ⟧
+        | WIDTH id
+        | MASK id
+        | SIZE sizeArg
+        | SIZEOF sizeArg
+        | LENGTH id
+        | LENGTHOF id
+        | recordConst
+        | string
+        | constant
+        | type
+        | id
+        | $
+        | segmentRegister
+        | register
+        | ST
+        | ST ( expr )    // masm bnf grammar hierarchy:
+        
     */
 
 
