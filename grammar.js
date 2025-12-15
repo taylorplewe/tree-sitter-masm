@@ -18,6 +18,12 @@ const DELIMITER = /\S/;
 const list = listItem => seq(listItem, repeat(seq(",", listItem)));
 const listWithEol = (listItem, eol) => seq(listItem, repeat(seq(",", optional(eol), listItem)));
 
+const PREC = {
+  logical_or: 1,
+  logical_and: 2,
+  logical_not: 3,
+};
+
 export default grammar({
   name: "masm",
 
@@ -34,11 +40,14 @@ export default grammar({
     [$.proto_arg_list],
     [$.qualifier],
     [$.macro_proc_id, $.macro_func_id],
+    [$.id],
+    [$.digits],
+    [$.e11, $.fpu_register],
   ],
 
   rules: {
     // NOTE: will be 'module'
-    source_file: $ => $.uses_regs,
+    source_file: $ => $.c_expr,
 
     eol: $ => choice($.comment_line, /\n/),
 
@@ -64,6 +73,71 @@ export default grammar({
 
 
     // expressions
+
+    c_expr: $ => choice($.a_expr, seq($.c_expr, "||", $.a_expr)),
+    a_expr: $ => choice($.term, seq($.a_expr, "&&", $.term)),
+    term: $ => choice($.simple_expr, seq("!", $.simple_expr)),
+    simple_expr: $ => choice(seq("(", $.c_expr, ")"), $.primary),
+    primary: $ => choice(
+      seq($.expr, $.binary_op, $.expr),
+      $.flag_name,
+      $.expr,
+    ),
+    expr: $ => choice(
+      seq("short", $.e05),
+      seq(".type", $.e01),
+      seq("opattr", $.e01),
+      $.e01,
+    ),
+    e01: $ => choice(seq($.e01, $.or_op, $.e02), $.e02),
+    e02: $ => choice(seq($.e02, "and", $.e03), $.e03),
+    e03: $ => choice(seq("not", $.e04), $.e04),
+    e04: $ => choice(seq($.e04, $.rel_op, $.e05), $.e05),
+    e05: $ => choice(seq($.e05, $.add_op, $.e06), $.e06),
+    e06: $ => choice(
+      seq($.e06, $.mul_op, $.e07),
+      seq($.e06, $.shift_op, $.e07),
+      $.e07,
+    ),
+    e07: $ => choice(seq($.e07, $.add_op, $.e08), $.e08),
+    e08: $ => choice(
+      seq("high", $.e09),
+      seq("low", $.e09),
+      seq("highword", $.e09),
+      seq("lowword", $.e09),
+      $.e09,
+    ),
+    e09: $ => choice(
+      seq("offset", $.e10),
+      seq("seg", $.e10),
+      seq("lroffset", $.e10),
+      seq("type", $.e10),
+      seq("this", $.e10),
+      seq($.e09, "ptr", $.e10),
+      seq($.e09, ":", $.e10),
+      $.e10,
+    ),
+    e10: $ => choice(
+      seq($.e10, ".", $.e11),
+      seq($.e10, optional($.expr)),
+      $.e11,
+    ),
+    e11: $ => choice(
+      seq("(", $.expr, ")"),
+      seq("width", $.id),
+      seq("mask", $.id),
+      seq("length", $.id),
+      seq("lengthof", $.id),
+      $.string,
+      $.constant,
+      $.type,
+      $.id,
+      "$",
+      $.segment_register,
+      $.register,
+      "st",
+      seq("st", "(", $.expr, ")"),
+    ),
 
     /*
     masm bnf grammar hierarchy:
@@ -174,15 +248,15 @@ export default grammar({
 
       binary_expression: $ => {
         const table = [
-          [PREC.and, '&&'],
-          [PREC.or, '||'],
-          [PREC.bitand, '&'],
-          [PREC.bitor, '|'],
-          [PREC.bitxor, '^'],
-          [PREC.comparative, choice('==', '!=', '<', '<=', '>', '>=')],
-          [PREC.shift, choice('<<', '>>')],
-          [PREC.additive, choice('+', '-')],
-          [PREC.multiplicative, choice('*', '/', '%')],
+          [PREC.additive, choice('+', '-')],            // 2
+          [PREC.shift, choice('<<', '>>')],             // 3
+          [PREC.bitand, '&'], // 4
+          [PREC.bitxor, '^'], // 5
+          [PREC.bitor, '|'],  // 6
+          [PREC.comparative, choice('==', '!=', '<', '<=', '>', '>=')], // 7
+          [PREC.and, '&&'],   // 8
+          [PREC.or, '||'],    // 9
+          [PREC.multiplicative, choice('*', '/', '%')], // 10
         ];
 
         // @ts-ignore
@@ -192,7 +266,135 @@ export default grammar({
           field('operator', operator),
           field('right', $._expression),
         ))));
+
+        // WHICH BECOMES
+        choice(
+          prec.left(2, seq(field('left', $._expression), field('operator', choice('+', '-'), field('right', $._expression)))),
+          prec.left(3, seq(field('left', $._expression), field('operator', choice('<<', '>>'), field('right', $._expression)))),
+        ),
       },
+
+      const PREC = {
+        call: 15,
+        field: 14,
+        try: 13,
+        unary: 12,
+        cast: 11,
+        multiplicative: 10,
+        additive: 9,
+        shift: 8,
+        bitand: 7,
+        bitxor: 6,
+        bitor: 5,
+        comparative: 4,
+        and: 3,
+        or: 2,
+        range: 1,
+        assign: 0,
+        closure: -1,
+      };
+
+    RUBY TREE SITTER
+
+      const PREC = {
+        comment: -2,
+        curly_block: 1,
+        do_block: -1,
+
+        and: -2,
+        or: -2,
+        not: 5,
+        defined: 10,
+        alias: 11,
+        assign: 15,
+        rescue: 16,
+        conditional: 20,
+        range: 25,
+        boolean_or: 30,
+        boolean_and: 35,
+        relational: 40,
+        comparison: 45,
+        bitwise_or: 50,
+        bitwise_and: 55,
+        call: 56,
+        shift: 60,
+        additive: 65,
+        multiplicative: 70,
+        unary_minus: 75,
+        exponential: 80,
+        complement: 85,
+      };
+
+      binary: $ => {
+        const operators = [
+          [prec.left, PREC.AND, 'and'],
+          [prec.left, PREC.OR, 'or'],
+          [prec.left, PREC.BOOLEAN_OR, '||'],
+          [prec.left, PREC.BOOLEAN_AND, '&&'],
+          [prec.left, PREC.SHIFT, choice('<<', '>>')],
+          [prec.left, PREC.COMPARISON, choice('<', '<=', '>', '>=')],
+          [prec.left, PREC.BITWISE_AND, '&'],
+          [prec.left, PREC.BITWISE_OR, choice('^', '|')],
+          [prec.left, PREC.ADDITIVE, choice('+', alias($._binary_minus, '-'))],
+          [prec.left, PREC.MULTIPLICATIVE, choice('/', '%', alias($._binary_star, '*'))],
+          [prec.right, PREC.RELATIONAL, choice('==', '!=', '===', '<=>', '=~', '!~')],
+          [prec.right, PREC.EXPONENTIAL, alias($._binary_star_star, '**')],
+        ];
+
+        // @ts-ignore
+        return choice(...operators.map(([fn, precedence, operator]) => fn(precedence, seq(
+          field('left', $._arg),
+          // @ts-ignore
+          field('operator', operator),
+          field('right', $._arg),
+        ))));
+      },
+
+      command_binary: $ => prec.left(seq(
+        field('left', $._expression),
+        field('operator', choice('or', 'and')),
+        field('right', $._expression),
+      )),
+
+      unary: $ => {
+        const operators = [
+          [prec, PREC.DEFINED, 'defined?'],
+          [prec.right, PREC.NOT, 'not'],
+          [prec.right, PREC.UNARY_MINUS, choice(alias($._unary_minus, '-'), alias($._binary_minus, '-'), '+')],
+          [prec.right, PREC.COMPLEMENT, choice('!', '~')],
+        ];
+        // @ts-ignore
+        return choice(...operators.map(([fn, precedence, operator]) => fn(precedence, seq(
+          // @ts-ignore
+          field('operator', operator),
+          field('operand', $._arg),
+        ))));
+      },
+
+      command_unary: $ => {
+        const operators = [
+          [prec, PREC.DEFINED, 'defined?'],
+          [prec.right, PREC.NOT, 'not'],
+          [prec.right, PREC.UNARY_MINUS, choice(alias($._unary_minus, '-'), '+')],
+          [prec.right, PREC.COMPLEMENT, choice('!', '~')],
+        ];
+        // @ts-ignore
+        return choice(...operators.map(([fn, precedence, operator]) => fn(precedence, seq(
+          // @ts-ignore
+          field('operator', operator),
+          field('operand', $._expression),
+        ))));
+      },
+
+      parenthesized_unary: $ => prec(PREC.CALL, seq(
+        field('operator', choice('defined?', 'not')),
+        field('operand', $.parenthesized_statements),
+      )),
+
+      unary_literal: $ => prec.right(PREC.UNARY_MINUS, seq(
+        field('operator', choice(alias($._unary_minus_num, '-'), '+')),
+        field('operand', $._simple_numeric),
+      )),
         
     */
 
@@ -467,6 +669,7 @@ export default grammar({
     sign: _ => choice("+", "-"),
     binary_op: _ => choice("==", "!=", ">=", "<=", ">", "<", "&"),
     add_op: _ => choice("+", "-"),
+    or_op: _ => choice("or", "xor"),
     mul_op: _ => choice("*", "/", "mod"),
     rel_op: _ => choice("eq", "ne", "lt", "le", "gt", "ge"),
     shift_op: _ => choice("shr", "shl"),
