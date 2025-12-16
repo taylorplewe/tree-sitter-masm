@@ -1,18 +1,73 @@
 [
   {
-    "type": "expr",
+    "type": "binary_expression",
     "named": true,
-    "fields": {},
-    "children": {
-      "multiple": true,
-      "required": true,
-      "types": [
-        {
-          "type": "expr",
-          "named": true
-        }
-      ]
+    "fields": {
+      "left": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "binary_expression",
+            "named": true
+          },
+          {
+            "type": "constant",
+            "named": true
+          },
+          {
+            "type": "id",
+            "named": true
+          }
+        ]
+      },
+      "operator": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "&&",
+            "named": false
+          },
+          {
+            "type": "and",
+            "named": false
+          },
+          {
+            "type": "||",
+            "named": false
+          }
+        ]
+      },
+      "right": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "binary_expression",
+            "named": true
+          },
+          {
+            "type": "constant",
+            "named": true
+          },
+          {
+            "type": "id",
+            "named": true
+          }
+        ]
+      }
     }
+  },
+  {
+    "type": "constant",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "id",
+    "named": true,
+    "fields": {}
   },
   {
     "type": "source_file",
@@ -24,18 +79,26 @@
       "required": true,
       "types": [
         {
-          "type": "expr",
+          "type": "binary_expression",
+          "named": true
+        },
+        {
+          "type": "constant",
+          "named": true
+        },
+        {
+          "type": "id",
           "named": true
         }
       ]
     }
   },
   {
-    "type": "!",
+    "type": "&&",
     "named": false
   },
   {
-    "type": "&&",
+    "type": "and",
     "named": false
   },
   {
