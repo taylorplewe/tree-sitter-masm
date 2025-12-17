@@ -733,7 +733,7 @@
         },
         {
           "type": "PATTERN",
-          "value": "[0-9][0-9A-Fa-f]*[hoqtyHOQTY]"
+          "value": "[0-9][0-9A-Fa-f]*[hoqtyHOQTY]?"
         },
         {
           "type": "SYMBOL",
@@ -758,6 +758,35 @@
         {
           "type": "SYMBOL",
           "name": "register"
+        },
+        {
+          "type": "PREC",
+          "value": 17,
+          "content": {
+            "type": "STRING",
+            "value": "st"
+          }
+        },
+        {
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "STRING",
+              "value": "st"
+            },
+            {
+              "type": "STRING",
+              "value": "("
+            },
+            {
+              "type": "SYMBOL",
+              "name": "_test_expr"
+            },
+            {
+              "type": "STRING",
+              "value": ")"
+            }
+          ]
         }
       ]
     },

@@ -1,1 +1,1 @@
-4 + 5 + myman.numapples.value
+4 + 5 ptr 3 * urmom.ayyyyboi.e24 + "yaboii"

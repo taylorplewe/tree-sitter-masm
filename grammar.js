@@ -18,9 +18,10 @@ const DELIMITER = /\S/;
 const DIGITS = /[0-9][0-9A-Fa-f]*/;
 const RADIX_OVERRIDE = /[hoqtyHOQTY]/;
 const TEXT = /\!?[^\n]+/;
-const CONSTANT = /[0-9][0-9A-Fa-f]*[hoqtyHOQTY]/;
+const CONSTANT = /[0-9][0-9A-Fa-f]*[hoqtyHOQTY]?/;
 const IDENTIFIER = /[a-zA-Z@_$?][a-zA-Z0-9@_$?]*/;
 
+// id aliases
 const GROUP_ID = IDENTIFIER;
 const TYPE_ID = IDENTIFIER;
 const ALT_ID = IDENTIFIER;
@@ -167,30 +168,14 @@ export default grammar({
       prec(PREC.e11 + 1, IDENTIFIER),
       "$",
       $.register,
+      prec(PREC.e11 + 1, "st"),
+      seq("st", "(", $._test_expr, ")"),
     ),
 
     // c_expr: $ => choice($.a_expr, seq($.c_expr, "||", $.a_expr)),
     // a_expr: $ => choice($.term, seq($.a_expr, "&&", $.term)),
     // term: $ => choice($.simple_expr, seq("!", $.simple_expr)),
     // simple_expr: $ => choice($.primary, seq("(", $.c_expr, ")")),
-
-          // const PREC_ARR = [
-          //   "logical_or", // cExpr
-          //   "logical_and", // aExpr
-          //   "logical_not", // term
-          //   "paren", // simpleExpr
-          //   "primary",
-          //   "expr",
-          //   "bitwise_or", // e01
-          //   "bitwise_and", // e02
-          //   "bitwise_not", // e03
-          //   "comparitive", // e04
-          //   "add", // e05
-          //   "mul_shift", // e06
-          //   "bit_section", // e08
-          //   "offset", // e09
-          //   "dot", // e10
-          // ];
 
       // binary_expression: $ => {
       //   const table = [
@@ -219,70 +204,6 @@ export default grammar({
       //     prec.left(3, seq(field('left', $._expression), field('operator', choice('<<', '>>'), field('right', $._expression)))),
       //   ),
       // },
-
-
-    // primary: $ => choice(
-    //   $.expr,
-    //   $.flag_name,
-    //   seq($.expr, $.binary_op, $.expr),
-    // ),
-    // expr: $ => choice(
-    //   seq("short", $.e05),
-    //   seq(".type", $.e01),
-    //   seq("opattr", $.e01),
-    //   $.e01,
-    // ),
-    // e01: $ => choice(seq($.e01, $.or_op, $.e02), $.e02),
-    // e02: $ => choice(seq($.e02, "and", $.e03), $.e03),
-    // e03: $ => choice(seq("not", $.e04), $.e04),
-    // e04: $ => choice(seq($.e04, $.rel_op, $.e05), $.e05),
-    // e05: $ => choice(seq($.e05, $.add_op, $.e06), $.e06),
-    // e06: $ => choice(
-    //   $.e07,
-    //   seq($.e06, $.mul_op, $.e07),
-    //   seq($.e06, $.shift_op, $.e07),
-    // ),
-    // e07: $ => choice(seq($.e07, $.add_op, $.e08), $.e08),
-    // e08: $ => choice(
-    //   $.e09,
-    //   seq("high", $.e09),
-    //   seq("low", $.e09),
-    //   seq("highword", $.e09),
-    //   seq("lowword", $.e09),
-    // ),
-    // e09: $ => choice(
-    //   $.e10,
-    //   seq("offset", $.e10),
-    //   seq("seg", $.e10),
-    //   seq("lroffset", $.e10),
-    //   seq("type", $.e10),
-    //   seq("this", $.e10),
-    //   seq($.e09, "ptr", $.e10),
-    //   seq($.e09, ":", $.e10),
-    // ),
-    // e10: $ => choice(
-    //   $.e11,
-    //   seq($.e10, ".", $.e11),
-    //   seq($.e10, optional($.expr)),
-    // ),
-    // e11: $ => choice(
-    //   seq("(", $.expr, ")"),
-    //   seq("width", IDENTIFIER),
-    //   seq("mask", IDENTIFIER),
-    //   seq("length", IDENTIFIER),
-    //   seq("lengthof", IDENTIFIER),
-    //   $.string,
-    //   CONSTANT,
-    //   $.type,
-    //   IDENTIFIER,
-    //   "$",
-    //   $.segment_register,
-    //   $.register,
-    //   "st",
-    //   seq("st", "(", $.expr, ")"),
-    // ),
-
-    
 
     /*
     masm bnf grammar hierarchy:
@@ -387,160 +308,6 @@ export default grammar({
 
       exprList
         expr | exprList , expr
-
-
-    THE WAY RUST TREE SITTER DOES IT
-
-      binary_expression: $ => {
-        const table = [
-          [PREC.additive, choice('+', '-')],            // 2
-          [PREC.shift, choice('<<', '>>')],             // 3
-          [PREC.bitand, '&'], // 4
-          [PREC.bitxor, '^'], // 5
-          [PREC.bitor, '|'],  // 6
-          [PREC.comparative, choice('==', '!=', '<', '<=', '>', '>=')], // 7
-          [PREC.and, '&&'],   // 8
-          [PREC.or, '||'],    // 9
-          [PREC.multiplicative, choice('*', '/', '%')], // 10
-        ];
-
-        // @ts-ignore
-        return choice(...table.map(([precedence, operator]) => prec.left(precedence, seq(
-          field('left', $._expression),
-          // @ts-ignore
-          field('operator', operator),
-          field('right', $._expression),
-        ))));
-
-        // WHICH BECOMES
-        choice(
-          prec.left(2, seq(field('left', $._expression), field('operator', choice('+', '-'), field('right', $._expression)))),
-          prec.left(3, seq(field('left', $._expression), field('operator', choice('<<', '>>'), field('right', $._expression)))),
-        ),
-      },
-
-      const PREC = {
-        call: 15,
-        field: 14,
-        try: 13,
-        unary: 12,
-        cast: 11,
-        multiplicative: 10,
-        additive: 9,
-        shift: 8,
-        bitand: 7,
-        bitxor: 6,
-        bitor: 5,
-        comparative: 4,
-        and: 3,
-        or: 2,
-        range: 1,
-        assign: 0,
-        closure: -1,
-      };
-
-    RUBY TREE SITTER
-
-      const PREC = {
-        comment: -2,
-        curly_block: 1,
-        do_block: -1,
-
-        and: -2,
-        or: -2,
-        not: 5,
-        defined: 10,
-        alias: 11,
-        assign: 15,
-        rescue: 16,
-        conditional: 20,
-        range: 25,
-        boolean_or: 30,
-        boolean_and: 35,
-        relational: 40,
-        comparison: 45,
-        bitwise_or: 50,
-        bitwise_and: 55,
-        call: 56,
-        shift: 60,
-        additive: 65,
-        multiplicative: 70,
-        unary_minus: 75,
-        exponential: 80,
-        complement: 85,
-      };
-
-      binary: $ => {
-        const operators = [
-          [prec.left, PREC.AND, 'and'],
-          [prec.left, PREC.OR, 'or'],
-          [prec.left, PREC.BOOLEAN_OR, '||'],
-          [prec.left, PREC.BOOLEAN_AND, '&&'],
-          [prec.left, PREC.SHIFT, choice('<<', '>>')],
-          [prec.left, PREC.COMPARISON, choice('<', '<=', '>', '>=')],
-          [prec.left, PREC.BITWISE_AND, '&'],
-          [prec.left, PREC.BITWISE_OR, choice('^', '|')],
-          [prec.left, PREC.ADDITIVE, choice('+', alias($._binary_minus, '-'))],
-          [prec.left, PREC.MULTIPLICATIVE, choice('/', '%', alias($._binary_star, '*'))],
-          [prec.right, PREC.RELATIONAL, choice('==', '!=', '===', '<=>', '=~', '!~')],
-          [prec.right, PREC.EXPONENTIAL, alias($._binary_star_star, '**')],
-        ];
-
-        // @ts-ignore
-        return choice(...operators.map(([fn, precedence, operator]) => fn(precedence, seq(
-          field('left', $._arg),
-          // @ts-ignore
-          field('operator', operator),
-          field('right', $._arg),
-        ))));
-      },
-
-      command_binary: $ => prec.left(seq(
-        field('left', $._expression),
-        field('operator', choice('or', 'and')),
-        field('right', $._expression),
-      )),
-
-      unary: $ => {
-        const operators = [
-          [prec, PREC.DEFINED, 'defined?'],
-          [prec.right, PREC.NOT, 'not'],
-          [prec.right, PREC.UNARY_MINUS, choice(alias($._unary_minus, '-'), alias($._binary_minus, '-'), '+')],
-          [prec.right, PREC.COMPLEMENT, choice('!', '~')],
-        ];
-        // @ts-ignore
-        return choice(...operators.map(([fn, precedence, operator]) => fn(precedence, seq(
-          // @ts-ignore
-          field('operator', operator),
-          field('operand', $._arg),
-        ))));
-      },
-
-      command_unary: $ => {
-        const operators = [
-          [prec, PREC.DEFINED, 'defined?'],
-          [prec.right, PREC.NOT, 'not'],
-          [prec.right, PREC.UNARY_MINUS, choice(alias($._unary_minus, '-'), '+')],
-          [prec.right, PREC.COMPLEMENT, choice('!', '~')],
-        ];
-        // @ts-ignore
-        return choice(...operators.map(([fn, precedence, operator]) => fn(precedence, seq(
-          // @ts-ignore
-          field('operator', operator),
-          field('operand', $._expression),
-        ))));
-      },
-
-      parenthesized_unary: $ => prec(PREC.CALL, seq(
-        field('operator', choice('defined?', 'not')),
-        field('operand', $.parenthesized_statements),
-      )),
-
-      unary_literal: $ => prec.right(PREC.UNARY_MINUS, seq(
-        field('operator', choice(alias($._unary_minus_num, '-'), '+')),
-        field('operand', $._simple_numeric),
-      )),
-        
     */
 
 
