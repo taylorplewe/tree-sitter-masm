@@ -1,4 +1,12 @@
-myvar = 5 t
+mystrct struct
+	numapples dword ?
+mystrct ends
+
+
+.data?
+
+mys mystrct <>
+
 
 .code
 
@@ -18,7 +26,7 @@ anythingggggg
 &
 
 main proc
-	mov eax, myvar
+	mov eax, [mys] . numapples
 	ret
 main endp
 
