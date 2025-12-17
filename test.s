@@ -1,1 +1,1 @@
-4 * 5 + 2 or 5 shl 3 and 1
+4 * 5 + 2 or not 5 shl type 3 and 1

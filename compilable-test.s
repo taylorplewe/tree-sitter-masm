@@ -1,9 +1,8 @@
-.model small
+myvar = 5 t
 
 .code
 
-urmom proto c,
-			urman:byte,
+urmom proto urman:byte,
 			urman2: dword,
 			:qword,
 			cheese: sword,
@@ -19,7 +18,7 @@ anythingggggg
 &
 
 main proc
-	mov eax, 3
+	mov eax, myvar
 	ret
 main endp
 

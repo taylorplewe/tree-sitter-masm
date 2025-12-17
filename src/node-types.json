@@ -18,6 +18,10 @@
           {
             "type": "id",
             "named": true
+          },
+          {
+            "type": "prefix_expression",
+            "named": true
           }
         ]
       },
@@ -54,6 +58,10 @@
           {
             "type": "id",
             "named": true
+          },
+          {
+            "type": "prefix_expression",
+            "named": true
           }
         ]
       }
@@ -68,6 +76,44 @@
     "type": "id",
     "named": true,
     "fields": {}
+  },
+  {
+    "type": "prefix_expression",
+    "named": true,
+    "fields": {
+      "prefix": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "not",
+            "named": false
+          }
+        ]
+      },
+      "right": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "binary_expression",
+            "named": true
+          },
+          {
+            "type": "constant",
+            "named": true
+          },
+          {
+            "type": "id",
+            "named": true
+          },
+          {
+            "type": "prefix_expression",
+            "named": true
+          }
+        ]
+      }
+    }
   },
   {
     "type": "source_file",
@@ -89,6 +135,10 @@
         {
           "type": "id",
           "named": true
+        },
+        {
+          "type": "prefix_expression",
+          "named": true
         }
       ]
     }
@@ -105,6 +155,10 @@
     "type": "comment_line",
     "named": true,
     "extra": true
+  },
+  {
+    "type": "not",
+    "named": false
   },
   {
     "type": "||",

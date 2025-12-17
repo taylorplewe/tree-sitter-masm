@@ -71,6 +71,7 @@ export default grammar({
     [$.qualifier],
     [$.macro_proc_id, $.macro_func_id],
     [$.id],
+    [$.prefix_expression, $.binary_expression],
   ],
 
   rules: {
@@ -96,28 +97,30 @@ export default grammar({
       seq(DIGITS, "r"),
     ),
     bcd_const: $ => seq(optional($.sign), $.dec_number),
-    constant: $ => seq(DIGITS, optional(RADIX_OVERRIDE)),
+    constant: $ => seq(DIGITS, token.immediate(optional(RADIX_OVERRIDE))),
 
 
     // expressions
 
     _test_expr: $ => choice(
       $.binary_expression,
+      $.prefix_expression,
       $.id,
       $.constant,
     ),
 
-    // prefix_expression: $ => {
-    //   const table = [
-    //     [PREC.bitwise_not], "not",
-    //     [PREC.bit_section], choice("high", "low", "highword", "lowword"),
-    //   ];
+    prefix_expression: $ => {
+      const table = [
+        [PREC.bitwise_not, "not"],
+        [PREC.bit_section, /high|low|highword|lowword/],
+        [PREC.offset, /offset|seg|lroffset|type|this/],
+      ];
 
-    //   return choice(...table.map(([precedence, prefix]) => prec.left(precedence, seq(
-    //     field('prefix', prefix),
-    //     field('right', $._test_expr),
-    //   ))));
-    // },
+      return choice(...table.map(([precedence, prefix]) => prec(precedence, seq(
+        field('prefix', prefix),
+        field('right', $._test_expr),
+      ))));
+    },
 
     binary_expression: $ => {
       const table = [
@@ -128,6 +131,7 @@ export default grammar({
         [PREC.comparitive, REL_OP],
         [PREC.add, ADD_OP],
         [PREC.mul_shift, choice(MUL_OP, SHIFT_OP)],
+        [PREC.offset, /ptr|:/],
       ];
 
       return choice(...table.map(([precedence, operator]) => prec.left(precedence, seq(
