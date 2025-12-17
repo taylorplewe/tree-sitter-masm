@@ -93,7 +93,7 @@ export default grammar({
 
   rules: {
     // NOTE: will be 'module'
-    source_file: $ => $._test_expr,
+    source_file: $ => $.eq_dir,
 
     eol: $ => choice($.comment_line, /\n/),
 
@@ -115,7 +115,7 @@ export default grammar({
 
     // expressions
 
-    _test_expr: $ => choice(
+    expression: $ => choice(
       $.binary_expression,
       $.prefix_expression,
       prec(PREC.e11, $.expression_terminal),
@@ -130,7 +130,7 @@ export default grammar({
 
       return choice(...table.map(([precedence, prefix]) => prec(precedence, seq(
         field('prefix', prefix),
-        field('right', $._test_expr),
+        field('right', $.expression),
       ))));
     },
 
@@ -148,14 +148,14 @@ export default grammar({
       ];
 
       return choice(...table.map(([precedence, operator]) => prec.left(precedence, seq(
-        field('left', $._test_expr),
+        field('left', $.expression),
         field('operator', operator),
-        field('right', $._test_expr),
+        field('right', $.expression),
       ))));
     },
 
     expression_terminal: $ => choice(
-      seq("(", $._test_expr, ")"),
+      seq("(", $.expression, ")"),
       seq("width", IDENTIFIER),
       seq("mask", IDENTIFIER),
       seq("size", $.size_arg),
@@ -169,7 +169,7 @@ export default grammar({
       "$",
       $.register,
       prec(PREC.e11 + 1, "st"),
-      seq("st", "(", $._test_expr, ")"),
+      seq("st", "(", $.expression, ")"),
     ),
 
     // c_expr: $ => choice($.a_expr, seq($.c_expr, "||", $.a_expr)),
@@ -309,6 +309,13 @@ export default grammar({
       exprList
         expr | exprList , expr
     */
+
+
+    // uses expresions
+
+    expr_list: $ => list($.expression),
+    eq_dir: $ => seq(IDENTIFIER, "=", $.expression, $.eol),
+    // bit_def: $ => seq()
 
 
     // idk

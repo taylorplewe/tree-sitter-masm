@@ -1,1 +1,1 @@
-4 + 5 ptr 3 * urmom.ayyyyboi.e24 + "yaboii"
+urmom = 4 + 3 + jimmy.numapples
