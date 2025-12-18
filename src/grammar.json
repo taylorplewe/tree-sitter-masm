@@ -1571,6 +1571,75 @@
         }
       ]
     },
+    "data_item": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "data_decl"
+            },
+            {
+              "type": "SYMBOL",
+              "name": "scalar_inst_list"
+            }
+          ]
+        },
+        {
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "PATTERN",
+              "value": "[a-zA-Z@_$?][a-zA-Z0-9@_$?]*"
+            },
+            {
+              "type": "SYMBOL",
+              "name": "struct_inst_list"
+            }
+          ]
+        },
+        {
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "PATTERN",
+              "value": "[a-zA-Z@_$?][a-zA-Z0-9@_$?]*"
+            },
+            {
+              "type": "SYMBOL",
+              "name": "record_inst_list"
+            }
+          ]
+        }
+      ]
+    },
+    "data_dir": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "PATTERN",
+              "value": "[a-zA-Z@_$?][a-zA-Z0-9@_$?]*"
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        },
+        {
+          "type": "SYMBOL",
+          "name": "data_item"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "eol"
+        }
+      ]
+    },
     "seg_dir": {
       "type": "CHOICE",
       "members": [
@@ -1973,6 +2042,132 @@
           ]
         }
       ]
+    },
+    "offset_dir_type": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "STRING",
+          "value": "even"
+        },
+        {
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "STRING",
+              "value": "org"
+            },
+            {
+              "type": "SYMBOL",
+              "name": "expression"
+            }
+          ]
+        },
+        {
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "STRING",
+              "value": "align"
+            },
+            {
+              "type": "CHOICE",
+              "members": [
+                {
+                  "type": "SYMBOL",
+                  "name": "expression"
+                },
+                {
+                  "type": "BLANK"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "offset_dir": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "offset_dir_type"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "eol"
+        }
+      ]
+    },
+    "struct_item": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "data_dir"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "offset_dir"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "nested_struct"
+        }
+      ]
+    },
+    "nested_struct": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "struct_hdr"
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "PATTERN",
+              "value": "[a-zA-Z@_$?][a-zA-Z0-9@_$?]*"
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        },
+        {
+          "type": "SYMBOL",
+          "name": "eol"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "struct_body"
+        },
+        {
+          "type": "STRING",
+          "value": "ends"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "eol"
+        }
+      ]
+    },
+    "struct_body": {
+      "type": "REPEAT1",
+      "content": {
+        "type": "SEQ",
+        "members": [
+          {
+            "type": "SYMBOL",
+            "name": "struct_item"
+          },
+          {
+            "type": "SYMBOL",
+            "name": "eol"
+          }
+        ]
+      }
     },
     "cref_option": {
       "type": "CHOICE",

@@ -356,6 +356,13 @@ export default grammar({
       seq(RECORD_TAG, "<", $.old_record_field_list, ">"),
     ),
 
+    data_item: $ => choice(
+      seq($.data_decl, $.scalar_inst_list),
+      seq(IDENTIFIER, $.struct_inst_list),
+      seq(RECORD_TAG, $.record_inst_list),
+    ),
+    data_dir: $ => seq(optional(IDENTIFIER), $.data_item, $.eol),
+
     seg_dir: $ => choice(
       seq(".code", optional(SEG_ID)),
       ".data",
@@ -385,6 +392,22 @@ export default grammar({
       seq(".until", $.expression, $.eol),
       seq(".untilcxz", optional($.expression), $.eol),
     ),
+
+    offset_dir_type: $ => choice(
+      "even",
+      seq("org", $.expression),
+      seq("align", optional($.expression)),
+    ),
+    offset_dir: $ => seq($.offset_dir_type, $.eol),
+
+    struct_item: $ => choice(
+      $.data_dir,
+      // $.general_dir,
+      $.offset_dir,
+      $.nested_struct,
+    ),
+    nested_struct: $ => seq($.struct_hdr, optional(IDENTIFIER), $.eol, $.struct_body, "ends", $.eol),
+    struct_body: $ => repeat1(seq($.struct_item, $.eol)),
 
 
     // idk
