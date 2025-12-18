@@ -17,7 +17,7 @@ const HEX_DIGIT = /[a-fA-F]/;
 const DELIMITER = /\S/;
 const DIGITS = /[0-9][0-9A-Fa-f]*/;
 const RADIX_OVERRIDE = /[hoqtyHOQTY]/;
-const TEXT = /\!?[^\n]+/;
+const TEXT = /\!?[^>\n]+/;
 const CONSTANT = /[0-9][0-9A-Fa-f]*[hoqtyHOQTY]?/;
 const IDENTIFIER = /[a-zA-Z@_$?][a-zA-Z0-9@_$?]*/;
 
@@ -93,7 +93,7 @@ export default grammar({
 
   rules: {
     // NOTE: will be 'module'
-    source_file: $ => $.eq_dir,
+    source_file: $ => $.text_macro_dir,
 
     eol: $ => choice($.comment_line, /\n/),
 
@@ -158,8 +158,8 @@ export default grammar({
       seq("(", $.expression, ")"),
       seq("width", IDENTIFIER),
       seq("mask", IDENTIFIER),
-      seq("size", $.size_arg),
-      seq("sizeof", $.size_arg),
+      seq("size", $._size_arg),
+      seq("sizeof", $._size_arg),
       seq("length", IDENTIFIER),
       seq("lengthof", IDENTIFIER),
       CONSTANT,
@@ -315,7 +315,76 @@ export default grammar({
 
     expr_list: $ => list($.expression),
     eq_dir: $ => seq(IDENTIFIER, "=", $.expression, $.eol),
-    // bit_def: $ => seq()
+    _bit_field_size: $ => alias($.expression, $.bit_field_size),
+    bit_def: $ => seq(BIT_FIELD_ID, ":", $._bit_field_size, optional(seq("=", $.expression))),
+    bit_def_list: $ => listWithEol($.bit_def, $.eol),
+    record_dir: $ => seq(RECORD_TAG, "record", $.bit_def_list, $.eol),
+
+    _comm_type: $ => alias($.expression, $.comm_type),
+    comm_decl: $ => seq(optional($.near_far), optional($.lang_type), IDENTIFIER, ":", $._comm_type, optional(seq(":", $.expression))),
+    comm_list: $ => list($.comm_decl),
+    comm_dir: $ => seq("comm", $.comm_list, $.eol),
+
+    init_value: $ => choice(
+      // $.string, // handled by expression
+      "?",
+      seq($.expression, optional(seq("dup", "(", $.scalar_inst_list, ")"))),
+      $.float_number,
+      $.bcd_const,
+    ),
+    scalar_inst_list: $ => listWithEol($.init_value, $.eol),
+
+    struct_instance: $ => choice(
+      seq("<", optional($.field_init_list), ">"),
+      seq("{", optional($.eol), optional($.field_init_list), optional($.eol), "}"),
+      seq($.expression, "dup", "(", $.struct_inst_list, ")"),
+    ),
+    struct_inst_list: $ => listWithEol($.struct_instance, $.eol),
+    field_init: $ => choice($.init_value, $.struct_instance),
+    field_init_list: $ => listWithEol($.field_init, $.eol),
+
+    record_field_list: $ => listWithEol($.expression, $.eol),
+    old_record_field_list: $ => list($.expression),
+    record_instance: $ => choice(
+      seq("{", optional($.eol), $.record_field_list, optional($.eol), "}"),
+      seq("<", $.old_record_field_list, ">"),
+      seq($.expression, "dup", "(", $.record_instance, ")"),
+    ),
+    record_inst_list: $ => listWithEol($.record_instance, $.eol),
+    record_const: $ => choice(
+      seq(RECORD_TAG, "{", $.old_record_field_list, "}"),
+      seq(RECORD_TAG, "<", $.old_record_field_list, ">"),
+    ),
+
+    seg_dir: $ => choice(
+      seq(".code", optional(SEG_ID)),
+      ".data",
+      ".data?",
+      ".const",
+      seq(".fardata", optional(SEG_ID)),
+      seq(".fardata?", optional(SEG_ID)),
+      seq(".stack", optional($.expression)),
+    ),
+    simple_seg_dir: $ => seq($.seg_dir, $.eol),
+
+    text_item: $ => choice($.text_literal, TEXT_MACRO_ID, seq("%", $.expression)),
+    text_list: $ => listWithEol($.text_item, $.eol),
+    _text_len: $ => alias($.expression, $.text_len),
+    _text_start: $ => alias($.expression, $.text_start),
+    text_macro_dir: $ => choice(
+      seq("catstr", optional($.text_list)),
+      seq("textequ", optional($.text_list)),
+      seq("sizestr", $.text_item),
+      seq("substr", $.text_item, ",", $._text_start, optional(seq(",", $._text_len))),
+      seq("instr", optional(seq($._text_start, ",")), $.text_item, ",", $.text_item),
+    ),
+    text_dir: $ => seq(IDENTIFIER, $.text_macro_dir, $.eol),
+
+    // masm bnf grammar error: missing a | to indicate choice
+    until_dir: $ => choice(
+      seq(".until", $.expression, $.eol),
+      seq(".untilcxz", optional($.expression), $.eol),
+    ),
 
 
     // idk
@@ -325,6 +394,7 @@ export default grammar({
       seq(".xcref", optional($.id_list)),
       seq(".nocref", optional($.id_list)),
     ),
+    cref_dir: $ => seq($.cref_option, $.eol),
     data_decl: $ => choice("db", "dw", "dd", "df", "dq", "dt", $.data_type, TYPE_ID),
     distance: $ => choice($.near_far, "near16", "near32", "far16", "far32"),
     type: $ => choice(
@@ -502,18 +572,19 @@ export default grammar({
 
     endp_dir: $ => seq(PROC_ID, "endp", $.eol),
     ends_dir: $ => seq(IDENTIFIER, "ends", $.eol),
-    // exitm_dir: $ => choice(
-    //   seq(":", "exitm"),
-    //   seq("exitm", $.text_item),
-    // )
+    exitm_dir: $ => choice(
+      seq(":", "exitm"),
+      seq("exitm", $.text_item),
+    ),
 
-    special_chars: _ => /:|\.|\[|\]|\(|\)|<|>|\{|\}|\+|-|\/|\*|&|%|!|'|\\|=|;|,|"|\n/,
+    special_chars: _ => /:|\.|\[|\]|\(|\)|<|>|\{|\}|\+|-|\/|\*|&|%|!|'|\\|=|;|,|"|\s|\n/,
 
     startup_dir: $ => seq(".startup", $.eol),
 
     uses_regs: $ => seq("uses", $.reg_list),
 
-    size_arg: $ => choice(prec(1, IDENTIFIER), $.type), // TODO: and "e10"
+    // size_arg: $ => choice(prec(1, IDENTIFIER), $.type), // TODO: and "e10"
+    _size_arg: $ => alias($.expression, $.size_arg),
 
 
     // option
