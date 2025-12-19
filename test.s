@@ -1,1 +1,1 @@
-catstr <urmom>
+alias <ben> = <otherproc>

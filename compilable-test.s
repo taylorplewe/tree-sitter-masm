@@ -1,33 +1,21 @@
-mystrct struct
-	numapples dword ?
-mystrct ends
-
-
-.data?
-
-mys mystrct <>
-
+MyStruct struct
+	align 1
+	urmom byte ?
+	align 8
+	myvar2 dword ?
+MyStruct ends
 
 .code
 
-urmom proto urman:byte,
-			urman2: dword,
-			:qword,
-			cheese: sword,
-			:vararg
+otherproc proc
+	ret
+otherproc endp
 
-urmom2 proto
-
-comment &
-yaboiiiiii aofjiei owief oifowefj
-aoweifaowf owaf oafow
-anythingggggg
-; this is a comment within a coment
-&
+alias <ben> = <otherproc>
 
 main proc
-	mov eax, [mys] . numapples
+	call ben
+	mov eax, MyStruct.myvar2
 	ret
 main endp
-
 end

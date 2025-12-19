@@ -4,7 +4,7 @@
   "rules": {
     "source_file": {
       "type": "SYMBOL",
-      "name": "text_macro_dir"
+      "name": "alias_dir"
     },
     "eol": {
       "type": "CHOICE",
@@ -815,27 +815,6 @@
         }
       ]
     },
-    "eq_dir": {
-      "type": "SEQ",
-      "members": [
-        {
-          "type": "PATTERN",
-          "value": "[a-zA-Z@_$?][a-zA-Z0-9@_$?]*"
-        },
-        {
-          "type": "STRING",
-          "value": "="
-        },
-        {
-          "type": "SYMBOL",
-          "name": "expression"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "eol"
-        }
-      ]
-    },
     "_bit_field_size": {
       "type": "ALIAS",
       "content": {
@@ -1146,147 +1125,6 @@
         }
       ]
     },
-    "struct_instance": {
-      "type": "CHOICE",
-      "members": [
-        {
-          "type": "SEQ",
-          "members": [
-            {
-              "type": "STRING",
-              "value": "<"
-            },
-            {
-              "type": "CHOICE",
-              "members": [
-                {
-                  "type": "SYMBOL",
-                  "name": "field_init_list"
-                },
-                {
-                  "type": "BLANK"
-                }
-              ]
-            },
-            {
-              "type": "STRING",
-              "value": ">"
-            }
-          ]
-        },
-        {
-          "type": "SEQ",
-          "members": [
-            {
-              "type": "STRING",
-              "value": "{"
-            },
-            {
-              "type": "CHOICE",
-              "members": [
-                {
-                  "type": "SYMBOL",
-                  "name": "eol"
-                },
-                {
-                  "type": "BLANK"
-                }
-              ]
-            },
-            {
-              "type": "CHOICE",
-              "members": [
-                {
-                  "type": "SYMBOL",
-                  "name": "field_init_list"
-                },
-                {
-                  "type": "BLANK"
-                }
-              ]
-            },
-            {
-              "type": "CHOICE",
-              "members": [
-                {
-                  "type": "SYMBOL",
-                  "name": "eol"
-                },
-                {
-                  "type": "BLANK"
-                }
-              ]
-            },
-            {
-              "type": "STRING",
-              "value": "}"
-            }
-          ]
-        },
-        {
-          "type": "SEQ",
-          "members": [
-            {
-              "type": "SYMBOL",
-              "name": "expression"
-            },
-            {
-              "type": "STRING",
-              "value": "dup"
-            },
-            {
-              "type": "STRING",
-              "value": "("
-            },
-            {
-              "type": "SYMBOL",
-              "name": "struct_inst_list"
-            },
-            {
-              "type": "STRING",
-              "value": ")"
-            }
-          ]
-        }
-      ]
-    },
-    "struct_inst_list": {
-      "type": "SEQ",
-      "members": [
-        {
-          "type": "SYMBOL",
-          "name": "struct_instance"
-        },
-        {
-          "type": "REPEAT",
-          "content": {
-            "type": "SEQ",
-            "members": [
-              {
-                "type": "STRING",
-                "value": ","
-              },
-              {
-                "type": "CHOICE",
-                "members": [
-                  {
-                    "type": "SYMBOL",
-                    "name": "eol"
-                  },
-                  {
-                    "type": "BLANK"
-                  }
-                ]
-              },
-              {
-                "type": "SYMBOL",
-                "name": "struct_instance"
-              }
-            ]
-          }
-        }
-      ]
-    },
     "field_init": {
       "type": "CHOICE",
       "members": [
@@ -1575,43 +1413,55 @@
       "type": "CHOICE",
       "members": [
         {
-          "type": "SEQ",
-          "members": [
-            {
-              "type": "SYMBOL",
-              "name": "data_decl"
-            },
-            {
-              "type": "SYMBOL",
-              "name": "scalar_inst_list"
-            }
-          ]
+          "type": "PREC",
+          "value": 1,
+          "content": {
+            "type": "SEQ",
+            "members": [
+              {
+                "type": "SYMBOL",
+                "name": "data_decl"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "scalar_inst_list"
+              }
+            ]
+          }
         },
         {
-          "type": "SEQ",
-          "members": [
-            {
-              "type": "PATTERN",
-              "value": "[a-zA-Z@_$?][a-zA-Z0-9@_$?]*"
-            },
-            {
-              "type": "SYMBOL",
-              "name": "struct_inst_list"
-            }
-          ]
+          "type": "PREC",
+          "value": 2,
+          "content": {
+            "type": "SEQ",
+            "members": [
+              {
+                "type": "PATTERN",
+                "value": "[a-zA-Z@_$?][a-zA-Z0-9@_$?]*"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "struct_inst_list"
+              }
+            ]
+          }
         },
         {
-          "type": "SEQ",
-          "members": [
-            {
-              "type": "PATTERN",
-              "value": "[a-zA-Z@_$?][a-zA-Z0-9@_$?]*"
-            },
-            {
-              "type": "SYMBOL",
-              "name": "record_inst_list"
-            }
-          ]
+          "type": "PREC",
+          "value": 3,
+          "content": {
+            "type": "SEQ",
+            "members": [
+              {
+                "type": "PATTERN",
+                "value": "[a-zA-Z@_$?][a-zA-Z0-9@_$?]*"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "record_inst_list"
+              }
+            ]
+          }
         }
       ]
     },
@@ -2099,6 +1949,147 @@
         }
       ]
     },
+    "struct_instance": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "STRING",
+              "value": "<"
+            },
+            {
+              "type": "CHOICE",
+              "members": [
+                {
+                  "type": "SYMBOL",
+                  "name": "field_init_list"
+                },
+                {
+                  "type": "BLANK"
+                }
+              ]
+            },
+            {
+              "type": "STRING",
+              "value": ">"
+            }
+          ]
+        },
+        {
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "STRING",
+              "value": "{"
+            },
+            {
+              "type": "CHOICE",
+              "members": [
+                {
+                  "type": "SYMBOL",
+                  "name": "eol"
+                },
+                {
+                  "type": "BLANK"
+                }
+              ]
+            },
+            {
+              "type": "CHOICE",
+              "members": [
+                {
+                  "type": "SYMBOL",
+                  "name": "field_init_list"
+                },
+                {
+                  "type": "BLANK"
+                }
+              ]
+            },
+            {
+              "type": "CHOICE",
+              "members": [
+                {
+                  "type": "SYMBOL",
+                  "name": "eol"
+                },
+                {
+                  "type": "BLANK"
+                }
+              ]
+            },
+            {
+              "type": "STRING",
+              "value": "}"
+            }
+          ]
+        },
+        {
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "expression"
+            },
+            {
+              "type": "STRING",
+              "value": "dup"
+            },
+            {
+              "type": "STRING",
+              "value": "("
+            },
+            {
+              "type": "SYMBOL",
+              "name": "struct_inst_list"
+            },
+            {
+              "type": "STRING",
+              "value": ")"
+            }
+          ]
+        }
+      ]
+    },
+    "struct_inst_list": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "struct_instance"
+        },
+        {
+          "type": "REPEAT",
+          "content": {
+            "type": "SEQ",
+            "members": [
+              {
+                "type": "STRING",
+                "value": ","
+              },
+              {
+                "type": "CHOICE",
+                "members": [
+                  {
+                    "type": "SYMBOL",
+                    "name": "eol"
+                  },
+                  {
+                    "type": "BLANK"
+                  }
+                ]
+              },
+              {
+                "type": "SYMBOL",
+                "name": "struct_instance"
+              }
+            ]
+          }
+        }
+      ]
+    },
     "struct_item": {
       "type": "CHOICE",
       "members": [
@@ -2156,18 +2147,356 @@
     "struct_body": {
       "type": "REPEAT1",
       "content": {
-        "type": "SEQ",
-        "members": [
-          {
-            "type": "SYMBOL",
-            "name": "struct_item"
-          },
-          {
-            "type": "SYMBOL",
-            "name": "eol"
-          }
-        ]
+        "type": "SYMBOL",
+        "name": "struct_item"
       }
+    },
+    "_field_align": {
+      "type": "ALIAS",
+      "content": {
+        "type": "SYMBOL",
+        "name": "expression"
+      },
+      "named": true,
+      "value": "field_align"
+    },
+    "struct_dir": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "PATTERN",
+          "value": "[a-zA-Z@_$?][a-zA-Z0-9@_$?]*"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "struct_hdr"
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "_field_align"
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SEQ",
+              "members": [
+                {
+                  "type": "STRING",
+                  "value": ","
+                },
+                {
+                  "type": "STRING",
+                  "value": "nonunique"
+                }
+              ]
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        },
+        {
+          "type": "SYMBOL",
+          "name": "eol"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "struct_body"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[a-zA-Z@_$?][a-zA-Z0-9@_$?]*"
+        },
+        {
+          "type": "STRING",
+          "value": "ends"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "eol"
+        }
+      ]
+    },
+    "eq_dir": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "PATTERN",
+          "value": "[a-zA-Z@_$?][a-zA-Z0-9@_$?]*"
+        },
+        {
+          "type": "STRING",
+          "value": "="
+        },
+        {
+          "type": "SYMBOL",
+          "name": "expression"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "eol"
+        }
+      ]
+    },
+    "equ_type": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "expression"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "text_literal"
+        }
+      ]
+    },
+    "equ_dir": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "PATTERN",
+          "value": "[a-zA-Z@_$?][a-zA-Z0-9@_$?]*"
+        },
+        {
+          "type": "STRING",
+          "value": "equ"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "equ_type"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "eol"
+        }
+      ]
+    },
+    "radix_dir": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "STRING",
+          "value": ".radix"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "expression"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "eol"
+        }
+      ]
+    },
+    "title_dir": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "title_type"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "arbitrary_text"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "eol"
+        }
+      ]
+    },
+    "page_expr": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "STRING",
+          "value": "+"
+        },
+        {
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "expression"
+            },
+            {
+              "type": "CHOICE",
+              "members": [
+                {
+                  "type": "SEQ",
+                  "members": [
+                    {
+                      "type": "STRING",
+                      "value": ","
+                    },
+                    {
+                      "type": "SYMBOL",
+                      "name": "expression"
+                    }
+                  ]
+                },
+                {
+                  "type": "BLANK"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "page_dir": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "STRING",
+          "value": "page"
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "page_expr"
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        },
+        {
+          "type": "SYMBOL",
+          "name": "eol"
+        }
+      ]
+    },
+    "alias_dir": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "STRING",
+          "value": "alias"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "text_literal"
+        },
+        {
+          "type": "STRING",
+          "value": "="
+        },
+        {
+          "type": "SYMBOL",
+          "name": "text_literal"
+        }
+      ]
+    },
+    "end_dir": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "STRING",
+          "value": "end"
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "expression"
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        },
+        {
+          "type": "SYMBOL",
+          "name": "eol"
+        }
+      ]
+    },
+    "general_dir": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "model_dir"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "seg_order_dir"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "name_dir"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "include_dir"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "include_lib_dir"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "group_dir"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "assume_dir"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "struct_dir"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "record_dir"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "typedef_dir"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "extern_dir"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "public_dir"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "comm_dir"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "proto_type_dir"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "eq_dir"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "equ_dir"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "text_dir"
+        }
+      ]
     },
     "cref_option": {
       "type": "CHOICE",
@@ -5577,6 +5906,17 @@
     [
       "prefix_expression",
       "binary_expression"
+    ],
+    [
+      "struct_body"
+    ],
+    [
+      "init_value",
+      "record_field_list"
+    ],
+    [
+      "init_value",
+      "old_record_field_list"
     ]
   ],
   "precedences": [],

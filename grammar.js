@@ -89,11 +89,14 @@ export default grammar({
     [$.proto_arg_list],
     [$.qualifier],
     [$.prefix_expression, $.binary_expression],
+    [$.struct_body],
+    [$.init_value, $.record_field_list],
+    [$.init_value, $.old_record_field_list],
   ],
 
   rules: {
     // NOTE: will be 'module'
-    source_file: $ => $.text_macro_dir,
+    source_file: $ => $.alias_dir,
 
     eol: $ => choice($.comment_line, /\n/),
 
@@ -314,7 +317,6 @@ export default grammar({
     // uses expresions
 
     expr_list: $ => list($.expression),
-    eq_dir: $ => seq(IDENTIFIER, "=", $.expression, $.eol),
     _bit_field_size: $ => alias($.expression, $.bit_field_size),
     bit_def: $ => seq(BIT_FIELD_ID, ":", $._bit_field_size, optional(seq("=", $.expression))),
     bit_def_list: $ => listWithEol($.bit_def, $.eol),
@@ -334,12 +336,6 @@ export default grammar({
     ),
     scalar_inst_list: $ => listWithEol($.init_value, $.eol),
 
-    struct_instance: $ => choice(
-      seq("<", optional($.field_init_list), ">"),
-      seq("{", optional($.eol), optional($.field_init_list), optional($.eol), "}"),
-      seq($.expression, "dup", "(", $.struct_inst_list, ")"),
-    ),
-    struct_inst_list: $ => listWithEol($.struct_instance, $.eol),
     field_init: $ => choice($.init_value, $.struct_instance),
     field_init_list: $ => listWithEol($.field_init, $.eol),
 
@@ -357,9 +353,9 @@ export default grammar({
     ),
 
     data_item: $ => choice(
-      seq($.data_decl, $.scalar_inst_list),
-      seq(IDENTIFIER, $.struct_inst_list),
-      seq(RECORD_TAG, $.record_inst_list),
+      prec(1, seq($.data_decl, $.scalar_inst_list)),
+      prec(2, seq(IDENTIFIER, $.struct_inst_list)),
+      prec(3, seq(RECORD_TAG, $.record_inst_list)),
     ),
     data_dir: $ => seq(optional(IDENTIFIER), $.data_item, $.eol),
 
@@ -400,6 +396,12 @@ export default grammar({
     ),
     offset_dir: $ => seq($.offset_dir_type, $.eol),
 
+    struct_instance: $ => choice(
+      seq("<", optional($.field_init_list), ">"),
+      seq("{", optional($.eol), optional($.field_init_list), optional($.eol), "}"),
+      seq($.expression, "dup", "(", $.struct_inst_list, ")"),
+    ),
+    struct_inst_list: $ => listWithEol($.struct_instance, $.eol),
     struct_item: $ => choice(
       $.data_dir,
       // $.general_dir,
@@ -407,7 +409,59 @@ export default grammar({
       $.nested_struct,
     ),
     nested_struct: $ => seq($.struct_hdr, optional(IDENTIFIER), $.eol, $.struct_body, "ends", $.eol),
-    struct_body: $ => repeat1(seq($.struct_item, $.eol)),
+    struct_body: $ => repeat1($.struct_item),
+    _field_align: $ => alias($.expression, $.field_align),
+    struct_dir: $ => seq(
+      STRUCT_TAG, $.struct_hdr, optional($._field_align), optional(seq(",", "nonunique")), $.eol,
+      $.struct_body,
+      STRUCT_TAG, "ends", $.eol,
+    ),
+
+    eq_dir: $ => seq(IDENTIFIER, "=", $.expression, $.eol),
+    equ_type: $ => choice($.expression, $.text_literal),
+    equ_dir: $ => seq(TEXT_MACRO_ID, "equ", $.equ_type, $.eol),
+
+    radix_dir: $ => seq(".radix", $.expression, $.eol),
+
+    title_dir: $ => seq($.title_type, $.arbitrary_text, $.eol),
+
+    page_expr: $ => choice(
+      "+",
+      seq($.expression, optional(seq(",", $.expression))),
+    ),
+    page_dir: $ => seq("page", optional($.page_expr), $.eol),
+
+    // masm bnf grammar error: this isn't even listed
+    alias_dir: $ => seq("alias", $.text_literal, "=", $.text_literal),
+
+    end_dir: $ => seq("end", optional($.expression), $.eol),
+
+    general_dir: $ => choice(
+      $.model_dir,
+      $.seg_order_dir,
+      $.name_dir,
+      $.include_dir,
+      $.include_lib_dir,
+      $.group_dir,
+      $.assume_dir,
+      $.struct_dir,
+      $.record_dir,
+      $.typedef_dir,
+      $.extern_dir,
+      $.public_dir,
+      $.comm_dir,
+      $.proto_type_dir,
+      $.eq_dir,
+      $.equ_dir,
+      $.text_dir,
+      $.context_dir,
+      $.option_dir,
+      $.processor_dir,
+      $.radix_dir,
+      $.title_dir,
+      $.text_dir,
+      $.text_dir,
+    ),
 
 
     // idk
