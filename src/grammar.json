@@ -4,7 +4,7 @@
   "rules": {
     "source_file": {
       "type": "SYMBOL",
-      "name": "alias_dir"
+      "name": "general_dir"
     },
     "eol": {
       "type": "CHOICE",
@@ -2495,6 +2495,54 @@
         {
           "type": "SYMBOL",
           "name": "text_dir"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "context_dir"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "option_dir"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "processor_dir"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "radix_dir"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "title_dir"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "text_dir"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "page_dir"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "list_dir"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "cref_dir"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "echo_dir"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "purge_dir"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "alias_dir"
         }
       ]
     },
@@ -4890,10 +4938,6 @@
         {
           "type": "STRING",
           "value": ".686P"
-        },
-        {
-          "type": "STRING",
-          "value": ".387"
         }
       ]
     },
@@ -4922,30 +4966,38 @@
       "type": "CHOICE",
       "members": [
         {
-          "type": "SEQ",
-          "members": [
-            {
-              "type": "SYMBOL",
-              "name": "processor"
-            },
-            {
-              "type": "SYMBOL",
-              "name": "eol"
-            }
-          ]
+          "type": "PREC",
+          "value": 2,
+          "content": {
+            "type": "SEQ",
+            "members": [
+              {
+                "type": "SYMBOL",
+                "name": "processor"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "eol"
+              }
+            ]
+          }
         },
         {
-          "type": "SEQ",
-          "members": [
-            {
-              "type": "SYMBOL",
-              "name": "coprocessor"
-            },
-            {
-              "type": "SYMBOL",
-              "name": "eol"
-            }
-          ]
+          "type": "PREC",
+          "value": 1,
+          "content": {
+            "type": "SEQ",
+            "members": [
+              {
+                "type": "SYMBOL",
+                "name": "coprocessor"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "eol"
+              }
+            ]
+          }
         }
       ]
     },

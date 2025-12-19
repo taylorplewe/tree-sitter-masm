@@ -96,7 +96,7 @@ export default grammar({
 
   rules: {
     // NOTE: will be 'module'
-    source_file: $ => $.alias_dir,
+    source_file: $ => $.general_dir,
 
     eol: $ => choice($.comment_line, /\n/),
 
@@ -460,7 +460,20 @@ export default grammar({
       $.radix_dir,
       $.title_dir,
       $.text_dir,
-      $.text_dir,
+      $.page_dir,
+      $.list_dir,
+      $.cref_dir,
+      $.echo_dir,
+      $.purge_dir,
+      $.alias_dir,
+      // $.if_dir,
+      // $.error_dir,
+      // $.macro_dir,
+      // $.macro_call,
+      // $.macro_repeat,
+      // $.macro_while,
+      // $.macro_for,
+      // $.macro_forc,
     ),
 
 
@@ -723,11 +736,11 @@ export default grammar({
     quote: _ => choice(`"`, "'"),
     bool: _ => choice("true", "false"),
 
-    processor: _ => choice(".386", ".386p", ".486", ".486P", ".586", ".586P", ".686", ".686P", ".387"),
+    processor: _ => choice(".386", ".386p", ".486", ".486P", ".586", ".586P", ".686", ".686P"),
     coprocessor: _ => choice(".8087", ".287", ".387", ".NO87"),
     processor_dir: $ => choice(
-      seq($.processor, $.eol),
-      seq($.coprocessor, $.eol),
+      prec(2, seq($.processor, $.eol)),
+      prec(1, seq($.coprocessor, $.eol)),
     ),
 
     byte_register: _ => choice("al", "ah", "cl", "ch", "dl", "dh", "bl", "bh", "r8b", "r9b", "r10b", "r11b", "r12b", "r13b", "r14b", "r15b"),
