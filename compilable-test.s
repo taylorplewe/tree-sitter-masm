@@ -5,6 +5,10 @@ MyStruct struct
 	myvar2 dword ?
 MyStruct ends
 
+urmom2 proto
+
+urmom4 typedef dword
+
 UrMom macro
 	mov rax, 4
 	add rax, 2
