@@ -5,6 +5,11 @@ MyStruct struct
 	myvar2 dword ?
 MyStruct ends
 
+UrMom macro
+	mov rax, 4
+	add rax, 2
+endm
+
 .code
 
 otherproc proc

@@ -1,1 +1,1 @@
-989  alias <ben> = <otherproc>
+mov rax, 4
