@@ -1,8 +1,2 @@
-include <ship.s>
-
-title urmommmmm
-
-.code
-
-main proc
-main endp
+for urmom, <11, 4942>
+endm

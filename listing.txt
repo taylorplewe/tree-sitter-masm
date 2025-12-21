@@ -1,0 +1,83 @@
+Microsoft (R) Macro Assembler (x64) Version 14.50.35721.0   12/21/25 12:07:44
+8ayyyyyyyylmao, idk what you're eoit245952,:]{}{thinking     Page 1 - 1
+
+
+ 0000000C			MyStruct struct
+					align 1
+ 00000000  00				urmom byte ?
+					align 8
+ 00000008  00000000			myvar2 dword ?
+				MyStruct ends
+				
+				echo afwoiefjaoiwejf4io  qiowjfoi , fjaowiefao faw; aoiwefj4
+				title ayyyyyyyylmao, idk what you're eoit245952,:]{}{thinking}
+				
+				urmom2 proto
+				
+				urmom4 typedef dword
+				
+				UrMom macro
+					mov rax, 4	add rax, 2endm
+				
+				.code
+				
+ 00000000			otherproc proc
+					ret
+ 00000000			otherproc endp
+ 00000000  C3			
+ 00000001			alias <ben> = <otherproc>
+				
+				main proc
+					call ben
+ 00000001				mov eax, MyStruct.myvar2
+ 00000001  E8 FFFFFFFA			ret
+ 00000006  B8 00000008		main endp
+ 0000000B  C3			end
+ 0000000C
+Microsoft (R) Macro Assembler (x64) Version 14.50.35721.0   12/21/25 12:07:44
+8ayyyyyyyylmao, idk what you're eoit245952,:]{}{thinking     Symbols 2 - 1
+
+
+
+
+Macros:
+
+                N a m e                 Type
+
+UrMom  . . . . . . . . . . . . .	Proc
+
+
+Structures and Unions:
+
+                N a m e                  Size
+                                         Offset      Type
+
+MyStruct . . . . . . . . . . . .	 0000000C
+  urmom  . . . . . . . . . . . .	 00000000	 Byte
+  myvar2 . . . . . . . . . . . .	 00000008	 DWord
+
+
+Types:
+
+                N a m e                  Size     Attr
+
+urmom4 . . . . . . . . . . . . .	 00000004     DWord
+
+
+Procedures, parameters, and locals:
+
+                N a m e                 Type     Value    Attr
+
+main . . . . . . . . . . . . . .	P 	 00000001 _TEXT	Length= 0000000B Public
+otherproc  . . . . . . . . . . .	P 	 00000000 _TEXT	Length= 00000001 Public
+urmom2 . . . . . . . . . . . . .	P 	 00000000 Length= 00000000 External
+
+
+Symbols:
+
+                N a m e                 Type     Value    Attr
+
+ben  . . . . . . . . . . . . . .	Number	 E26A3C2Fh   External
+
+	   0 Warnings
+	   0 Errors

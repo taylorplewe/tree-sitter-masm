@@ -12,7 +12,8 @@ const MNEMONIC = /aaa|aad|aam|aas|adc|adcx|add|addpd|addps|addsd|addss|addsubpd|
 // const MNEMONIC = "mov";
 // const MNEMONIC = new RustRegex("mov");
 
-const CHARACTER = /[^\n]/;
+const ARBITRARY_TEXT = /[^\n]+/; // used in title_dir and echo_dir
+const SYNTACTICAL_TEXT = /[^\n,>]+/; // used in macro args
 const NON_WHITESPACE_CHARACTER = /[^\s\n]/;
 const ANY_CHAR_EXCEPT_QUOTE = /[^'"\n]/;
 const ALPHA = /[a-zA-Z]|@|_|\$|\?/;
@@ -54,7 +55,44 @@ const SHIFT_OP = /sh[lr]/;
 const QUOTE = /['"]/;
 const BOOL = /true|false/;
 
+const BYTE_REGISTER = /[abcd][lh]/;
+const GP_REGISTER = /[er]?[abcd]x/;
+const INDEX_REGISTER = /[er]?[ds]i/;
+const STACK_REGISTER = /[er][sb]p/;
+const AMD_REGISTERS = /r(8|9|10|11|12|13|14|15)/;
+const SPECIAL_REGISTERS = /cr0|cr2|cr3|dr[0-3]|dr[67]|tr[3-7]/;
+const SIMD_REGISTER = /[xyz]mm(0|1|2|3|4|5|6|7|8|9|10|11|12|13|14|15)/;
 const SEGMENT_REGISTER = /[cdefgs]s/;
+
+const CONTEXT_ITEM = /assumes|radix|listing|cpu|all/;
+const DATA_TYPE = /byte|sbyte|word|sword|dword|sdword|fword|qword|sqword|tbyte|oword|real4|real8|real10|mmword|xmmword|ymmword/;
+
+const PROCESSOR = /\.[3-6]86[pP]?/;
+const COPROCESSOR = /.8087|.287|.387|.NO87/;
+
+const STRUCT_HDR = /struct?|union/;
+
+const STACK_OPTION = /(near|far)stack/;
+const OFFSET_TYPE = /group|segment|flat/;
+const EXTERN_KEY = /exte?rn|externdef/;
+const REPEAT_DIR = /repeat|rept/;
+const FOR_DIR = /for|irp/;
+const FORC_DIR = /forc|irpc/;
+const INSTR_PREFIX = /rep|repe|repz|repne|repnz|lock/;
+const LIST_OPTION = /.list|.nolist|.xlist|.listall|.listif|.lfcond|.nolistif|.sfcond|.tfcond|.listmacroall|.lall|.nolistmacro|.sall|.listmacro|.xall/;
+const MEM_OPTION = /tiny|small|medium|compact|large|huge|flat/;
+const NEAR_FAR = /near|far/;
+const O_VISIBILITY = /public|private|export/;
+const SEG_ALIGN = /byte|word|dword|para|page/;
+const SEG_ORDER_DIR = /.alpha|.seq|.dosseg|dosseg/;
+const SEG_SIZE = /use16|use32|flat/;
+const TITLE_TYPE = /title|subtitle|subttl/;
+const LANG_TYPE = /c|pascal|fortran|basic|syscall|stdcall/;
+const MAP_TYPE = /all|none|notpublic/;
+const FLAG_NAME = /zero?|carry?|overflow?|sign?|parity?/;
+
+    // seg_ro: _ => "readonly",
+
 
 const list = listItem => seq(listItem, repeat(seq(",", listItem)));
 const listWithEol = (listItem, eol) => seq(listItem, repeat(seq(",", optional(eol), listItem)));
@@ -106,7 +144,7 @@ export default grammar({
   ],
 
   rules: {
-    source_file: $ => $.module,
+    source_file: $ => $.macro_for,
 
     module: $ => seq($.directive_list, optional($.end_dir)),
     end_dir: $ => seq("end", optional($.expression), $._eol),
@@ -121,16 +159,15 @@ export default grammar({
     instruction: $ => seq(optional($.instr_prefix), $.asm_instruction, $._eol), // masm bnf grammar error (possible): I belive there should be an eol (;;) here
 
     register: $ => choice(
-        /[abcd][lh]/,
-        /[er]?[abcd]x/,
-        /[er]?[ds]i/,
-        /[er][sb]p/,
-        /r(8|9|10|11|12|13|14|15)/,
-        /cr0|cr2|cr3|dr[0-3]|dr[67]|tr[3-7]/,
-        /[xyz]mm(0|1|2|3|4|5|6|7|8|9|10|11|12|13|14|15)/,
-        seq("st", $.expression),
-        SEGMENT_REGISTER,
-      // ),
+      BYTE_REGISTER,
+      GP_REGISTER,
+      INDEX_REGISTER,
+      STACK_REGISTER,
+      AMD_REGISTERS,
+      SPECIAL_REGISTERS,
+      SIMD_REGISTER,
+      SEGMENT_REGISTER,
+      seq("st", $.expression),
     ),
     reg_list: $ => repeat1($.register),
 
@@ -138,7 +175,6 @@ export default grammar({
     // building blocks
     
     id_list: $ => list(IDENTIFIER),
-    char_list: _ => repeat1(CHARACTER),
     stext: $ => repeat1(ANY_CHAR_EXCEPT_QUOTE),
     string: $ => seq($.quote, optional($.stext), $.quote, $._eol),
     text_literal: $ => seq("<", TEXT, ">", $._eol),
@@ -318,8 +354,8 @@ export default grammar({
       seq("%", TEXT_MACRO_ID),
       seq("%", MACRO_FUNC_ID, "(", $.macro_arg_list, ")"),
       $.string,
-      $.arbitrary_text,
-      seq("<", $.arbitrary_text, ">"),
+      SYNTACTICAL_TEXT,
+      seq("<", SYNTACTICAL_TEXT, ">"),
     ),
     macro_arg_list: $ => list($.macro_arg),
     macro_stmt: $ => choice(
@@ -336,12 +372,12 @@ export default grammar({
       "endm", $._eol,
     ),
     macro_for: $ => seq(
-      $.for_dir, $.for_parm, ",", "<", $.macro_parm_list, ">", $._eol,
-      $.macro_body,
+      FOR_DIR, $.for_parm, ",", "<", $.macro_arg_list, ">", $._eol,
+      optional($.macro_body),
       "endm", $._eol,
     ),
     macro_forc: $ => seq(
-      $.forc_dir, $.for_parm, ",", "<", $.macro_parm_list, ">", $._eol,
+      FORC_DIR, IDENTIFIER, ",", $.text_literal, $._eol,
       $.macro_body,
       "endm", $._eol,
     ),
@@ -366,7 +402,7 @@ export default grammar({
 
     radix_dir: $ => seq(".radix", $.expression, $._eol),
 
-    title_dir: $ => seq($.title_type, $.arbitrary_text, $._eol),
+    title_dir: $ => seq($.title_type, ARBITRARY_TEXT, $._eol),
 
     page_expr: $ => choice(
       "+",
@@ -378,7 +414,7 @@ export default grammar({
     alias_dir: $ => seq("alias", $.text_literal, "=", $.text_literal),
 
     _general_dir: $ => choice(
-      // prec(2, choice(
+      prec(2, choice(
         $.alias_dir,
         $.assume_dir,
         $.comm_dir,
@@ -414,10 +450,10 @@ export default grammar({
         $.text_dir,
         $.title_dir,
         $.typedef_dir,
-      // )),
-      // prec(1, choice(
+      )),
+      prec(1, choice(
         $.macro_call,
-      // )),
+      )),
     ),
     _directive: $ => choice($._general_dir, $.segment_def),
     directive_list: $ => repeat1($._directive),
@@ -605,8 +641,8 @@ export default grammar({
 
     // another error in the bnf grammar--it omits an `|` indicating a choice between "echo" and "%out"
     echo_dir: $ => choice(
-      seq("echo", $.arbitrary_text, $._eol),
-      seq("%out", $.arbitrary_text, $._eol),
+      seq("echo", ARBITRARY_TEXT, $._eol),
+      seq("%out", ARBITRARY_TEXT, $._eol),
     ),
 
     list_dir: $ => seq($.list_option, $._eol),
@@ -629,7 +665,7 @@ export default grammar({
       $.seg_ro,
       $.seg_attrib,
       $.seg_size,
-      $.class_name,
+      $._class_name,
     ),
     seg_option_list: $ => repeat1($.seg_option),
     segment_dir: $ => seq(SEG_ID, "segment", optional($.seg_option_list), $._eol),
@@ -765,8 +801,7 @@ export default grammar({
 
     // aliases
 
-    arbitrary_text: $ => alias($.char_list, $.arbitrary_text),
-    class_name: $ => alias($.string, $.class_name),
+    _class_name: $ => alias($.string, $.class_name),
 
 
     // terminals

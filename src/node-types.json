@@ -15,21 +15,6 @@
     }
   },
   {
-    "type": "arbitrary_text",
-    "named": true,
-    "fields": {},
-    "children": {
-      "multiple": false,
-      "required": false,
-      "types": [
-        {
-          "type": "arbitrary_text",
-          "named": true
-        }
-      ]
-    }
-  },
-  {
     "type": "asm_instruction",
     "named": true,
     "fields": {
@@ -318,10 +303,6 @@
       "multiple": true,
       "required": true,
       "types": [
-        {
-          "type": "class_name",
-          "named": true
-        },
         {
           "type": "comment_line",
           "named": true
@@ -832,13 +813,9 @@
     "named": true,
     "fields": {},
     "children": {
-      "multiple": true,
-      "required": true,
+      "multiple": false,
+      "required": false,
       "types": [
-        {
-          "type": "arbitrary_text",
-          "named": true
-        },
         {
           "type": "comment_line",
           "named": true
@@ -883,25 +860,6 @@
         },
         {
           "type": "text_item",
-          "named": true
-        }
-      ]
-    }
-  },
-  {
-    "type": "end_dir",
-    "named": true,
-    "fields": {},
-    "children": {
-      "multiple": true,
-      "required": false,
-      "types": [
-        {
-          "type": "comment_line",
-          "named": true
-        },
-        {
-          "type": "expression",
           "named": true
         }
       ]
@@ -1331,11 +1289,6 @@
     }
   },
   {
-    "type": "for_dir",
-    "named": true,
-    "fields": {}
-  },
-  {
     "type": "for_parm",
     "named": true,
     "fields": {},
@@ -1364,11 +1317,6 @@
         }
       ]
     }
-  },
-  {
-    "type": "forc_dir",
-    "named": true,
-    "fields": {}
   },
   {
     "type": "frame_expr",
@@ -1947,10 +1895,6 @@
       "required": false,
       "types": [
         {
-          "type": "arbitrary_text",
-          "named": true
-        },
-        {
           "type": "expression",
           "named": true
         },
@@ -2054,19 +1998,15 @@
           "named": true
         },
         {
-          "type": "for_dir",
-          "named": true
-        },
-        {
           "type": "for_parm",
           "named": true
         },
         {
-          "type": "macro_body",
+          "type": "macro_arg_list",
           "named": true
         },
         {
-          "type": "macro_parm_list",
+          "type": "macro_body",
           "named": true
         }
       ]
@@ -2085,19 +2025,11 @@
           "named": true
         },
         {
-          "type": "for_parm",
-          "named": true
-        },
-        {
-          "type": "forc_dir",
-          "named": true
-        },
-        {
           "type": "macro_body",
           "named": true
         },
         {
-          "type": "macro_parm_list",
+          "type": "text_literal",
           "named": true
         }
       ]
@@ -2436,25 +2368,6 @@
       "types": [
         {
           "type": "model_opt",
-          "named": true
-        }
-      ]
-    }
-  },
-  {
-    "type": "module",
-    "named": true,
-    "fields": {},
-    "children": {
-      "multiple": true,
-      "required": true,
-      "types": [
-        {
-          "type": "directive_list",
-          "named": true
-        },
-        {
-          "type": "end_dir",
           "named": true
         }
       ]
@@ -3466,7 +3379,7 @@
       "required": true,
       "types": [
         {
-          "type": "module",
+          "type": "macro_for",
           "named": true
         }
       ]
@@ -3789,10 +3702,6 @@
       "multiple": true,
       "required": true,
       "types": [
-        {
-          "type": "arbitrary_text",
-          "named": true
-        },
         {
           "type": "comment_line",
           "named": true
@@ -4446,10 +4355,6 @@
     "named": false
   },
   {
-    "type": "end",
-    "named": false
-  },
-  {
     "type": "endm",
     "named": false
   },
@@ -4527,14 +4432,6 @@
   },
   {
     "type": "flat",
-    "named": false
-  },
-  {
-    "type": "for",
-    "named": false
-  },
-  {
-    "type": "forc",
     "named": false
   },
   {
@@ -4619,14 +4516,6 @@
   },
   {
     "type": "invoke",
-    "named": false
-  },
-  {
-    "type": "irp",
-    "named": false
-  },
-  {
-    "type": "irpc",
     "named": false
   },
   {

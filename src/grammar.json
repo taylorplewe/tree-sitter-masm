@@ -4,7 +4,7 @@
   "rules": {
     "source_file": {
       "type": "SYMBOL",
-      "name": "module"
+      "name": "macro_for"
     },
     "module": {
       "type": "SEQ",
@@ -162,6 +162,10 @@
           "value": "[xyz]mm(0|1|2|3|4|5|6|7|8|9|10|11|12|13|14|15)"
         },
         {
+          "type": "PATTERN",
+          "value": "[cdefgs]s"
+        },
+        {
           "type": "SEQ",
           "members": [
             {
@@ -173,12 +177,15 @@
               "name": "expression"
             }
           ]
-        },
-        {
-          "type": "PATTERN",
-          "value": "[cdefgs]s"
         }
       ]
+    },
+    "reg_list": {
+      "type": "REPEAT1",
+      "content": {
+        "type": "SYMBOL",
+        "name": "register"
+      }
     },
     "id_list": {
       "type": "SEQ",
@@ -204,13 +211,6 @@
           }
         }
       ]
-    },
-    "char_list": {
-      "type": "REPEAT1",
-      "content": {
-        "type": "PATTERN",
-        "value": "[^\\n]"
-      }
     },
     "stext": {
       "type": "REPEAT1",
@@ -2454,8 +2454,8 @@
           "name": "string"
         },
         {
-          "type": "SYMBOL",
-          "name": "arbitrary_text"
+          "type": "PATTERN",
+          "value": "[^\\n,>]+"
         },
         {
           "type": "SEQ",
@@ -2465,8 +2465,8 @@
               "value": "<"
             },
             {
-              "type": "SYMBOL",
-              "name": "arbitrary_text"
+              "type": "PATTERN",
+              "value": "[^\\n,>]+"
             },
             {
               "type": "STRING",
@@ -2622,8 +2622,8 @@
       "type": "SEQ",
       "members": [
         {
-          "type": "SYMBOL",
-          "name": "for_dir"
+          "type": "PATTERN",
+          "value": "for|irp"
         },
         {
           "type": "SYMBOL",
@@ -2639,7 +2639,7 @@
         },
         {
           "type": "SYMBOL",
-          "name": "macro_parm_list"
+          "name": "macro_arg_list"
         },
         {
           "type": "STRING",
@@ -2650,8 +2650,16 @@
           "name": "_eol"
         },
         {
-          "type": "SYMBOL",
-          "name": "macro_body"
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "macro_body"
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
         },
         {
           "type": "STRING",
@@ -2667,28 +2675,20 @@
       "type": "SEQ",
       "members": [
         {
-          "type": "SYMBOL",
-          "name": "forc_dir"
+          "type": "PATTERN",
+          "value": "forc|irpc"
         },
         {
-          "type": "SYMBOL",
-          "name": "for_parm"
+          "type": "PATTERN",
+          "value": "[a-zA-Z@_$?][a-zA-Z0-9@_$?]*"
         },
         {
           "type": "STRING",
           "value": ","
         },
         {
-          "type": "STRING",
-          "value": "<"
-        },
-        {
           "type": "SYMBOL",
-          "name": "macro_parm_list"
-        },
-        {
-          "type": "STRING",
-          "value": ">"
+          "name": "text_literal"
         },
         {
           "type": "SYMBOL",
@@ -2905,8 +2905,8 @@
           "name": "title_type"
         },
         {
-          "type": "SYMBOL",
-          "name": "arbitrary_text"
+          "type": "PATTERN",
+          "value": "[^\\n]+"
         },
         {
           "type": "SYMBOL",
@@ -3003,148 +3003,166 @@
       "type": "CHOICE",
       "members": [
         {
-          "type": "SYMBOL",
-          "name": "alias_dir"
+          "type": "PREC",
+          "value": 2,
+          "content": {
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "SYMBOL",
+                "name": "alias_dir"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "assume_dir"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "comm_dir"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "context_dir"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "cref_dir"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "echo_dir"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "eq_dir"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "equ_dir"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "error_dir"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "extern_dir"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "group_dir"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "if_dir"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "include_dir"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "include_lib_dir"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "list_dir"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "macro_dir"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "macro_for"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "macro_forc"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "macro_repeat"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "macro_while"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "model_dir"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "name_dir"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "option_dir"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "page_dir"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "processor_dir"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "proto_type_dir"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "public_dir"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "purge_dir"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "radix_dir"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "record_dir"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "seg_order_dir"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "struct_dir"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "text_dir"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "title_dir"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "typedef_dir"
+              }
+            ]
+          }
         },
         {
-          "type": "SYMBOL",
-          "name": "assume_dir"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "comm_dir"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "context_dir"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "cref_dir"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "echo_dir"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "eq_dir"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "equ_dir"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "error_dir"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "extern_dir"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "group_dir"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "if_dir"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "include_dir"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "include_lib_dir"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "list_dir"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "macro_dir"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "macro_for"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "macro_forc"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "macro_repeat"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "macro_while"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "model_dir"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "name_dir"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "option_dir"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "page_dir"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "processor_dir"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "proto_type_dir"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "public_dir"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "purge_dir"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "radix_dir"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "record_dir"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "seg_order_dir"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "struct_dir"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "text_dir"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "title_dir"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "typedef_dir"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "macro_call"
+          "type": "PREC",
+          "value": 1,
+          "content": {
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "SYMBOL",
+                "name": "macro_call"
+              }
+            ]
+          }
         }
       ]
     },
@@ -5448,8 +5466,8 @@
               "value": "echo"
             },
             {
-              "type": "SYMBOL",
-              "name": "arbitrary_text"
+              "type": "PATTERN",
+              "value": "[^\\n]+"
             },
             {
               "type": "SYMBOL",
@@ -5465,8 +5483,8 @@
               "value": "%out"
             },
             {
-              "type": "SYMBOL",
-              "name": "arbitrary_text"
+              "type": "PATTERN",
+              "value": "[^\\n]+"
             },
             {
               "type": "SYMBOL",
@@ -5537,22 +5555,6 @@
         "name": "local_dir"
       }
     },
-    "fpu_register": {
-      "type": "SEQ",
-      "members": [
-        {
-          "type": "STRING",
-          "value": "st"
-        }
-      ]
-    },
-    "reg_list": {
-      "type": "REPEAT1",
-      "content": {
-        "type": "SYMBOL",
-        "name": "register"
-      }
-    },
     "seg_attrib": {
       "type": "CHOICE",
       "members": [
@@ -5612,7 +5614,7 @@
         },
         {
           "type": "SYMBOL",
-          "name": "class_name"
+          "name": "_class_name"
         }
       ]
     },
@@ -6814,16 +6816,7 @@
         }
       ]
     },
-    "arbitrary_text": {
-      "type": "ALIAS",
-      "content": {
-        "type": "SYMBOL",
-        "name": "char_list"
-      },
-      "named": true,
-      "value": "arbitrary_text"
-    },
-    "class_name": {
+    "_class_name": {
       "type": "ALIAS",
       "content": {
         "type": "SYMBOL",
