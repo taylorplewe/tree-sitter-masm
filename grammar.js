@@ -99,9 +99,13 @@ export default grammar({
 
   rules: {
     // NOTE: will be 'module'
-    source_file: $ => $.directive_list,
+    source_file: $ => $.module,
+
+    module: $ => seq($.directive_list, $.end_dir),
+    end_dir: $ => seq("end", optional($.expression), $.eol),
 
     eol: $ => choice($.comment_line, /\n/),
+    comment_line: _ => /;.*/,
 
 
     // building blocks
@@ -490,8 +494,6 @@ export default grammar({
     // masm bnf grammar error: this isn't even listed
     alias_dir: $ => seq("alias", $.text_literal, "=", $.text_literal),
 
-    end_dir: $ => seq("end", optional($.expression), $.eol),
-
     general_dir: $ => choice(
       $.alias_dir,
       $.assume_dir,
@@ -501,11 +503,19 @@ export default grammar({
       $.echo_dir,
       $.eq_dir,
       $.equ_dir,
+      $.error_dir,
       $.extern_dir,
       $.group_dir,
+      $.if_dir,
       $.include_dir,
       $.include_lib_dir,
       $.list_dir,
+      $.macro_call,
+      $.macro_dir,
+      $.macro_for,
+      $.macro_forc,
+      $.macro_repeat,
+      $.macro_while,
       $.model_dir,
       $.name_dir,
       $.option_dir,
@@ -521,14 +531,6 @@ export default grammar({
       $.text_dir,
       $.title_dir,
       $.typedef_dir,
-      // $.if_dir,
-      // $.error_dir,
-      $.macro_dir,
-      $.macro_call,
-      $.macro_repeat,
-      $.macro_while,
-      $.macro_for,
-      $.macro_forc,
     ),
     directive: $ => choice($.general_dir, $.segment_def),
     directive_list: $ => repeat1($.directive),
@@ -571,6 +573,23 @@ export default grammar({
       "elseif2",
     ),
     elseif_block: $ => seq($.elseif_statement, $.eol, $.directive_list),
+    opt_text: $ => seq(",", $.text_item),
+    error_opt: $ => choice(
+      seq(".ERR", optional($.text_item)),
+      seq(".ERRE", $.expression, optional($.opt_text)),
+      seq(".ERRNZ", $.expression, optional($.opt_text)),
+      seq(".ERRB", $.text_item, optional($.opt_text)),
+      seq(".ERRNB", $.text_item, optional($.opt_text)),
+      seq(".ERRDEF", IDENTIFIER, optional($.opt_text)),
+      seq(".ERRNDEF", IDENTIFIER, optional($.opt_text)),
+      seq(".ERRDIF", $.text_item, $.text_item, optional($.opt_text)),
+      seq(".ERRDIFI", $.text_item, $.text_item, optional($.opt_text)),
+      seq(".ERRIDN", $.text_item, $.text_item, optional($.opt_text)),
+      seq(".ERRIDNI", $.text_item, $.text_item, optional($.opt_text)),
+      seq(".ERR1", optional($.text_item)),
+      seq(".ERR2", optional($.text_item)),
+    ),
+    error_dir: $ => seq($.error_opt, $.eol),
 
 
     // idk
@@ -623,14 +642,6 @@ export default grammar({
     ),
     proto_type_dir: $ => seq(IDENTIFIER, "proto", optional($.proto_spec), $.eol), // masm bnf grammar error (possibly): I believe there should be an eol (;;) here
 
-    // proc_parm_list: $ => seq(
-    //   optional(seq(",", optional($.eol))),
-    //   choice(
-    //     seq($.parm_list, optional(seq(",", optional($.eol), optional(PARM_ID), ":vararg"))),
-    //     seq(optional(PARM_ID), ":vararg"),
-    //   ),
-    // ),
-
     pub_def: $ => seq(optional($.lang_type), IDENTIFIER),
     pub_list: $ => listWithEol($.pub_def, $.eol),
     public_dir: $ => seq("public", $.pub_list, $.eol),
@@ -647,6 +658,11 @@ export default grammar({
     ),
     macro_parm: $ => seq(IDENTIFIER, optional(seq(":", $.parm_type))),
     macro_parm_list: $ => listWithEol($.macro_parm, $.eol),
+    parm: $ => choice(
+      seq(PARM_ID, optional(seq(":", $.qualified_type))),
+      seq(PARM_ID, optional($.expression), optional(seq(":", $.qualified_type))),
+    ),
+    parm_list: $ => listWithEol($.parm, $.eol),
 
     model_opt: $ => choice($.lang_type, $.stack_option),
     model_opt_list: $ => list($.model_opt),
@@ -719,6 +735,8 @@ export default grammar({
 
     local_def: $ => seq("local", $.id_list, $.eol),
     local_list: $ => repeat1($.local_def),
+    local_dir: $ => seq("local", $.parm_list, $.eol),
+    local_dir_list: $ => repeat1($.local_dir),
 
     // fpu_register: $ => seq("st", $.expr), // TODO
     fpu_register: $ => seq("st"), // TODO
@@ -795,11 +813,58 @@ export default grammar({
       $.label_dir,
       $.invoke_dir,
       $.general_dir,
-      // $.control_dir,
-      // $.proc_dir,
+      $.control_dir,
+      // seq($.proc_dir, optional($.local_dir_list), optional($.in_seg_dir_list), $.endp_dir),
     ),
     in_seg_dir: $ => seq(optional($.label_def), $.in_segment_dir),
     in_seg_dir_list: $ => repeat1($.in_seg_dir),
+
+    block_statements: $ => choice(
+      $.directive_list,
+      seq(".continue", optional(seq(".if", $.expression))),
+      seq(".break", optional(seq(".if", $.expression))),
+    ),
+    control_if: $ => seq(
+      ".if", $.expression, $.eol,
+      $.directive_list,
+      repeat($.control_elseif),
+      optional(seq(
+        ".else", $.eol,
+        $.directive_list,
+      )),
+      ".endif", $.eol,
+    ),
+    control_elseif: $ => seq(
+      ".elseif", $.expression, $.eol,
+      $.directive_list,
+    ),
+    while_block: $ => seq(
+      ".while", $.expression, $.eol,
+      $.block_statements, $.eol,
+      ".endw",
+    ),
+    repeat_block: $ => seq(
+      ".repeat", $.eol,
+      $.block_statements, $.eol, $.until_dir, $.eol,
+    ),
+    control_block: $ => choice($.while_block, $.repeat_block),
+    control_dir: $ => choice($.control_if, $.control_block),
+
+    // proc_parm_list: $ => choice(
+    //   seq(
+
+    //   ),
+    //   seq()
+    // ),
+
+    // proc_parm_list: $ => seq(
+    //   optional(seq(",", optional($.eol))),
+    //   choice(
+    //     seq($.parm_list, optional(seq(",", optional($.eol), optional(PARM_ID), ":vararg"))),
+    //     seq(optional(PARM_ID), ":vararg"),
+    //   ),
+    // ),
+    // proc_dir: $ => 
 
 
     // option
@@ -898,10 +963,6 @@ export default grammar({
     map_type: _ => choice("all", "none", "notpublic"),
     flag_name: _ => choice("zero?", "carry?", "overflow?", "sign?", "parity?"),
 
-
-    // comments
-
-    comment_line: _ => /;.*/,
 
     // TODO: MASM's COMMENT directive is gross and probably requires an external scanner to properly parse it
     // comment_dir: $ => seq("comment", DELIMITER, "\n", repeat(seq(TEXT, "\n")), repeat(NON_WHITESPACE_CHARACTER), DELIMITER, TEXT, $.eol),

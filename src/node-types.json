@@ -294,6 +294,25 @@
     }
   },
   {
+    "type": "block_statements",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": false,
+      "types": [
+        {
+          "type": "directive_list",
+          "named": true
+        },
+        {
+          "type": "expression",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "bool",
     "named": true,
     "fields": {}
@@ -448,6 +467,94 @@
       "types": [
         {
           "type": "context_item",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "control_block",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "repeat_block",
+          "named": true
+        },
+        {
+          "type": "while_block",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "control_dir",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "control_block",
+          "named": true
+        },
+        {
+          "type": "control_if",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "control_elseif",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "directive_list",
+          "named": true
+        },
+        {
+          "type": "eol",
+          "named": true
+        },
+        {
+          "type": "expression",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "control_if",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "control_elseif",
+          "named": true
+        },
+        {
+          "type": "directive_list",
+          "named": true
+        },
+        {
+          "type": "eol",
+          "named": true
+        },
+        {
+          "type": "expression",
           "named": true
         }
       ]
@@ -627,6 +734,67 @@
     }
   },
   {
+    "type": "elseif_block",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "directive_list",
+          "named": true
+        },
+        {
+          "type": "elseif_statement",
+          "named": true
+        },
+        {
+          "type": "eol",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "elseif_statement",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "expression",
+          "named": true
+        },
+        {
+          "type": "text_item",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "end_dir",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "eol",
+          "named": true
+        },
+        {
+          "type": "expression",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "ends_dir",
     "named": true,
     "fields": {},
@@ -708,6 +876,48 @@
         },
         {
           "type": "text_literal",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "error_dir",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "eol",
+          "named": true
+        },
+        {
+          "type": "error_opt",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "error_opt",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "expression",
+          "named": true
+        },
+        {
+          "type": "opt_text",
+          "named": true
+        },
+        {
+          "type": "text_item",
           "named": true
         }
       ]
@@ -1127,11 +1337,19 @@
           "named": true
         },
         {
+          "type": "error_dir",
+          "named": true
+        },
+        {
           "type": "extern_dir",
           "named": true
         },
         {
           "type": "group_dir",
+          "named": true
+        },
+        {
+          "type": "if_dir",
           "named": true
         },
         {
@@ -1259,6 +1477,52 @@
     "fields": {}
   },
   {
+    "type": "if_dir",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "directive_list",
+          "named": true
+        },
+        {
+          "type": "elseif_block",
+          "named": true
+        },
+        {
+          "type": "eol",
+          "named": true
+        },
+        {
+          "type": "if_statement",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "if_statement",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "expression",
+          "named": true
+        },
+        {
+          "type": "text_item",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "in_seg_dir",
     "named": true,
     "fields": {},
@@ -1300,6 +1564,10 @@
       "multiple": false,
       "required": true,
       "types": [
+        {
+          "type": "control_dir",
+          "named": true
+        },
         {
           "type": "data_dir",
           "named": true
@@ -1941,6 +2209,25 @@
     }
   },
   {
+    "type": "module",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "directive_list",
+          "named": true
+        },
+        {
+          "type": "end_dir",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "name_dir",
     "named": true,
     "fields": {},
@@ -2037,6 +2324,21 @@
       "types": [
         {
           "type": "expression",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "opt_text",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "text_item",
           "named": true
         }
       ]
@@ -2584,6 +2886,29 @@
     }
   },
   {
+    "type": "repeat_block",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "block_statements",
+          "named": true
+        },
+        {
+          "type": "eol",
+          "named": true
+        },
+        {
+          "type": "until_dir",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "repeat_dir",
     "named": true,
     "fields": {}
@@ -2821,7 +3146,7 @@
       "required": true,
       "types": [
         {
-          "type": "directive_list",
+          "type": "module",
           "named": true
         }
       ]
@@ -3208,6 +3533,48 @@
     }
   },
   {
+    "type": "until_dir",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "eol",
+          "named": true
+        },
+        {
+          "type": "expression",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "while_block",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "block_statements",
+          "named": true
+        },
+        {
+          "type": "eol",
+          "named": true
+        },
+        {
+          "type": "expression",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "xmm_register",
     "named": true,
     "fields": {}
@@ -3305,6 +3672,58 @@
     "named": false
   },
   {
+    "type": ".ERR",
+    "named": false
+  },
+  {
+    "type": ".ERR1",
+    "named": false
+  },
+  {
+    "type": ".ERR2",
+    "named": false
+  },
+  {
+    "type": ".ERRB",
+    "named": false
+  },
+  {
+    "type": ".ERRDEF",
+    "named": false
+  },
+  {
+    "type": ".ERRDIF",
+    "named": false
+  },
+  {
+    "type": ".ERRDIFI",
+    "named": false
+  },
+  {
+    "type": ".ERRE",
+    "named": false
+  },
+  {
+    "type": ".ERRIDN",
+    "named": false
+  },
+  {
+    "type": ".ERRIDNI",
+    "named": false
+  },
+  {
+    "type": ".ERRNB",
+    "named": false
+  },
+  {
+    "type": ".ERRNDEF",
+    "named": false
+  },
+  {
+    "type": ".ERRNZ",
+    "named": false
+  },
+  {
     "type": ".NO87",
     "named": false
   },
@@ -3313,11 +3732,19 @@
     "named": false
   },
   {
+    "type": ".break",
+    "named": false
+  },
+  {
     "type": ".code",
     "named": false
   },
   {
     "type": ".const",
+    "named": false
+  },
+  {
+    "type": ".continue",
     "named": false
   },
   {
@@ -3337,6 +3764,22 @@
     "named": false
   },
   {
+    "type": ".else",
+    "named": false
+  },
+  {
+    "type": ".elseif",
+    "named": false
+  },
+  {
+    "type": ".endif",
+    "named": false
+  },
+  {
+    "type": ".endw",
+    "named": false
+  },
+  {
     "type": ".exit",
     "named": false
   },
@@ -3346,6 +3789,10 @@
   },
   {
     "type": ".fardata?",
+    "named": false
+  },
+  {
+    "type": ".if",
     "named": false
   },
   {
@@ -3401,6 +3848,10 @@
     "named": false
   },
   {
+    "type": ".repeat",
+    "named": false
+  },
+  {
     "type": ".sall",
     "named": false
   },
@@ -3422,6 +3873,18 @@
   },
   {
     "type": ".tfcond",
+    "named": false
+  },
+  {
+    "type": ".until",
+    "named": false
+  },
+  {
+    "type": ".untilcxz",
+    "named": false
+  },
+  {
+    "type": ".while",
     "named": false
   },
   {
@@ -3726,7 +4189,63 @@
     "named": false
   },
   {
+    "type": "else",
+    "named": false
+  },
+  {
+    "type": "elseif",
+    "named": false
+  },
+  {
+    "type": "elseif1",
+    "named": false
+  },
+  {
+    "type": "elseif2",
+    "named": false
+  },
+  {
+    "type": "elseifb",
+    "named": false
+  },
+  {
+    "type": "elseifdef",
+    "named": false
+  },
+  {
+    "type": "elseifdif",
+    "named": false
+  },
+  {
+    "type": "elseifdifi",
+    "named": false
+  },
+  {
+    "type": "elseife",
+    "named": false
+  },
+  {
+    "type": "elseifidn",
+    "named": false
+  },
+  {
+    "type": "elseifidni",
+    "named": false
+  },
+  {
+    "type": "elseifnb",
+    "named": false
+  },
+  {
+    "type": "elseifndef",
+    "named": false
+  },
+  {
     "type": "emulator",
+    "named": false
+  },
+  {
+    "type": "end",
     "named": false
   },
   {
@@ -3855,6 +4374,54 @@
   },
   {
     "type": "huge",
+    "named": false
+  },
+  {
+    "type": "if",
+    "named": false
+  },
+  {
+    "type": "if1",
+    "named": false
+  },
+  {
+    "type": "if2",
+    "named": false
+  },
+  {
+    "type": "ifb",
+    "named": false
+  },
+  {
+    "type": "ifdef",
+    "named": false
+  },
+  {
+    "type": "ifdif",
+    "named": false
+  },
+  {
+    "type": "ifdifi",
+    "named": false
+  },
+  {
+    "type": "ife",
+    "named": false
+  },
+  {
+    "type": "ifidn",
+    "named": false
+  },
+  {
+    "type": "ifidni",
+    "named": false
+  },
+  {
+    "type": "ifnb",
+    "named": false
+  },
+  {
+    "type": "ifndef",
     "named": false
   },
   {
