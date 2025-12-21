@@ -54,6 +54,16 @@ const SHIFT_OP = /shr|shl/;
 const QUOTE = /['"]/;
 const BOOL = /true|false/;
 
+// const BYTE_REGISTER = /al|ah|cl|ch|dl|dh|bl|bh|r8b|r9b|r10b|r11b|r12b|r13b|r14b|r15b/;
+          // /[abcd][lh]/,
+          // /[er]?[abcd]x/,
+          // /[er]?[ds]i/,
+          // /[er]?[sb]p/,
+          // /r(8|9|10|11|12|13|14|15)/,
+          // /[xy]mm[0-7]/,
+          // "rip",
+// const REGISTER = /[abcd][lh]|[er]?[abcd]x|[er]?[ds]i|[er]?[sb]p|r(8|9|10|11|12|13|14|15)/;
+
 const list = listItem => seq(listItem, repeat(seq(",", listItem)));
 const listWithEol = (listItem, eol) => seq(listItem, repeat(seq(",", optional(eol), listItem)));
 
@@ -89,7 +99,7 @@ export default grammar({
   ],
 
   conflicts: $ => [
-    [$.register, $.assume_seg_reg],
+    [$._register, $.assume_seg_reg],
     [$.proto_spec],
     [$.proto_list],
     [$.proto_arg_list],
@@ -107,14 +117,28 @@ export default grammar({
   rules: {
     source_file: $ => $.module,
 
-    module: $ => seq($.directive_list, $.end_dir),
+    module: $ => seq($.directive_list, optional($.end_dir)),
     end_dir: $ => seq("end", optional($.expression), $._eol),
 
     _eol: $ => choice($.comment_line, /\n/),
     comment_line: _ => /;.*/,
 
-    asm_instruction: $ => seq(token(prec(1, MNEMONIC)), optional($.expr_list)),
+    asm_instruction: $ => seq(
+      field("mnemonic", token(prec(1, MNEMONIC))),
+      field("args", optional($.expr_list)),
+    ),
     instruction: $ => seq(optional($.instr_prefix), $.asm_instruction, $._eol), // masm bnf grammar error (possible): I belive there should be an eol (;;) here
+
+    register: _ => token(
+      choice(
+        /[abcd][lh]/,
+        /[er]?[abcd]x/,
+        /[er]?[ds]i/,
+        /[er]i[sb]p/,
+        /r(8|9|10|11|12|13|14|15)/,
+        /[xyz]mm(0|1|2|3|4|5|6|7|8|9|10|11|12|13|14|15)/,
+      ),
+    ),
 
 
     // building blocks
@@ -186,7 +210,7 @@ export default grammar({
       $.type,
       prec(PREC.e11 + 1, IDENTIFIER),
       "$",
-      $.register,
+      $._register,
       prec(PREC.e11 + 1, "st"),
       seq("st", "(", $.expression, ")"),
     ),
@@ -338,8 +362,8 @@ export default grammar({
       "endm", $._eol,
     ),
     macro_call: $ => choice(
-      seq(IDENTIFIER, $.macro_arg_list, $._eol),
-      seq(IDENTIFIER, "(", $.macro_arg_list, ")"),
+      seq(IDENTIFIER, optional($.macro_arg_list), $._eol),
+      seq(IDENTIFIER, "(", optional($.macro_arg_list), ")"),
     ),
 
     eq_dir: $ => seq(IDENTIFIER, "=", $.expression, $._eol),
@@ -360,42 +384,46 @@ export default grammar({
     alias_dir: $ => seq("alias", $.text_literal, "=", $.text_literal),
 
     _general_dir: $ => choice(
-      $.alias_dir,
-      $.assume_dir,
-      $.comm_dir,
-      $.context_dir,
-      $.cref_dir,
-      $.echo_dir,
-      $.eq_dir,
-      $.equ_dir,
-      $.error_dir,
-      $.extern_dir,
-      $.group_dir,
-      $.if_dir,
-      $.include_dir,
-      $.include_lib_dir,
-      $.list_dir,
-      $.macro_call,
-      $.macro_dir,
-      $.macro_for,
-      $.macro_forc,
-      $.macro_repeat,
-      $.macro_while,
-      $.model_dir,
-      $.name_dir,
-      $.option_dir,
-      $.page_dir,
-      $.processor_dir,
-      $.proto_type_dir,
-      $.public_dir,
-      $.purge_dir,
-      $.radix_dir,
-      $.record_dir,
-      $.seg_order_dir,
-      $.struct_dir,
-      $.text_dir,
-      $.title_dir,
-      $.typedef_dir,
+      // prec(2, choice(
+        $.alias_dir,
+        $.assume_dir,
+        $.comm_dir,
+        $.context_dir,
+        $.cref_dir,
+        $.echo_dir,
+        $.eq_dir,
+        $.equ_dir,
+        $.error_dir,
+        $.extern_dir,
+        $.group_dir,
+        $.if_dir,
+        $.include_dir,
+        $.include_lib_dir,
+        $.list_dir,
+        $.macro_dir,
+        $.macro_for,
+        $.macro_forc,
+        $.macro_repeat,
+        $.macro_while,
+        $.model_dir,
+        $.name_dir,
+        $.option_dir,
+        $.page_dir,
+        $.processor_dir,
+        $.proto_type_dir,
+        $.public_dir,
+        $.purge_dir,
+        $.radix_dir,
+        $.record_dir,
+        $.seg_order_dir,
+        $.struct_dir,
+        $.text_dir,
+        $.title_dir,
+        $.typedef_dir,
+      // )),
+      // prec(1, choice(
+        $.macro_call,
+      // )),
     ),
     _directive: $ => choice($._general_dir, $.segment_def),
     directive_list: $ => repeat1($._directive),
@@ -574,7 +602,7 @@ export default grammar({
     assume_seg_val: $ => choice($.frame_expr, "nothing", "error"),
     assume_seg_reg: $ => seq($.segment_register, ":", $.assume_seg_val),
     assume_register: $ => choice($.assume_seg_reg, $.assume_reg),
-    assume_reg: $ => seq($.register, ":", $.assume_val),
+    assume_reg: $ => seq($._register, ":", $.assume_val),
     assume_list: $ => list($.assume_register),
     assume_dir: $ => choice(
       seq("assume", $.assume_list, $._eol),
@@ -596,7 +624,7 @@ export default grammar({
 
     // fpu_register: $ => seq("st", $.expr), // TODO
     fpu_register: $ => seq("st"),
-    register: $ => choice(
+    _register: $ => choice(
       $.special_register,
       $.gp_register,
       $.byte_register,
@@ -605,7 +633,7 @@ export default grammar({
       $.simd_register,
       $.segment_register
     ),
-    reg_list: $ => repeat1($.register),
+    reg_list: $ => repeat1($._register),
 
     seg_attrib: $ => choice(
       "public",
@@ -652,7 +680,7 @@ export default grammar({
     exit_dir: $ => seq(".exit", $.expression, $._eol),
 
     invoke_arg: $ => choice(
-      seq($.register, "::", $.register),
+      seq($._register, "::", $._register),
       $.expression,
       seq("addr", $.expression),
     ),
@@ -671,8 +699,8 @@ export default grammar({
       $.control_dir,
       seq($.proc_dir, optional($.local_dir_list), optional($.in_seg_dir_list), $.endp_dir),
     ),
-    in_seg_dir: $ => seq(optional($.label_def), $.in_segment_dir),
-    in_seg_dir_list: $ => repeat1($.in_seg_dir),
+    _in_seg_dir: $ => seq(optional($.label_def), $.in_segment_dir),
+    in_seg_dir_list: $ => repeat1($._in_seg_dir),
 
     block_statements: $ => choice(
       $.directive_list,

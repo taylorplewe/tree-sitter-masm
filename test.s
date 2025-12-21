@@ -1,15 +1,8 @@
-SCREEN_WIDTH = 256
-SCREEN_HEIGHT = 224
+include <ship.s>
 
-
-.data?
-
-pixels db SCREEN_WIDTH * SCREEN_HEIGHT dup (?)
-
+title urmommmmm
 
 .code
 
-mov rax, 4
-add rax, 2 + 4
-
-end
+main proc
+main endp
