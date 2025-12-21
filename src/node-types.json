@@ -569,21 +569,6 @@
     }
   },
   {
-    "type": "data_decl",
-    "named": true,
-    "fields": {},
-    "children": {
-      "multiple": false,
-      "required": false,
-      "types": [
-        {
-          "type": "data_type",
-          "named": true
-        }
-      ]
-    }
-  },
-  {
     "type": "data_dir",
     "named": true,
     "fields": {},
@@ -605,34 +590,124 @@
   {
     "type": "data_item",
     "named": true,
-    "fields": {},
-    "children": {
-      "multiple": true,
-      "required": true,
-      "types": [
-        {
-          "type": "data_decl",
-          "named": true
-        },
-        {
-          "type": "record_inst_list",
-          "named": true
-        },
-        {
-          "type": "scalar_inst_list",
-          "named": true
-        },
-        {
-          "type": "struct_inst_list",
-          "named": true
-        }
-      ]
+    "fields": {
+      "type": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "byte",
+            "named": false
+          },
+          {
+            "type": "db",
+            "named": false
+          },
+          {
+            "type": "dd",
+            "named": false
+          },
+          {
+            "type": "df",
+            "named": false
+          },
+          {
+            "type": "dq",
+            "named": false
+          },
+          {
+            "type": "dt",
+            "named": false
+          },
+          {
+            "type": "dw",
+            "named": false
+          },
+          {
+            "type": "dword",
+            "named": false
+          },
+          {
+            "type": "fword",
+            "named": false
+          },
+          {
+            "type": "mmword",
+            "named": false
+          },
+          {
+            "type": "oword",
+            "named": false
+          },
+          {
+            "type": "qword",
+            "named": false
+          },
+          {
+            "type": "real10",
+            "named": false
+          },
+          {
+            "type": "real4",
+            "named": false
+          },
+          {
+            "type": "real8",
+            "named": false
+          },
+          {
+            "type": "sbyte",
+            "named": false
+          },
+          {
+            "type": "sdword",
+            "named": false
+          },
+          {
+            "type": "sqword",
+            "named": false
+          },
+          {
+            "type": "sword",
+            "named": false
+          },
+          {
+            "type": "tbyte",
+            "named": false
+          },
+          {
+            "type": "word",
+            "named": false
+          },
+          {
+            "type": "xmmword",
+            "named": false
+          },
+          {
+            "type": "ymmword",
+            "named": false
+          }
+        ]
+      },
+      "value": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "record_inst_list",
+            "named": true
+          },
+          {
+            "type": "scalar_inst_list",
+            "named": true
+          },
+          {
+            "type": "struct_inst_list",
+            "named": true
+          }
+        ]
+      }
     }
-  },
-  {
-    "type": "data_type",
-    "named": true,
-    "fields": {}
   },
   {
     "type": "directive_list",
@@ -700,10 +775,6 @@
         },
         {
           "type": "list_dir",
-          "named": true
-        },
-        {
-          "type": "macro_call",
           "named": true
         },
         {
@@ -860,6 +931,25 @@
         },
         {
           "type": "text_item",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "end_dir",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "comment_line",
+          "named": true
+        },
+        {
+          "type": "expression",
           "named": true
         }
       ]
@@ -1289,6 +1379,11 @@
     }
   },
   {
+    "type": "for_dir",
+    "named": true,
+    "fields": {}
+  },
+  {
     "type": "for_parm",
     "named": true,
     "fields": {},
@@ -1510,10 +1605,6 @@
         },
         {
           "type": "local_dir_list",
-          "named": true
-        },
-        {
-          "type": "macro_call",
           "named": true
         },
         {
@@ -1944,25 +2035,6 @@
     }
   },
   {
-    "type": "macro_call",
-    "named": true,
-    "fields": {},
-    "children": {
-      "multiple": true,
-      "required": false,
-      "types": [
-        {
-          "type": "comment_line",
-          "named": true
-        },
-        {
-          "type": "macro_arg_list",
-          "named": true
-        }
-      ]
-    }
-  },
-  {
     "type": "macro_dir",
     "named": true,
     "fields": {},
@@ -1995,6 +2067,10 @@
       "types": [
         {
           "type": "comment_line",
+          "named": true
+        },
+        {
+          "type": "for_dir",
           "named": true
         },
         {
@@ -2171,10 +2247,6 @@
         },
         {
           "type": "list_dir",
-          "named": true
-        },
-        {
-          "type": "macro_call",
           "named": true
         },
         {
@@ -2368,6 +2440,25 @@
       "types": [
         {
           "type": "model_opt",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "module",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "directive_list",
+          "named": true
+        },
+        {
+          "type": "end_dir",
           "named": true
         }
       ]
@@ -3379,7 +3470,7 @@
       "required": true,
       "types": [
         {
-          "type": "macro_for",
+          "type": "module",
           "named": true
         }
       ]
@@ -3535,7 +3626,95 @@
       "required": true,
       "types": [
         {
+          "type": "alias_dir",
+          "named": true
+        },
+        {
+          "type": "assume_dir",
+          "named": true
+        },
+        {
+          "type": "comm_dir",
+          "named": true
+        },
+        {
+          "type": "context_dir",
+          "named": true
+        },
+        {
+          "type": "cref_dir",
+          "named": true
+        },
+        {
           "type": "data_dir",
+          "named": true
+        },
+        {
+          "type": "echo_dir",
+          "named": true
+        },
+        {
+          "type": "eq_dir",
+          "named": true
+        },
+        {
+          "type": "equ_dir",
+          "named": true
+        },
+        {
+          "type": "error_dir",
+          "named": true
+        },
+        {
+          "type": "extern_dir",
+          "named": true
+        },
+        {
+          "type": "group_dir",
+          "named": true
+        },
+        {
+          "type": "if_dir",
+          "named": true
+        },
+        {
+          "type": "include_dir",
+          "named": true
+        },
+        {
+          "type": "include_lib_dir",
+          "named": true
+        },
+        {
+          "type": "list_dir",
+          "named": true
+        },
+        {
+          "type": "macro_dir",
+          "named": true
+        },
+        {
+          "type": "macro_for",
+          "named": true
+        },
+        {
+          "type": "macro_forc",
+          "named": true
+        },
+        {
+          "type": "macro_repeat",
+          "named": true
+        },
+        {
+          "type": "macro_while",
+          "named": true
+        },
+        {
+          "type": "model_dir",
+          "named": true
+        },
+        {
+          "type": "name_dir",
           "named": true
         },
         {
@@ -3544,6 +3723,58 @@
         },
         {
           "type": "offset_dir",
+          "named": true
+        },
+        {
+          "type": "option_dir",
+          "named": true
+        },
+        {
+          "type": "page_dir",
+          "named": true
+        },
+        {
+          "type": "processor_dir",
+          "named": true
+        },
+        {
+          "type": "proto_type_dir",
+          "named": true
+        },
+        {
+          "type": "public_dir",
+          "named": true
+        },
+        {
+          "type": "purge_dir",
+          "named": true
+        },
+        {
+          "type": "radix_dir",
+          "named": true
+        },
+        {
+          "type": "record_dir",
+          "named": true
+        },
+        {
+          "type": "seg_order_dir",
+          "named": true
+        },
+        {
+          "type": "struct_dir",
+          "named": true
+        },
+        {
+          "type": "text_dir",
+          "named": true
+        },
+        {
+          "type": "title_dir",
+          "named": true
+        },
+        {
+          "type": "typedef_dir",
           "named": true
         }
       ]
@@ -3726,10 +3957,6 @@
       "multiple": false,
       "required": false,
       "types": [
-        {
-          "type": "data_type",
-          "named": true
-        },
         {
           "type": "distance",
           "named": true
@@ -4355,6 +4582,10 @@
     "named": false
   },
   {
+    "type": "end",
+    "named": false
+  },
+  {
     "type": "endm",
     "named": false
   },
@@ -4432,6 +4663,10 @@
   },
   {
     "type": "flat",
+    "named": false
+  },
+  {
+    "type": "for",
     "named": false
   },
   {
@@ -4516,6 +4751,10 @@
   },
   {
     "type": "invoke",
+    "named": false
+  },
+  {
+    "type": "irp",
     "named": false
   },
   {

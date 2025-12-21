@@ -143,8 +143,14 @@ export default grammar({
     [$.parm_list],
   ],
 
+  // reserved: {
+  //   global: $ => [
+  //     "for",
+  //   ],
+  // },
+
   rules: {
-    source_file: $ => $.macro_for,
+    source_file: $ => $.module,
 
     module: $ => seq($.directive_list, optional($.end_dir)),
     end_dir: $ => seq("end", optional($.expression), $._eol),
@@ -285,9 +291,9 @@ export default grammar({
     ),
 
     data_item: $ => choice(
-      prec(1, seq($.data_decl, $.scalar_inst_list)),
-      prec(2, seq(IDENTIFIER, $.struct_inst_list)),
-      prec(3, seq(RECORD_TAG, $.record_inst_list)),
+      prec(1, seq(field("type", $._data_decl), field("value", $.scalar_inst_list))),
+      prec(2, seq(field("type", IDENTIFIER), field("value", $.struct_inst_list))),
+      prec(3, seq(field("type", RECORD_TAG), field("value", $.record_inst_list))),
     ),
     data_dir: $ => seq(optional(IDENTIFIER), $.data_item, $._eol),
 
@@ -336,7 +342,7 @@ export default grammar({
     struct_inst_list: $ => listWithEol($.struct_instance, $._eol),
     struct_item: $ => choice(
       $.data_dir,
-      // $._general_dir,
+      $._general_dir,
       $.offset_dir,
       $.nested_struct,
     ),
@@ -372,7 +378,7 @@ export default grammar({
       "endm", $._eol,
     ),
     macro_for: $ => seq(
-      FOR_DIR, $.for_parm, ",", "<", $.macro_arg_list, ">", $._eol,
+      $.for_dir, $.for_parm, ",", "<", $.macro_arg_list, ">", $._eol,
       optional($.macro_body),
       "endm", $._eol,
     ),
@@ -452,7 +458,7 @@ export default grammar({
         $.typedef_dir,
       )),
       prec(1, choice(
-        $.macro_call,
+        // $.macro_call,
       )),
     ),
     _directive: $ => choice($._general_dir, $.segment_def),
@@ -523,12 +529,12 @@ export default grammar({
       seq(".nocref", optional($.id_list)),
     ),
     cref_dir: $ => seq($.cref_option, $._eol),
-    data_decl: $ => choice("db", "dw", "dd", "df", "dq", "dt", $.data_type, TYPE_ID),
+    _data_decl: $ => choice("db", "dw", "dd", "df", "dq", "dt", $._data_type, TYPE_ID),
     distance: $ => choice($.near_far, "near16", "near32", "far16", "far32"),
     type: $ => choice(
       IDENTIFIER, // STRUCT_TAG, UNION_TAG, RECORD_TAG, TYPE_ID
       $.distance,
-      $.data_type,
+      $._data_type,
     ),
     qualified_type: $ => choice(
       $.type,
@@ -808,7 +814,7 @@ export default grammar({
 
     context_item: _ => choice("assumes", "radix", "listing", "cpu", "all"),
     context_item_list: $ => list($.context_item),
-    data_type: _ => choice("byte", "sbyte", "word", "sword", "dword", "sdword", "fword", "qword", "sqword", "tbyte", "oword", "real4", "real8", "real10", "mmword", "xmmword", "ymmword"),
+    _data_type: _ => choice("byte", "sbyte", "word", "sword", "dword", "sdword", "fword", "qword", "sqword", "tbyte", "oword", "real4", "real8", "real10", "mmword", "xmmword", "ymmword"),
 
     sign: _ => choice("+", "-"),
     binary_op: _ => choice("==", "!=", ">=", "<=", ">", "<", "&"),

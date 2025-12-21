@@ -4,7 +4,7 @@
   "rules": {
     "source_file": {
       "type": "SYMBOL",
-      "name": "macro_for"
+      "name": "module"
     },
     "module": {
       "type": "SEQ",
@@ -1588,12 +1588,20 @@
             "type": "SEQ",
             "members": [
               {
-                "type": "SYMBOL",
-                "name": "data_decl"
+                "type": "FIELD",
+                "name": "type",
+                "content": {
+                  "type": "SYMBOL",
+                  "name": "_data_decl"
+                }
               },
               {
-                "type": "SYMBOL",
-                "name": "scalar_inst_list"
+                "type": "FIELD",
+                "name": "value",
+                "content": {
+                  "type": "SYMBOL",
+                  "name": "scalar_inst_list"
+                }
               }
             ]
           }
@@ -1605,12 +1613,20 @@
             "type": "SEQ",
             "members": [
               {
-                "type": "PATTERN",
-                "value": "[a-zA-Z@_$?][a-zA-Z0-9@_$?]*"
+                "type": "FIELD",
+                "name": "type",
+                "content": {
+                  "type": "PATTERN",
+                  "value": "[a-zA-Z@_$?][a-zA-Z0-9@_$?]*"
+                }
               },
               {
-                "type": "SYMBOL",
-                "name": "struct_inst_list"
+                "type": "FIELD",
+                "name": "value",
+                "content": {
+                  "type": "SYMBOL",
+                  "name": "struct_inst_list"
+                }
               }
             ]
           }
@@ -1622,12 +1638,20 @@
             "type": "SEQ",
             "members": [
               {
-                "type": "PATTERN",
-                "value": "[a-zA-Z@_$?][a-zA-Z0-9@_$?]*"
+                "type": "FIELD",
+                "name": "type",
+                "content": {
+                  "type": "PATTERN",
+                  "value": "[a-zA-Z@_$?][a-zA-Z0-9@_$?]*"
+                }
               },
               {
-                "type": "SYMBOL",
-                "name": "record_inst_list"
+                "type": "FIELD",
+                "name": "value",
+                "content": {
+                  "type": "SYMBOL",
+                  "name": "record_inst_list"
+                }
               }
             ]
           }
@@ -2268,6 +2292,10 @@
         },
         {
           "type": "SYMBOL",
+          "name": "_general_dir"
+        },
+        {
+          "type": "SYMBOL",
           "name": "offset_dir"
         },
         {
@@ -2622,8 +2650,8 @@
       "type": "SEQ",
       "members": [
         {
-          "type": "PATTERN",
-          "value": "for|irp"
+          "type": "SYMBOL",
+          "name": "for_dir"
         },
         {
           "type": "SYMBOL",
@@ -3156,12 +3184,7 @@
           "value": 1,
           "content": {
             "type": "CHOICE",
-            "members": [
-              {
-                "type": "SYMBOL",
-                "name": "macro_call"
-              }
-            ]
+            "members": []
           }
         }
       ]
@@ -3998,7 +4021,7 @@
         }
       ]
     },
-    "data_decl": {
+    "_data_decl": {
       "type": "CHOICE",
       "members": [
         {
@@ -4027,7 +4050,7 @@
         },
         {
           "type": "SYMBOL",
-          "name": "data_type"
+          "name": "_data_type"
         },
         {
           "type": "PATTERN",
@@ -4073,7 +4096,7 @@
         },
         {
           "type": "SYMBOL",
-          "name": "data_type"
+          "name": "_data_type"
         }
       ]
     },
@@ -6875,7 +6898,7 @@
         }
       ]
     },
-    "data_type": {
+    "_data_type": {
       "type": "CHOICE",
       "members": [
         {
