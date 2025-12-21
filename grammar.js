@@ -732,7 +732,7 @@ export default grammar({
     local_dir_list: $ => repeat1($.local_dir),
 
     // fpu_register: $ => seq("st", $.expr), // TODO
-    fpu_register: $ => seq("st"), // TODO
+    fpu_register: $ => seq("st"),
     register: $ => choice(
       $.special_register,
       $.gp_register,
@@ -749,7 +749,7 @@ export default grammar({
       "stack",
       "common",
       "memory",
-      "at", // TODO: constExpr
+      seq("at", $.expression),
       "private",
     ),
     seg_option: $ => choice(
@@ -784,7 +784,6 @@ export default grammar({
 
     uses_regs: $ => seq("uses", $.reg_list),
 
-    // size_arg: $ => choice(prec(1, IDENTIFIER), $.type), // TODO: and "e10"
     _size_arg: $ => alias($.expression, $.size_arg),
 
     exit_dir: $ => seq(".exit", $.expression, $.eol),

@@ -5525,8 +5525,17 @@
           "value": "memory"
         },
         {
-          "type": "STRING",
-          "value": "at"
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "STRING",
+              "value": "at"
+            },
+            {
+              "type": "SYMBOL",
+              "name": "expression"
+            }
+          ]
         },
         {
           "type": "STRING",
