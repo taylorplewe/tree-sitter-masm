@@ -47,22 +47,14 @@ const UNION_TAG = IDENTIFIER;
 const SIGN = /\+|\-/;
 const BINARY_OP = /==|\!=|>=|<=|>|<|&/;
 const ADD_OP = /\+|\-/;
-const OR_OP = /or|xor/;
+const OR_OP = /x?or/;
 const MUL_OP = /\*|\/|mod/;
 const REL_OP = /eq|ne|lt|le|gt|ge/;
-const SHIFT_OP = /shr|shl/;
+const SHIFT_OP = /sh[lr]/;
 const QUOTE = /['"]/;
 const BOOL = /true|false/;
 
-// const BYTE_REGISTER = /al|ah|cl|ch|dl|dh|bl|bh|r8b|r9b|r10b|r11b|r12b|r13b|r14b|r15b/;
-          // /[abcd][lh]/,
-          // /[er]?[abcd]x/,
-          // /[er]?[ds]i/,
-          // /[er]?[sb]p/,
-          // /r(8|9|10|11|12|13|14|15)/,
-          // /[xy]mm[0-7]/,
-          // "rip",
-// const REGISTER = /[abcd][lh]|[er]?[abcd]x|[er]?[ds]i|[er]?[sb]p|r(8|9|10|11|12|13|14|15)/;
+const SEGMENT_REGISTER = /[cdefgs]s/;
 
 const list = listItem => seq(listItem, repeat(seq(",", listItem)));
 const listWithEol = (listItem, eol) => seq(listItem, repeat(seq(",", optional(eol), listItem)));
@@ -99,7 +91,6 @@ export default grammar({
   ],
 
   conflicts: $ => [
-    [$._register, $.assume_seg_reg],
     [$.proto_spec],
     [$.proto_list],
     [$.proto_arg_list],
@@ -129,16 +120,19 @@ export default grammar({
     ),
     instruction: $ => seq(optional($.instr_prefix), $.asm_instruction, $._eol), // masm bnf grammar error (possible): I belive there should be an eol (;;) here
 
-    register: _ => token(
-      choice(
+    register: $ => choice(
         /[abcd][lh]/,
         /[er]?[abcd]x/,
         /[er]?[ds]i/,
-        /[er]i[sb]p/,
+        /[er][sb]p/,
         /r(8|9|10|11|12|13|14|15)/,
+        /cr0|cr2|cr3|dr[0-3]|dr[67]|tr[3-7]/,
         /[xyz]mm(0|1|2|3|4|5|6|7|8|9|10|11|12|13|14|15)/,
-      ),
+        seq("st", $.expression),
+        SEGMENT_REGISTER,
+      // ),
     ),
+    reg_list: $ => repeat1($.register),
 
 
     // building blocks
@@ -210,9 +204,9 @@ export default grammar({
       $.type,
       prec(PREC.e11 + 1, IDENTIFIER),
       "$",
-      $._register,
-      prec(PREC.e11 + 1, "st"),
-      seq("st", "(", $.expression, ")"),
+      prec(PREC.e11 + 3, seq("st", "(", $.expression, ")")),
+      prec(PREC.e11 + 2, "st"),
+      prec(PREC.e11 + 1, $.register),
     ),
 
 
@@ -567,7 +561,7 @@ export default grammar({
     frame_expr: $ => choice(
       seq("seg", IDENTIFIER),
       seq("dgroup", ":", IDENTIFIER),
-      seq($.segment_register, ":", IDENTIFIER),
+      seq(SEGMENT_REGISTER, ":", IDENTIFIER),
       IDENTIFIER,
     ),
 
@@ -600,9 +594,9 @@ export default grammar({
 
     assume_val: $ => choice($.qualified_type, "nothing", "error"),
     assume_seg_val: $ => choice($.frame_expr, "nothing", "error"),
-    assume_seg_reg: $ => seq($.segment_register, ":", $.assume_seg_val),
+    assume_seg_reg: $ => prec(1, seq(SEGMENT_REGISTER, ":", $.assume_seg_val)),
     assume_register: $ => choice($.assume_seg_reg, $.assume_reg),
-    assume_reg: $ => seq($._register, ":", $.assume_val),
+    assume_reg: $ => seq($.register, ":", $.assume_val),
     assume_list: $ => list($.assume_register),
     assume_dir: $ => choice(
       seq("assume", $.assume_list, $._eol),
@@ -621,19 +615,6 @@ export default grammar({
     local_list: $ => repeat1($.local_def),
     local_dir: $ => seq("local", $.parm_list, $._eol),
     local_dir_list: $ => repeat1($.local_dir),
-
-    // fpu_register: $ => seq("st", $.expr), // TODO
-    fpu_register: $ => seq("st"),
-    _register: $ => choice(
-      $.special_register,
-      $.gp_register,
-      $.byte_register,
-      $.qword_register,
-      $.fpu_register,
-      $.simd_register,
-      $.segment_register
-    ),
-    reg_list: $ => repeat1($._register),
 
     seg_attrib: $ => choice(
       "public",
@@ -680,7 +661,7 @@ export default grammar({
     exit_dir: $ => seq(".exit", $.expression, $._eol),
 
     invoke_arg: $ => choice(
-      seq($._register, "::", $._register),
+      seq($.register, "::", $.register),
       $.expression,
       seq("addr", $.expression),
     ),
@@ -810,14 +791,6 @@ export default grammar({
       prec(2, seq($.processor, $._eol)),
       prec(1, seq($.coprocessor, $._eol)),
     ),
-
-    byte_register: _ => choice("al", "ah", "cl", "ch", "dl", "dh", "bl", "bh", "r8b", "r9b", "r10b", "r11b", "r12b", "r13b", "r14b", "r15b"),
-    gp_register: _ => choice("ax", "eax", "cx", "ecx", "dx", "edx", "bx", "ebx",  "di", "edi", "si", "esi", "bp", "ebp", "sp", "esp", "r8w", "r8d", "r9w", "r9d", "r12d", "r13w", "r13d", "r14w", "r14d"),
-    qword_register: _ => choice("rax", "rcx", "rdx", "rbx", "rsp", "rbp", "rsi", "rdi", "r8", "r9", "r10", "r11", "r12", "r13", "r14", "r15"),
-    special_register: _ => choice("cr0", "cr2", "cr3", "dr0", "dr1", "dr2", "dr3", "dr6", "dr7", "tr3", "tr4", "tr5", "tr6", "tr7"),
-    xmm_register: _ => choice("xmm0", "xmm1", "xmm2", "xmm3", "xmm4", "xmm5", "xmm6", "xmm7", "xmm8", "xmm9", "xmm10", "xmm11", "xmm12", "xmm13", "xmm14", "xmm15"),
-    simd_register: $ => choice($.xmm_register, "mm0", "mm1", "mm2", "mm3", "mm4", "mm5", "mm6", "mm7", "ymm0", "ymm1", "ymm2", "ymm3", "ymm4", "ymm5", "ymm6", "ymm7", "ymm8", "ymm9", "ymm10", "ymm11", "ymm12", "ymm13", "ymm14", "ymm15"),
-    segment_register: _ => choice("cs", "ds", "es", "fs", "gs", "ss"),
 
     struct_hdr: _ => choice("struc", "struct", "union"),
 

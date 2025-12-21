@@ -92,31 +92,7 @@
           "named": true
         },
         {
-          "type": "byte_register",
-          "named": true
-        },
-        {
-          "type": "fpu_register",
-          "named": true
-        },
-        {
-          "type": "gp_register",
-          "named": true
-        },
-        {
-          "type": "qword_register",
-          "named": true
-        },
-        {
-          "type": "segment_register",
-          "named": true
-        },
-        {
-          "type": "simd_register",
-          "named": true
-        },
-        {
-          "type": "special_register",
+          "type": "register",
           "named": true
         }
       ]
@@ -146,15 +122,11 @@
     "named": true,
     "fields": {},
     "children": {
-      "multiple": true,
+      "multiple": false,
       "required": true,
       "types": [
         {
           "type": "assume_seg_val",
-          "named": true
-        },
-        {
-          "type": "segment_register",
           "named": true
         }
       ]
@@ -335,11 +307,6 @@
   },
   {
     "type": "bool",
-    "named": true,
-    "fields": {}
-  },
-  {
-    "type": "byte_register",
     "named": true,
     "fields": {}
   },
@@ -1165,39 +1132,15 @@
       "required": false,
       "types": [
         {
-          "type": "byte_register",
-          "named": true
-        },
-        {
           "type": "expression",
           "named": true
         },
         {
-          "type": "fpu_register",
-          "named": true
-        },
-        {
-          "type": "gp_register",
-          "named": true
-        },
-        {
-          "type": "qword_register",
-          "named": true
-        },
-        {
-          "type": "segment_register",
-          "named": true
-        },
-        {
-          "type": "simd_register",
+          "type": "register",
           "named": true
         },
         {
           "type": "size_arg",
-          "named": true
-        },
-        {
-          "type": "special_register",
           "named": true
         },
         {
@@ -1428,27 +1371,7 @@
     "fields": {}
   },
   {
-    "type": "fpu_register",
-    "named": true,
-    "fields": {}
-  },
-  {
     "type": "frame_expr",
-    "named": true,
-    "fields": {},
-    "children": {
-      "multiple": false,
-      "required": false,
-      "types": [
-        {
-          "type": "segment_register",
-          "named": true
-        }
-      ]
-    }
-  },
-  {
-    "type": "gp_register",
     "named": true,
     "fields": {}
   },
@@ -1842,35 +1765,11 @@
       "required": true,
       "types": [
         {
-          "type": "byte_register",
-          "named": true
-        },
-        {
           "type": "expression",
           "named": true
         },
         {
-          "type": "fpu_register",
-          "named": true
-        },
-        {
-          "type": "gp_register",
-          "named": true
-        },
-        {
-          "type": "qword_register",
-          "named": true
-        },
-        {
-          "type": "segment_register",
-          "named": true
-        },
-        {
-          "type": "simd_register",
-          "named": true
-        },
-        {
-          "type": "special_register",
+          "type": "register",
           "named": true
         }
       ]
@@ -3180,11 +3079,6 @@
     "fields": {}
   },
   {
-    "type": "qword_register",
-    "named": true,
-    "fields": {}
-  },
-  {
     "type": "radix_dir",
     "named": true,
     "fields": {},
@@ -3300,31 +3194,22 @@
       "required": true,
       "types": [
         {
-          "type": "byte_register",
+          "type": "register",
           "named": true
-        },
+        }
+      ]
+    }
+  },
+  {
+    "type": "register",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": false,
+      "types": [
         {
-          "type": "fpu_register",
-          "named": true
-        },
-        {
-          "type": "gp_register",
-          "named": true
-        },
-        {
-          "type": "qword_register",
-          "named": true
-        },
-        {
-          "type": "segment_register",
-          "named": true
-        },
-        {
-          "type": "simd_register",
-          "named": true
-        },
-        {
-          "type": "special_register",
+          "type": "expression",
           "named": true
         }
       ]
@@ -3525,29 +3410,9 @@
     }
   },
   {
-    "type": "segment_register",
-    "named": true,
-    "fields": {}
-  },
-  {
     "type": "sign",
     "named": true,
     "fields": {}
-  },
-  {
-    "type": "simd_register",
-    "named": true,
-    "fields": {},
-    "children": {
-      "multiple": false,
-      "required": false,
-      "types": [
-        {
-          "type": "xmm_register",
-          "named": true
-        }
-      ]
-    }
   },
   {
     "type": "simple_seg_dir",
@@ -3606,11 +3471,6 @@
         }
       ]
     }
-  },
-  {
-    "type": "special_register",
-    "named": true,
-    "fields": {}
   },
   {
     "type": "stack_option",
@@ -4045,11 +3905,6 @@
     }
   },
   {
-    "type": "xmm_register",
-    "named": true,
-    "fields": {}
-  },
-  {
     "type": "\"",
     "named": false
   },
@@ -4410,14 +4265,6 @@
     "named": false
   },
   {
-    "type": "ah",
-    "named": false
-  },
-  {
-    "type": "al",
-    "named": false
-  },
-  {
     "type": "alias",
     "named": false
   },
@@ -4450,27 +4297,7 @@
     "named": false
   },
   {
-    "type": "ax",
-    "named": false
-  },
-  {
     "type": "basic",
-    "named": false
-  },
-  {
-    "type": "bh",
-    "named": false
-  },
-  {
-    "type": "bl",
-    "named": false
-  },
-  {
-    "type": "bp",
-    "named": false
-  },
-  {
-    "type": "bx",
     "named": false
   },
   {
@@ -4487,14 +4314,6 @@
   },
   {
     "type": "catstr",
-    "named": false
-  },
-  {
-    "type": "ch",
-    "named": false
-  },
-  {
-    "type": "cl",
     "named": false
   },
   {
@@ -4519,26 +4338,6 @@
     "named": false
   },
   {
-    "type": "cr0",
-    "named": false
-  },
-  {
-    "type": "cr2",
-    "named": false
-  },
-  {
-    "type": "cr3",
-    "named": false
-  },
-  {
-    "type": "cs",
-    "named": false
-  },
-  {
-    "type": "cx",
-    "named": false
-  },
-  {
     "type": "db",
     "named": false
   },
@@ -4555,18 +4354,6 @@
     "named": false
   },
   {
-    "type": "dh",
-    "named": false
-  },
-  {
-    "type": "di",
-    "named": false
-  },
-  {
-    "type": "dl",
-    "named": false
-  },
-  {
     "type": "dosseg",
     "named": false
   },
@@ -4576,34 +4363,6 @@
   },
   {
     "type": "dq",
-    "named": false
-  },
-  {
-    "type": "dr0",
-    "named": false
-  },
-  {
-    "type": "dr1",
-    "named": false
-  },
-  {
-    "type": "dr2",
-    "named": false
-  },
-  {
-    "type": "dr3",
-    "named": false
-  },
-  {
-    "type": "dr6",
-    "named": false
-  },
-  {
-    "type": "dr7",
-    "named": false
-  },
-  {
-    "type": "ds",
     "named": false
   },
   {
@@ -4623,39 +4382,11 @@
     "named": false
   },
   {
-    "type": "dx",
-    "named": false
-  },
-  {
     "type": "e",
     "named": false
   },
   {
-    "type": "eax",
-    "named": false
-  },
-  {
-    "type": "ebp",
-    "named": false
-  },
-  {
-    "type": "ebx",
-    "named": false
-  },
-  {
     "type": "echo",
-    "named": false
-  },
-  {
-    "type": "ecx",
-    "named": false
-  },
-  {
-    "type": "edi",
-    "named": false
-  },
-  {
-    "type": "edx",
     "named": false
   },
   {
@@ -4743,18 +4474,6 @@
     "named": false
   },
   {
-    "type": "es",
-    "named": false
-  },
-  {
-    "type": "esi",
-    "named": false
-  },
-  {
-    "type": "esp",
-    "named": false
-  },
-  {
     "type": "even",
     "named": false
   },
@@ -4823,10 +4542,6 @@
     "named": false
   },
   {
-    "type": "fs",
-    "named": false
-  },
-  {
     "type": "fword",
     "named": false
   },
@@ -4836,10 +4551,6 @@
   },
   {
     "type": "group",
-    "named": false
-  },
-  {
-    "type": "gs",
     "named": false
   },
   {
@@ -4972,38 +4683,6 @@
   },
   {
     "type": "memory",
-    "named": false
-  },
-  {
-    "type": "mm0",
-    "named": false
-  },
-  {
-    "type": "mm1",
-    "named": false
-  },
-  {
-    "type": "mm2",
-    "named": false
-  },
-  {
-    "type": "mm3",
-    "named": false
-  },
-  {
-    "type": "mm4",
-    "named": false
-  },
-  {
-    "type": "mm5",
-    "named": false
-  },
-  {
-    "type": "mm6",
-    "named": false
-  },
-  {
-    "type": "mm7",
     "named": false
   },
   {
@@ -5171,131 +4850,7 @@
     "named": false
   },
   {
-    "type": "r10",
-    "named": false
-  },
-  {
-    "type": "r10b",
-    "named": false
-  },
-  {
-    "type": "r11",
-    "named": false
-  },
-  {
-    "type": "r11b",
-    "named": false
-  },
-  {
-    "type": "r12",
-    "named": false
-  },
-  {
-    "type": "r12b",
-    "named": false
-  },
-  {
-    "type": "r12d",
-    "named": false
-  },
-  {
-    "type": "r13",
-    "named": false
-  },
-  {
-    "type": "r13b",
-    "named": false
-  },
-  {
-    "type": "r13d",
-    "named": false
-  },
-  {
-    "type": "r13w",
-    "named": false
-  },
-  {
-    "type": "r14",
-    "named": false
-  },
-  {
-    "type": "r14b",
-    "named": false
-  },
-  {
-    "type": "r14d",
-    "named": false
-  },
-  {
-    "type": "r14w",
-    "named": false
-  },
-  {
-    "type": "r15",
-    "named": false
-  },
-  {
-    "type": "r15b",
-    "named": false
-  },
-  {
-    "type": "r8",
-    "named": false
-  },
-  {
-    "type": "r8b",
-    "named": false
-  },
-  {
-    "type": "r8d",
-    "named": false
-  },
-  {
-    "type": "r8w",
-    "named": false
-  },
-  {
-    "type": "r9",
-    "named": false
-  },
-  {
-    "type": "r9b",
-    "named": false
-  },
-  {
-    "type": "r9d",
-    "named": false
-  },
-  {
-    "type": "r9w",
-    "named": false
-  },
-  {
     "type": "radix",
-    "named": false
-  },
-  {
-    "type": "rax",
-    "named": false
-  },
-  {
-    "type": "rbp",
-    "named": false
-  },
-  {
-    "type": "rbx",
-    "named": false
-  },
-  {
-    "type": "rcx",
-    "named": false
-  },
-  {
-    "type": "rdi",
-    "named": false
-  },
-  {
-    "type": "rdx",
     "named": false
   },
   {
@@ -5351,14 +4906,6 @@
     "named": false
   },
   {
-    "type": "rsi",
-    "named": false
-  },
-  {
-    "type": "rsp",
-    "named": false
-  },
-  {
     "type": "sbyte",
     "named": false
   },
@@ -5383,10 +4930,6 @@
     "named": false
   },
   {
-    "type": "si",
-    "named": false
-  },
-  {
     "type": "size",
     "named": false
   },
@@ -5403,15 +4946,7 @@
     "named": false
   },
   {
-    "type": "sp",
-    "named": false
-  },
-  {
     "type": "sqword",
-    "named": false
-  },
-  {
-    "type": "ss",
     "named": false
   },
   {
@@ -5471,26 +5006,6 @@
     "named": false
   },
   {
-    "type": "tr3",
-    "named": false
-  },
-  {
-    "type": "tr4",
-    "named": false
-  },
-  {
-    "type": "tr5",
-    "named": false
-  },
-  {
-    "type": "tr6",
-    "named": false
-  },
-  {
-    "type": "tr7",
-    "named": false
-  },
-  {
     "type": "true",
     "named": false
   },
@@ -5531,135 +5046,7 @@
     "named": false
   },
   {
-    "type": "xmm0",
-    "named": false
-  },
-  {
-    "type": "xmm1",
-    "named": false
-  },
-  {
-    "type": "xmm10",
-    "named": false
-  },
-  {
-    "type": "xmm11",
-    "named": false
-  },
-  {
-    "type": "xmm12",
-    "named": false
-  },
-  {
-    "type": "xmm13",
-    "named": false
-  },
-  {
-    "type": "xmm14",
-    "named": false
-  },
-  {
-    "type": "xmm15",
-    "named": false
-  },
-  {
-    "type": "xmm2",
-    "named": false
-  },
-  {
-    "type": "xmm3",
-    "named": false
-  },
-  {
-    "type": "xmm4",
-    "named": false
-  },
-  {
-    "type": "xmm5",
-    "named": false
-  },
-  {
-    "type": "xmm6",
-    "named": false
-  },
-  {
-    "type": "xmm7",
-    "named": false
-  },
-  {
-    "type": "xmm8",
-    "named": false
-  },
-  {
-    "type": "xmm9",
-    "named": false
-  },
-  {
     "type": "xmmword",
-    "named": false
-  },
-  {
-    "type": "ymm0",
-    "named": false
-  },
-  {
-    "type": "ymm1",
-    "named": false
-  },
-  {
-    "type": "ymm10",
-    "named": false
-  },
-  {
-    "type": "ymm11",
-    "named": false
-  },
-  {
-    "type": "ymm12",
-    "named": false
-  },
-  {
-    "type": "ymm13",
-    "named": false
-  },
-  {
-    "type": "ymm14",
-    "named": false
-  },
-  {
-    "type": "ymm15",
-    "named": false
-  },
-  {
-    "type": "ymm2",
-    "named": false
-  },
-  {
-    "type": "ymm3",
-    "named": false
-  },
-  {
-    "type": "ymm4",
-    "named": false
-  },
-  {
-    "type": "ymm5",
-    "named": false
-  },
-  {
-    "type": "ymm6",
-    "named": false
-  },
-  {
-    "type": "ymm7",
-    "named": false
-  },
-  {
-    "type": "ymm8",
-    "named": false
-  },
-  {
-    "type": "ymm9",
     "named": false
   },
   {

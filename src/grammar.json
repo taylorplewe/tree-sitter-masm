@@ -130,6 +130,56 @@
         }
       ]
     },
+    "register": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "PATTERN",
+          "value": "[abcd][lh]"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[er]?[abcd]x"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[er]?[ds]i"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[er][sb]p"
+        },
+        {
+          "type": "PATTERN",
+          "value": "r(8|9|10|11|12|13|14|15)"
+        },
+        {
+          "type": "PATTERN",
+          "value": "cr0|cr2|cr3|dr[0-3]|dr[67]|tr[3-7]"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[xyz]mm(0|1|2|3|4|5|6|7|8|9|10|11|12|13|14|15)"
+        },
+        {
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "STRING",
+              "value": "st"
+            },
+            {
+              "type": "SYMBOL",
+              "name": "expression"
+            }
+          ]
+        },
+        {
+          "type": "PATTERN",
+          "value": "[cdefgs]s"
+        }
+      ]
+    },
     "id_list": {
       "type": "SEQ",
       "members": [
@@ -521,7 +571,7 @@
                 "name": "operator",
                 "content": {
                   "type": "PATTERN",
-                  "value": "or|xor"
+                  "value": "x?or"
                 }
               },
               {
@@ -660,7 +710,7 @@
                     },
                     {
                       "type": "PATTERN",
-                      "value": "shr|shl"
+                      "value": "sh[lr]"
                     }
                   ]
                 }
@@ -867,37 +917,45 @@
           "value": "$"
         },
         {
-          "type": "SYMBOL",
-          "name": "_register"
+          "type": "PREC",
+          "value": 19,
+          "content": {
+            "type": "SEQ",
+            "members": [
+              {
+                "type": "STRING",
+                "value": "st"
+              },
+              {
+                "type": "STRING",
+                "value": "("
+              },
+              {
+                "type": "SYMBOL",
+                "name": "expression"
+              },
+              {
+                "type": "STRING",
+                "value": ")"
+              }
+            ]
+          }
         },
         {
           "type": "PREC",
-          "value": 17,
+          "value": 18,
           "content": {
             "type": "STRING",
             "value": "st"
           }
         },
         {
-          "type": "SEQ",
-          "members": [
-            {
-              "type": "STRING",
-              "value": "st"
-            },
-            {
-              "type": "STRING",
-              "value": "("
-            },
-            {
-              "type": "SYMBOL",
-              "name": "expression"
-            },
-            {
-              "type": "STRING",
-              "value": ")"
-            }
-          ]
+          "type": "PREC",
+          "value": 17,
+          "content": {
+            "type": "SYMBOL",
+            "name": "register"
+          }
         }
       ]
     },
@@ -4898,8 +4956,8 @@
           "type": "SEQ",
           "members": [
             {
-              "type": "SYMBOL",
-              "name": "segment_register"
+              "type": "PATTERN",
+              "value": "[cdefgs]s"
             },
             {
               "type": "STRING",
@@ -5269,21 +5327,25 @@
       ]
     },
     "assume_seg_reg": {
-      "type": "SEQ",
-      "members": [
-        {
-          "type": "SYMBOL",
-          "name": "segment_register"
-        },
-        {
-          "type": "STRING",
-          "value": ":"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "assume_seg_val"
-        }
-      ]
+      "type": "PREC",
+      "value": 1,
+      "content": {
+        "type": "SEQ",
+        "members": [
+          {
+            "type": "PATTERN",
+            "value": "[cdefgs]s"
+          },
+          {
+            "type": "STRING",
+            "value": ":"
+          },
+          {
+            "type": "SYMBOL",
+            "name": "assume_seg_val"
+          }
+        ]
+      }
     },
     "assume_register": {
       "type": "CHOICE",
@@ -5303,7 +5365,7 @@
       "members": [
         {
           "type": "SYMBOL",
-          "name": "_register"
+          "name": "register"
         },
         {
           "type": "STRING",
@@ -5484,44 +5546,11 @@
         }
       ]
     },
-    "_register": {
-      "type": "CHOICE",
-      "members": [
-        {
-          "type": "SYMBOL",
-          "name": "special_register"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "gp_register"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "byte_register"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "qword_register"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "fpu_register"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "simd_register"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "segment_register"
-        }
-      ]
-    },
     "reg_list": {
       "type": "REPEAT1",
       "content": {
         "type": "SYMBOL",
-        "name": "_register"
+        "name": "register"
       }
     },
     "seg_attrib": {
@@ -5854,7 +5883,7 @@
           "members": [
             {
               "type": "SYMBOL",
-              "name": "_register"
+              "name": "register"
             },
             {
               "type": "STRING",
@@ -5862,7 +5891,7 @@
             },
             {
               "type": "SYMBOL",
-              "name": "_register"
+              "name": "register"
             }
           ]
         },
@@ -7180,513 +7209,6 @@
         }
       ]
     },
-    "byte_register": {
-      "type": "CHOICE",
-      "members": [
-        {
-          "type": "STRING",
-          "value": "al"
-        },
-        {
-          "type": "STRING",
-          "value": "ah"
-        },
-        {
-          "type": "STRING",
-          "value": "cl"
-        },
-        {
-          "type": "STRING",
-          "value": "ch"
-        },
-        {
-          "type": "STRING",
-          "value": "dl"
-        },
-        {
-          "type": "STRING",
-          "value": "dh"
-        },
-        {
-          "type": "STRING",
-          "value": "bl"
-        },
-        {
-          "type": "STRING",
-          "value": "bh"
-        },
-        {
-          "type": "STRING",
-          "value": "r8b"
-        },
-        {
-          "type": "STRING",
-          "value": "r9b"
-        },
-        {
-          "type": "STRING",
-          "value": "r10b"
-        },
-        {
-          "type": "STRING",
-          "value": "r11b"
-        },
-        {
-          "type": "STRING",
-          "value": "r12b"
-        },
-        {
-          "type": "STRING",
-          "value": "r13b"
-        },
-        {
-          "type": "STRING",
-          "value": "r14b"
-        },
-        {
-          "type": "STRING",
-          "value": "r15b"
-        }
-      ]
-    },
-    "gp_register": {
-      "type": "CHOICE",
-      "members": [
-        {
-          "type": "STRING",
-          "value": "ax"
-        },
-        {
-          "type": "STRING",
-          "value": "eax"
-        },
-        {
-          "type": "STRING",
-          "value": "cx"
-        },
-        {
-          "type": "STRING",
-          "value": "ecx"
-        },
-        {
-          "type": "STRING",
-          "value": "dx"
-        },
-        {
-          "type": "STRING",
-          "value": "edx"
-        },
-        {
-          "type": "STRING",
-          "value": "bx"
-        },
-        {
-          "type": "STRING",
-          "value": "ebx"
-        },
-        {
-          "type": "STRING",
-          "value": "di"
-        },
-        {
-          "type": "STRING",
-          "value": "edi"
-        },
-        {
-          "type": "STRING",
-          "value": "si"
-        },
-        {
-          "type": "STRING",
-          "value": "esi"
-        },
-        {
-          "type": "STRING",
-          "value": "bp"
-        },
-        {
-          "type": "STRING",
-          "value": "ebp"
-        },
-        {
-          "type": "STRING",
-          "value": "sp"
-        },
-        {
-          "type": "STRING",
-          "value": "esp"
-        },
-        {
-          "type": "STRING",
-          "value": "r8w"
-        },
-        {
-          "type": "STRING",
-          "value": "r8d"
-        },
-        {
-          "type": "STRING",
-          "value": "r9w"
-        },
-        {
-          "type": "STRING",
-          "value": "r9d"
-        },
-        {
-          "type": "STRING",
-          "value": "r12d"
-        },
-        {
-          "type": "STRING",
-          "value": "r13w"
-        },
-        {
-          "type": "STRING",
-          "value": "r13d"
-        },
-        {
-          "type": "STRING",
-          "value": "r14w"
-        },
-        {
-          "type": "STRING",
-          "value": "r14d"
-        }
-      ]
-    },
-    "qword_register": {
-      "type": "CHOICE",
-      "members": [
-        {
-          "type": "STRING",
-          "value": "rax"
-        },
-        {
-          "type": "STRING",
-          "value": "rcx"
-        },
-        {
-          "type": "STRING",
-          "value": "rdx"
-        },
-        {
-          "type": "STRING",
-          "value": "rbx"
-        },
-        {
-          "type": "STRING",
-          "value": "rsp"
-        },
-        {
-          "type": "STRING",
-          "value": "rbp"
-        },
-        {
-          "type": "STRING",
-          "value": "rsi"
-        },
-        {
-          "type": "STRING",
-          "value": "rdi"
-        },
-        {
-          "type": "STRING",
-          "value": "r8"
-        },
-        {
-          "type": "STRING",
-          "value": "r9"
-        },
-        {
-          "type": "STRING",
-          "value": "r10"
-        },
-        {
-          "type": "STRING",
-          "value": "r11"
-        },
-        {
-          "type": "STRING",
-          "value": "r12"
-        },
-        {
-          "type": "STRING",
-          "value": "r13"
-        },
-        {
-          "type": "STRING",
-          "value": "r14"
-        },
-        {
-          "type": "STRING",
-          "value": "r15"
-        }
-      ]
-    },
-    "special_register": {
-      "type": "CHOICE",
-      "members": [
-        {
-          "type": "STRING",
-          "value": "cr0"
-        },
-        {
-          "type": "STRING",
-          "value": "cr2"
-        },
-        {
-          "type": "STRING",
-          "value": "cr3"
-        },
-        {
-          "type": "STRING",
-          "value": "dr0"
-        },
-        {
-          "type": "STRING",
-          "value": "dr1"
-        },
-        {
-          "type": "STRING",
-          "value": "dr2"
-        },
-        {
-          "type": "STRING",
-          "value": "dr3"
-        },
-        {
-          "type": "STRING",
-          "value": "dr6"
-        },
-        {
-          "type": "STRING",
-          "value": "dr7"
-        },
-        {
-          "type": "STRING",
-          "value": "tr3"
-        },
-        {
-          "type": "STRING",
-          "value": "tr4"
-        },
-        {
-          "type": "STRING",
-          "value": "tr5"
-        },
-        {
-          "type": "STRING",
-          "value": "tr6"
-        },
-        {
-          "type": "STRING",
-          "value": "tr7"
-        }
-      ]
-    },
-    "xmm_register": {
-      "type": "CHOICE",
-      "members": [
-        {
-          "type": "STRING",
-          "value": "xmm0"
-        },
-        {
-          "type": "STRING",
-          "value": "xmm1"
-        },
-        {
-          "type": "STRING",
-          "value": "xmm2"
-        },
-        {
-          "type": "STRING",
-          "value": "xmm3"
-        },
-        {
-          "type": "STRING",
-          "value": "xmm4"
-        },
-        {
-          "type": "STRING",
-          "value": "xmm5"
-        },
-        {
-          "type": "STRING",
-          "value": "xmm6"
-        },
-        {
-          "type": "STRING",
-          "value": "xmm7"
-        },
-        {
-          "type": "STRING",
-          "value": "xmm8"
-        },
-        {
-          "type": "STRING",
-          "value": "xmm9"
-        },
-        {
-          "type": "STRING",
-          "value": "xmm10"
-        },
-        {
-          "type": "STRING",
-          "value": "xmm11"
-        },
-        {
-          "type": "STRING",
-          "value": "xmm12"
-        },
-        {
-          "type": "STRING",
-          "value": "xmm13"
-        },
-        {
-          "type": "STRING",
-          "value": "xmm14"
-        },
-        {
-          "type": "STRING",
-          "value": "xmm15"
-        }
-      ]
-    },
-    "simd_register": {
-      "type": "CHOICE",
-      "members": [
-        {
-          "type": "SYMBOL",
-          "name": "xmm_register"
-        },
-        {
-          "type": "STRING",
-          "value": "mm0"
-        },
-        {
-          "type": "STRING",
-          "value": "mm1"
-        },
-        {
-          "type": "STRING",
-          "value": "mm2"
-        },
-        {
-          "type": "STRING",
-          "value": "mm3"
-        },
-        {
-          "type": "STRING",
-          "value": "mm4"
-        },
-        {
-          "type": "STRING",
-          "value": "mm5"
-        },
-        {
-          "type": "STRING",
-          "value": "mm6"
-        },
-        {
-          "type": "STRING",
-          "value": "mm7"
-        },
-        {
-          "type": "STRING",
-          "value": "ymm0"
-        },
-        {
-          "type": "STRING",
-          "value": "ymm1"
-        },
-        {
-          "type": "STRING",
-          "value": "ymm2"
-        },
-        {
-          "type": "STRING",
-          "value": "ymm3"
-        },
-        {
-          "type": "STRING",
-          "value": "ymm4"
-        },
-        {
-          "type": "STRING",
-          "value": "ymm5"
-        },
-        {
-          "type": "STRING",
-          "value": "ymm6"
-        },
-        {
-          "type": "STRING",
-          "value": "ymm7"
-        },
-        {
-          "type": "STRING",
-          "value": "ymm8"
-        },
-        {
-          "type": "STRING",
-          "value": "ymm9"
-        },
-        {
-          "type": "STRING",
-          "value": "ymm10"
-        },
-        {
-          "type": "STRING",
-          "value": "ymm11"
-        },
-        {
-          "type": "STRING",
-          "value": "ymm12"
-        },
-        {
-          "type": "STRING",
-          "value": "ymm13"
-        },
-        {
-          "type": "STRING",
-          "value": "ymm14"
-        },
-        {
-          "type": "STRING",
-          "value": "ymm15"
-        }
-      ]
-    },
-    "segment_register": {
-      "type": "CHOICE",
-      "members": [
-        {
-          "type": "STRING",
-          "value": "cs"
-        },
-        {
-          "type": "STRING",
-          "value": "ds"
-        },
-        {
-          "type": "STRING",
-          "value": "es"
-        },
-        {
-          "type": "STRING",
-          "value": "fs"
-        },
-        {
-          "type": "STRING",
-          "value": "gs"
-        },
-        {
-          "type": "STRING",
-          "value": "ss"
-        }
-      ]
-    },
     "struct_hdr": {
       "type": "CHOICE",
       "members": [
@@ -8114,10 +7636,6 @@
     }
   ],
   "conflicts": [
-    [
-      "_register",
-      "assume_seg_reg"
-    ],
     [
       "proto_spec"
     ],
