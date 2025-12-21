@@ -795,6 +795,21 @@
     }
   },
   {
+    "type": "endp_dir",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "eol",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "ends_dir",
     "named": true,
     "fields": {},
@@ -1561,7 +1576,7 @@
     "named": true,
     "fields": {},
     "children": {
-      "multiple": false,
+      "multiple": true,
       "required": true,
       "types": [
         {
@@ -1573,11 +1588,19 @@
           "named": true
         },
         {
+          "type": "endp_dir",
+          "named": true
+        },
+        {
           "type": "exit_dir",
           "named": true
         },
         {
           "type": "general_dir",
+          "named": true
+        },
+        {
+          "type": "in_seg_dir_list",
           "named": true
         },
         {
@@ -1593,7 +1616,15 @@
           "named": true
         },
         {
+          "type": "local_dir_list",
+          "named": true
+        },
+        {
           "type": "offset_dir",
+          "named": true
+        },
+        {
+          "type": "proc_dir",
           "named": true
         },
         {
@@ -1824,6 +1855,40 @@
         },
         {
           "type": "id_list",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "local_dir",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "eol",
+          "named": true
+        },
+        {
+          "type": "parm_list",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "local_dir_list",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "local_dir",
           "named": true
         }
       ]
@@ -2422,6 +2487,29 @@
     }
   },
   {
+    "type": "p_options",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "distance",
+          "named": true
+        },
+        {
+          "type": "lang_type",
+          "named": true
+        },
+        {
+          "type": "o_visibility",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "page_dir",
     "named": true,
     "fields": {},
@@ -2450,6 +2538,44 @@
       "types": [
         {
           "type": "expression",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "parm",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "expression",
+          "named": true
+        },
+        {
+          "type": "qualified_type",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "parm_list",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "eol",
+          "named": true
+        },
+        {
+          "type": "parm",
           "named": true
         }
       ]
@@ -2494,6 +2620,56 @@
           }
         ]
       }
+    }
+  },
+  {
+    "type": "proc_dir",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "eol",
+          "named": true
+        },
+        {
+          "type": "macro_arg_list",
+          "named": true
+        },
+        {
+          "type": "p_options",
+          "named": true
+        },
+        {
+          "type": "proc_parm_list",
+          "named": true
+        },
+        {
+          "type": "uses_regs",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "proc_parm_list",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "eol",
+          "named": true
+        },
+        {
+          "type": "parm_list",
+          "named": true
+        }
+      ]
     }
   },
   {
@@ -2841,6 +3017,21 @@
         },
         {
           "type": "record_instance",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "reg_list",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "register",
           "named": true
         }
       ]
@@ -3552,6 +3743,21 @@
     }
   },
   {
+    "type": "uses_regs",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "reg_list",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "while_block",
     "named": true,
     "fields": {},
@@ -4250,6 +4456,10 @@
   },
   {
     "type": "endm",
+    "named": false
+  },
+  {
+    "type": "endp",
     "named": false
   },
   {
@@ -5046,6 +5256,10 @@
   },
   {
     "type": "use32",
+    "named": false
+  },
+  {
+    "type": "uses",
     "named": false
   },
   {

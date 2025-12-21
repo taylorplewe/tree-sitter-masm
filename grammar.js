@@ -95,6 +95,7 @@ export default grammar({
     [$.expression_terminal, $.macro_arg],
     [$.in_seg_dir_list],
     [$.segment_def],
+    [$.parm_list],
   ],
 
   rules: {
@@ -613,14 +614,6 @@ export default grammar({
     ),
 
     proto_arg: $ => seq(optional(IDENTIFIER), ":", $.qualified_type),
-    // proto_arg_list: $ => choice(
-    //   seq(
-    //     seq(",", optional($.eol), $.proto_list),
-    //     optional(seq(",", optional($.eol), optional(IDENTIFIER), ":vararg")),
-    //   ),
-    // ),
-    // proto_arg_list_scalar: $ => seq(",", optional($.eol), $.proto_list),
-    // proto_arg_list_vararg: $ => seq(",", optional($.eol), optional(IDENTIFIER), ":vararg"),
     proto_list: $ => listWithEol($.proto_arg, $.eol),
     proto_arg_list: $ => seq(
       optional(seq(",", optional($.eol))),
@@ -814,7 +807,7 @@ export default grammar({
       $.invoke_dir,
       $.general_dir,
       $.control_dir,
-      // seq($.proc_dir, optional($.local_dir_list), optional($.in_seg_dir_list), $.endp_dir),
+      seq($.proc_dir, optional($.local_dir_list), optional($.in_seg_dir_list), $.endp_dir),
     ),
     in_seg_dir: $ => seq(optional($.label_def), $.in_segment_dir),
     in_seg_dir_list: $ => repeat1($.in_seg_dir),
@@ -850,21 +843,17 @@ export default grammar({
     control_block: $ => choice($.while_block, $.repeat_block),
     control_dir: $ => choice($.control_if, $.control_block),
 
-    // proc_parm_list: $ => choice(
-    //   seq(
-
-    //   ),
-    //   seq()
-    // ),
-
-    // proc_parm_list: $ => seq(
-    //   optional(seq(",", optional($.eol))),
-    //   choice(
-    //     seq($.parm_list, optional(seq(",", optional($.eol), optional(PARM_ID), ":vararg"))),
-    //     seq(optional(PARM_ID), ":vararg"),
-    //   ),
-    // ),
-    // proc_dir: $ => 
+    proc_parm_list: $ => seq(
+      optional(seq(",", optional($.eol))),
+      choice(
+        seq($.parm_list, optional(seq(",", optional($.eol), PARM_ID, ":vararg"))),
+        seq(PARM_ID, ":vararg"),
+      ),
+    ),
+    proc_dir: $ => seq(
+      PROC_ID, "proc", optional($.p_options), optional(seq("<", $.macro_arg_list, ">")),
+      optional($.uses_regs), optional($.proc_parm_list), $.eol,
+    ),
 
 
     // option
