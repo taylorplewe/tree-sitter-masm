@@ -1,4 +1,5 @@
 include <urmom.s>
+include <ship.s>
 
 Ship struct
 	x dword ?
