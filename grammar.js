@@ -162,7 +162,7 @@ export default grammar({
       field("mnemonic", token(prec(1, MNEMONIC))),
       field("args", optional($.expr_list)),
     ),
-    instruction: $ => seq(optional($.instr_prefix), $.asm_instruction, $._eol), // masm bnf grammar error (possible): I belive there should be an eol (;;) here
+    instruction: $ => seq(optional($.instr_prefix), $.asm_instruction, $._eol), // official grammar error (possible): I belive there should be an eol (;;) here
 
     register: $ => choice(
       BYTE_REGISTER,
@@ -321,7 +321,7 @@ export default grammar({
     ),
     text_dir: $ => seq(IDENTIFIER, $.text_macro_dir, $._eol),
 
-    // masm bnf grammar error: missing a | to indicate choice
+    // official grammar error: missing a | to indicate choice
     until_dir: $ => choice(
       seq(".until", $.expression, $._eol),
       seq(".untilcxz", optional($.expression), $._eol),
@@ -416,7 +416,7 @@ export default grammar({
     ),
     page_dir: $ => seq("page", optional($.page_expr), $._eol),
 
-    // masm bnf grammar error: this isn't even listed
+    // official grammar error: this isn't even listed
     alias_dir: $ => seq("alias", $.text_literal, "=", $.text_literal),
 
     _general_dir: $ => choice(
@@ -485,7 +485,7 @@ export default grammar({
         "else", $._eol,
         $.directive_list,
       )),
-      $._eol,
+      "endif", $._eol, // official grammar error: "endif" is nowhere to be found
     ),
     elseif_statement: $ => choice(
       seq("elseif", $.expression),
@@ -561,7 +561,7 @@ export default grammar({
       ),
       TYPE_ID,
     ),
-    proto_type_dir: $ => seq(IDENTIFIER, "proto", optional($.proto_spec), $._eol), // masm bnf grammar error (possibly): I believe there should be an eol (;;) here
+    proto_type_dir: $ => seq(IDENTIFIER, "proto", optional($.proto_spec), $._eol), // official grammar error (possibly): I believe there should be an eol (;;) here
 
     pub_def: $ => seq(optional($.lang_type), IDENTIFIER),
     pub_list: $ => listWithEol($.pub_def, $._eol),
@@ -625,7 +625,7 @@ export default grammar({
       $.qualified_type,
       seq("proto", optional($.proto_spec)),
     ),
-    typedef_dir: $ => seq(TYPE_ID, "typedef", $.qualifier, $._eol), // masm bnf grammar error (possibly): I believe there should be an eol (;;) here
+    typedef_dir: $ => seq(TYPE_ID, "typedef", $.qualifier, $._eol), // official grammar error (possibly): I believe there should be an eol (;;) here
 
     // NOTE: I think the bnf grammar might be incorrect. There's no way to get from "extern" to "proto" in the grammar.
     // If instead of `qualified_type`, it was `qualifier`, then it would make sense.
@@ -645,7 +645,7 @@ export default grammar({
       seq("assume nothing", $._eol),
     ),
 
-    // another error in the bnf grammar--it omits an `|` indicating a choice between "echo" and "%out"
+    // official grammar error: it omits an `|` indicating a choice between "echo" and "%out"
     echo_dir: $ => choice(
       seq("echo", ARBITRARY_TEXT, $._eol),
       seq("%out", ARBITRARY_TEXT, $._eol),

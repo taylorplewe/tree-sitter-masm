@@ -5,9 +5,6 @@ MyStruct struct
 	myvar2 dword ?
 MyStruct ends
 
-echo afwoiefjaoiwejf4io  qiowjfoi , fjaowiefao faw; aoiwefj4
-title ayyyyyyyylmao, idk what you're eoit245952,:]{}{thinking}
-
 urmom2 proto
 
 urmom4 typedef dword
@@ -19,7 +16,7 @@ endm
 
 .code
 
-otherproc proc
+otherproc proc uses rax rbx rdx rcx
 	ret
 otherproc endp
 

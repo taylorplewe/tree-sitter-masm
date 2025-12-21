@@ -3416,6 +3416,10 @@
           ]
         },
         {
+          "type": "STRING",
+          "value": "endif"
+        },
+        {
           "type": "SYMBOL",
           "name": "_eol"
         }

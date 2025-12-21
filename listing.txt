@@ -1,4 +1,4 @@
-Microsoft (R) Macro Assembler (x64) Version 14.50.35721.0   12/21/25 12:07:44
+Microsoft (R) Macro Assembler (x64) Version 14.50.35721.0   12/21/25 15:14:50
 8ayyyyyyyylmao, idk what you're eoit245952,:]{}{thinking     Page 1 - 1
 
 
@@ -21,20 +21,20 @@ Microsoft (R) Macro Assembler (x64) Version 14.50.35721.0   12/21/25 12:07:44
 				
 				.code
 				
- 00000000			otherproc proc
+ 00000000			otherproc proc uses rax rbx rdx rcx
 					ret
  00000000			otherproc endp
- 00000000  C3			
- 00000001			alias <ben> = <otherproc>
+				
+ 00000009			alias <ben> = <otherproc>
 				
 				main proc
 					call ben
- 00000001				mov eax, MyStruct.myvar2
- 00000001  E8 FFFFFFFA			ret
- 00000006  B8 00000008		main endp
- 0000000B  C3			end
- 0000000C
-Microsoft (R) Macro Assembler (x64) Version 14.50.35721.0   12/21/25 12:07:44
+ 00000009				mov eax, MyStruct.myvar2
+ 00000009  E8 FFFFFFF2			ret
+ 0000000E  B8 00000008		main endp
+ 00000013  C3			end
+ 00000014
+Microsoft (R) Macro Assembler (x64) Version 14.50.35721.0   12/21/25 15:14:50
 8ayyyyyyyylmao, idk what you're eoit245952,:]{}{thinking     Symbols 2 - 1
 
 
@@ -68,8 +68,8 @@ Procedures, parameters, and locals:
 
                 N a m e                 Type     Value    Attr
 
-main . . . . . . . . . . . . . .	P 	 00000001 _TEXT	Length= 0000000B Public
-otherproc  . . . . . . . . . . .	P 	 00000000 _TEXT	Length= 00000001 Public
+main . . . . . . . . . . . . . .	P 	 00000009 _TEXT	Length= 0000000B Public
+otherproc  . . . . . . . . . . .	P 	 00000000 _TEXT	Length= 00000009 Public
 urmom2 . . . . . . . . . . . . .	P 	 00000000 Length= 00000000 External
 
 
@@ -77,7 +77,7 @@ Symbols:
 
                 N a m e                 Type     Value    Attr
 
-ben  . . . . . . . . . . . . . .	Number	 E26A3C2Fh   External
+ben  . . . . . . . . . . . . . .	Number	 B4A137CFh   External
 
 	   0 Warnings
 	   0 Errors
