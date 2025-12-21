@@ -34,15 +34,11 @@
     "named": true,
     "fields": {},
     "children": {
-      "multiple": true,
-      "required": true,
+      "multiple": false,
+      "required": false,
       "types": [
         {
           "type": "expr_list",
-          "named": true
-        },
-        {
-          "type": "mnemonic",
           "named": true
         }
       ]
@@ -2428,11 +2424,6 @@
   },
   {
     "type": "mem_option",
-    "named": true,
-    "fields": {}
-  },
-  {
-    "type": "mnemonic",
     "named": true,
     "fields": {}
   },
@@ -4977,10 +4968,6 @@
     "named": false
   },
   {
-    "type": "mov",
-    "named": false
-  },
-  {
     "type": "name",
     "named": false
   },
@@ -5318,10 +5305,6 @@
   },
   {
     "type": "req",
-    "named": false
-  },
-  {
-    "type": "ret",
     "named": false
   },
   {
