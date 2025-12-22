@@ -15,22 +15,6 @@
     }
   },
   {
-    "type": "asm_instruction",
-    "named": true,
-    "fields": {
-      "args": {
-        "multiple": false,
-        "required": false,
-        "types": [
-          {
-            "type": "expr_list",
-            "named": true
-          }
-        ]
-      }
-    }
-  },
-  {
     "type": "assume_dir",
     "named": true,
     "fields": {},
@@ -1493,25 +1477,6 @@
       "required": true,
       "types": [
         {
-          "type": "in_segment_dir",
-          "named": true
-        },
-        {
-          "type": "label_def",
-          "named": true
-        }
-      ]
-    }
-  },
-  {
-    "type": "in_segment_dir",
-    "named": true,
-    "fields": {},
-    "children": {
-      "multiple": true,
-      "required": true,
-      "types": [
-        {
           "type": "alias_dir",
           "named": true
         },
@@ -1593,6 +1558,10 @@
         },
         {
           "type": "invoke_dir",
+          "named": true
+        },
+        {
+          "type": "label_def",
           "named": true
         },
         {
@@ -1775,15 +1744,22 @@
   {
     "type": "instruction",
     "named": true,
-    "fields": {},
+    "fields": {
+      "args": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "expr_list",
+            "named": true
+          }
+        ]
+      }
+    },
     "children": {
       "multiple": true,
-      "required": true,
+      "required": false,
       "types": [
-        {
-          "type": "asm_instruction",
-          "named": true
-        },
         {
           "type": "comment_line",
           "named": true
@@ -2637,7 +2613,43 @@
         "required": true,
         "types": [
           {
+            "type": "high",
+            "named": false
+          },
+          {
+            "type": "highword",
+            "named": false
+          },
+          {
+            "type": "low",
+            "named": false
+          },
+          {
+            "type": "lowword",
+            "named": false
+          },
+          {
+            "type": "lroffset",
+            "named": false
+          },
+          {
             "type": "not",
+            "named": false
+          },
+          {
+            "type": "offset",
+            "named": false
+          },
+          {
+            "type": "seg",
+            "named": false
+          },
+          {
+            "type": "this",
+            "named": false
+          },
+          {
+            "type": "type",
             "named": false
           }
         ]
@@ -4253,6 +4265,14 @@
     "named": false
   },
   {
+    "type": "[",
+    "named": false
+  },
+  {
+    "type": "]",
+    "named": false
+  },
+  {
     "type": "abs",
     "named": false
   },
@@ -4550,6 +4570,14 @@
     "named": false
   },
   {
+    "type": "high",
+    "named": false
+  },
+  {
+    "type": "highword",
+    "named": false
+  },
+  {
     "type": "huge",
     "named": false
   },
@@ -4655,6 +4683,18 @@
   },
   {
     "type": "lock",
+    "named": false
+  },
+  {
+    "type": "low",
+    "named": false
+  },
+  {
+    "type": "lowword",
+    "named": false
+  },
+  {
+    "type": "lroffset",
     "named": false
   },
   {
@@ -4990,6 +5030,10 @@
     "named": false
   },
   {
+    "type": "this",
+    "named": false
+  },
+  {
     "type": "tiny",
     "named": false
   },
@@ -4999,6 +5043,10 @@
   },
   {
     "type": "true",
+    "named": false
+  },
+  {
+    "type": "type",
     "named": false
   },
   {

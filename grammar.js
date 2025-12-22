@@ -157,11 +157,11 @@ export default grammar({
     _eol: $ => choice($.comment_line, /\n/),
     comment_line: _ => /;.*/,
 
-    asm_instruction: $ => seq(
+    _asm_instruction: $ => seq(
       field("mnemonic", token(prec(1, MNEMONIC))),
       field("args", optional($.expr_list)),
     ),
-    instruction: $ => seq(optional($.instr_prefix), $.asm_instruction, $._eol), // official grammar error (possible): I belive there should be an eol (;;) here
+    instruction: $ => seq(optional($.instr_prefix), $._asm_instruction, $._eol), // official grammar error (possible): I belive there should be an eol (;;) here
 
     register: $ => choice(
       BYTE_REGISTER,
@@ -202,8 +202,8 @@ export default grammar({
     prefix_expression: $ => {
       const table = [
         [PREC.bitwise_not, "not"],
-        [PREC.bit_section, /high|low|highword|lowword/],
-        [PREC.offset, /offset|seg|lroffset|type|this/],
+        [PREC.bit_section, choice("high", "low", "highword", "lowword")],
+        [PREC.offset, choice("offset", "seg", "lroffset", "type", "this")],
       ];
 
       return choice(...table.map(([precedence, prefix]) => prec(precedence, seq(
@@ -234,6 +234,7 @@ export default grammar({
 
     expression_terminal: $ => choice(
       seq("(", $.expression, ")"),
+      seq("[", $.expression, "]"),
       seq("width", IDENTIFIER),
       seq("mask", IDENTIFIER),
       seq("size", $._size_arg),
@@ -364,7 +365,7 @@ export default grammar({
     ),
     macro_arg_list: $ => list($.macro_arg),
 
-    // official grammar error: having this just be `directive` does not allow for instructions. inSegDirList does.
+    // official grammar error: having this just be `directive` does not allow for instructions. inSegDirList does. see `macro_body`.
     macro_stmt: $ => choice(
       // $._directive,
       $.exitm_dir,
@@ -372,7 +373,10 @@ export default grammar({
       seq("goto", MACRO_LABEL),
     ),
     macro_stmt_list: $ => repeat1(seq($.macro_stmt, $._eol)),
-    macro_body: $ => seq(optional($.local_list), choice($.macro_stmt_list, $.in_seg_dir_list)),
+    macro_body: $ => seq(
+      optional($.local_list),
+      choice($.macro_stmt_list, $.in_seg_dir_list)
+    ),
     macro_dir: $ => seq(
       IDENTIFIER, "macro", optional($.macro_parm_list), $._eol,
       $.macro_body,
@@ -711,7 +715,7 @@ export default grammar({
     invoke_list: $ => listWithEol($.invoke_arg, $._eol),
     invoke_dir: $ => seq("invoke", $.expression, optional(seq(",", optional($._eol), $.invoke_list)), $._eol),
 
-    in_segment_dir: $ => choice(
+    _in_segment_dir: $ => choice(
       $.instruction,
       $.data_dir,
       $.startup_dir,
@@ -723,7 +727,7 @@ export default grammar({
       $.control_dir,
       seq($.proc_dir, optional($.local_dir_list), optional($.in_seg_dir_list), $.endp_dir),
     ),
-    _in_seg_dir: $ => seq(optional($.label_def), $.in_segment_dir),
+    _in_seg_dir: $ => seq(optional($.label_def), $._in_segment_dir),
     in_seg_dir_list: $ => repeat1($._in_seg_dir),
 
     block_statements: $ => choice(

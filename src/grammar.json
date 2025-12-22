@@ -69,7 +69,7 @@
       "type": "PATTERN",
       "value": ";.*"
     },
-    "asm_instruction": {
+    "_asm_instruction": {
       "type": "SEQ",
       "members": [
         {
@@ -122,7 +122,7 @@
         },
         {
           "type": "SYMBOL",
-          "name": "asm_instruction"
+          "name": "_asm_instruction"
         },
         {
           "type": "SYMBOL",
@@ -441,8 +441,25 @@
                 "type": "FIELD",
                 "name": "prefix",
                 "content": {
-                  "type": "PATTERN",
-                  "value": "high|low|highword|lowword"
+                  "type": "CHOICE",
+                  "members": [
+                    {
+                      "type": "STRING",
+                      "value": "high"
+                    },
+                    {
+                      "type": "STRING",
+                      "value": "low"
+                    },
+                    {
+                      "type": "STRING",
+                      "value": "highword"
+                    },
+                    {
+                      "type": "STRING",
+                      "value": "lowword"
+                    }
+                  ]
                 }
               },
               {
@@ -466,8 +483,29 @@
                 "type": "FIELD",
                 "name": "prefix",
                 "content": {
-                  "type": "PATTERN",
-                  "value": "offset|seg|lroffset|type|this"
+                  "type": "CHOICE",
+                  "members": [
+                    {
+                      "type": "STRING",
+                      "value": "offset"
+                    },
+                    {
+                      "type": "STRING",
+                      "value": "seg"
+                    },
+                    {
+                      "type": "STRING",
+                      "value": "lroffset"
+                    },
+                    {
+                      "type": "STRING",
+                      "value": "type"
+                    },
+                    {
+                      "type": "STRING",
+                      "value": "this"
+                    }
+                  ]
                 }
               },
               {
@@ -811,6 +849,23 @@
             {
               "type": "STRING",
               "value": ")"
+            }
+          ]
+        },
+        {
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "STRING",
+              "value": "["
+            },
+            {
+              "type": "SYMBOL",
+              "name": "expression"
+            },
+            {
+              "type": "STRING",
+              "value": "]"
             }
           ]
         },
@@ -6035,7 +6090,7 @@
         }
       ]
     },
-    "in_segment_dir": {
+    "_in_segment_dir": {
       "type": "CHOICE",
       "members": [
         {
@@ -6130,7 +6185,7 @@
         },
         {
           "type": "SYMBOL",
-          "name": "in_segment_dir"
+          "name": "_in_segment_dir"
         }
       ]
     },
