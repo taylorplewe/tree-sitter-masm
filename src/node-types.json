@@ -2024,6 +2024,10 @@
       "required": true,
       "types": [
         {
+          "type": "in_seg_dir_list",
+          "named": true
+        },
+        {
           "type": "local_list",
           "named": true
         },
@@ -2186,151 +2190,7 @@
       "required": false,
       "types": [
         {
-          "type": "alias_dir",
-          "named": true
-        },
-        {
-          "type": "assume_dir",
-          "named": true
-        },
-        {
-          "type": "comm_dir",
-          "named": true
-        },
-        {
-          "type": "context_dir",
-          "named": true
-        },
-        {
-          "type": "cref_dir",
-          "named": true
-        },
-        {
-          "type": "echo_dir",
-          "named": true
-        },
-        {
-          "type": "eq_dir",
-          "named": true
-        },
-        {
-          "type": "equ_dir",
-          "named": true
-        },
-        {
-          "type": "error_dir",
-          "named": true
-        },
-        {
           "type": "exitm_dir",
-          "named": true
-        },
-        {
-          "type": "extern_dir",
-          "named": true
-        },
-        {
-          "type": "group_dir",
-          "named": true
-        },
-        {
-          "type": "if_dir",
-          "named": true
-        },
-        {
-          "type": "include_dir",
-          "named": true
-        },
-        {
-          "type": "include_lib_dir",
-          "named": true
-        },
-        {
-          "type": "list_dir",
-          "named": true
-        },
-        {
-          "type": "macro_dir",
-          "named": true
-        },
-        {
-          "type": "macro_for",
-          "named": true
-        },
-        {
-          "type": "macro_forc",
-          "named": true
-        },
-        {
-          "type": "macro_repeat",
-          "named": true
-        },
-        {
-          "type": "macro_while",
-          "named": true
-        },
-        {
-          "type": "model_dir",
-          "named": true
-        },
-        {
-          "type": "name_dir",
-          "named": true
-        },
-        {
-          "type": "option_dir",
-          "named": true
-        },
-        {
-          "type": "page_dir",
-          "named": true
-        },
-        {
-          "type": "processor_dir",
-          "named": true
-        },
-        {
-          "type": "proto_type_dir",
-          "named": true
-        },
-        {
-          "type": "public_dir",
-          "named": true
-        },
-        {
-          "type": "purge_dir",
-          "named": true
-        },
-        {
-          "type": "radix_dir",
-          "named": true
-        },
-        {
-          "type": "record_dir",
-          "named": true
-        },
-        {
-          "type": "seg_order_dir",
-          "named": true
-        },
-        {
-          "type": "segment_def",
-          "named": true
-        },
-        {
-          "type": "struct_dir",
-          "named": true
-        },
-        {
-          "type": "text_dir",
-          "named": true
-        },
-        {
-          "type": "title_dir",
-          "named": true
-        },
-        {
-          "type": "typedef_dir",
           "named": true
         }
       ]

@@ -22,7 +22,19 @@ otherproc endp
 
 alias <ben> = <otherproc>
 
+mymac macro
+	urmanz2 dword ?
+	insidemac proc
+		mov eax, 1
+		ret
+	insidemac endp
+endm
+
 main proc
+	urmanz dword ?
+
+	mymac
+
 	call ben
 	mov eax, MyStruct.myvar2
 	ret

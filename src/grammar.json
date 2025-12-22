@@ -2534,10 +2534,6 @@
       "members": [
         {
           "type": "SYMBOL",
-          "name": "_directive"
-        },
-        {
-          "type": "SYMBOL",
           "name": "exitm_dir"
         },
         {
@@ -2600,8 +2596,17 @@
           ]
         },
         {
-          "type": "SYMBOL",
-          "name": "macro_stmt_list"
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "macro_stmt_list"
+            },
+            {
+              "type": "SYMBOL",
+              "name": "in_seg_dir_list"
+            }
+          ]
         }
       ]
     },
@@ -7682,10 +7687,6 @@
     [
       "init_value",
       "old_record_field_list"
-    ],
-    [
-      "expression_terminal",
-      "macro_arg"
     ],
     [
       "in_seg_dir_list"

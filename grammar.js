@@ -137,7 +137,6 @@ export default grammar({
     [$.struct_body],
     [$.init_value, $.record_field_list],
     [$.init_value, $.old_record_field_list],
-    [$.expression_terminal, $.macro_arg],
     [$.in_seg_dir_list],
     [$.segment_def],
     [$.parm_list],
@@ -364,14 +363,16 @@ export default grammar({
       seq("<", SYNTACTICAL_TEXT, ">"),
     ),
     macro_arg_list: $ => list($.macro_arg),
+
+    // official grammar error: having this just be `directive` does not allow for instructions. inSegDirList does.
     macro_stmt: $ => choice(
-      $._directive,
+      // $._directive,
       $.exitm_dir,
       seq(":", MACRO_LABEL),
       seq("goto", MACRO_LABEL),
     ),
     macro_stmt_list: $ => repeat1(seq($.macro_stmt, $._eol)),
-    macro_body: $ => seq(optional($.local_list), $.macro_stmt_list),
+    macro_body: $ => seq(optional($.local_list), choice($.macro_stmt_list, $.in_seg_dir_list)),
     macro_dir: $ => seq(
       IDENTIFIER, "macro", optional($.macro_parm_list), $._eol,
       $.macro_body,
