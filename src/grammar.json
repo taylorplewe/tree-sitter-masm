@@ -6193,26 +6193,6 @@
           ]
         },
         {
-          "type": "IMMEDIATE_TOKEN",
-          "content": {
-            "type": "SEQ",
-            "members": [
-              {
-                "type": "SYMBOL",
-                "name": "label_def"
-              },
-              {
-                "type": "PATTERN",
-                "value": "[ \\t]*"
-              },
-              {
-                "type": "SYMBOL",
-                "name": "_in_segment_dir"
-              }
-            ]
-          }
-        },
-        {
           "type": "SEQ",
           "members": [
             {

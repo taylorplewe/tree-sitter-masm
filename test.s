@@ -5,7 +5,6 @@ fire_update proc
 	; @@:
 
 	mylabel:
-
 fire_update endp
 
 end
