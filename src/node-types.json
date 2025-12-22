@@ -1489,6 +1489,10 @@
           "named": true
         },
         {
+          "type": "comment_line",
+          "named": true
+        },
+        {
           "type": "context_dir",
           "named": true
         },
@@ -4262,6 +4266,14 @@
   },
   {
     "type": "@@:",
+    "named": false
+  },
+  {
+    "type": "@b",
+    "named": false
+  },
+  {
+    "type": "@f",
     "named": false
   },
   {

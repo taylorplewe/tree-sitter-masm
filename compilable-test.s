@@ -30,6 +30,12 @@ mymac macro
 	insidemac endp
 endm
 
+myproc proc
+	labelzz: mov eax, 2
+	ret
+	mylabel:
+myproc endp
+
 main proc
 	urmanz dword ?
 

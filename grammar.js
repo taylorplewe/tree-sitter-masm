@@ -245,6 +245,8 @@ export default grammar({
       $.string,
       $.type,
       prec(PREC.e11 + 1, IDENTIFIER),
+      "@f",
+      "@b",
       "$",
       prec(PREC.e11 + 3, seq("st", "(", $.expression, ")")),
       prec(PREC.e11 + 2, "st"),
@@ -727,7 +729,12 @@ export default grammar({
       $.control_dir,
       seq($.proc_dir, optional($.local_dir_list), optional($.in_seg_dir_list), $.endp_dir),
     ),
-    _in_seg_dir: $ => seq(optional($.label_def), $._in_segment_dir),
+    // official grammar error: it is possible to have a label with no inSegmentDir
+    _in_seg_dir: $ => choice(
+      seq($.label_def, $._eol),
+      seq($.label_def, $._in_segment_dir),
+      seq($._in_segment_dir),
+    ),
     in_seg_dir_list: $ => repeat1($._in_seg_dir),
 
     block_statements: $ => choice(
