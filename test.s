@@ -2,6 +2,8 @@
 
 fire_update proc
 	ret
+
+	macroCall
 	; @@:
 
 	mylabel:

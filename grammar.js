@@ -26,24 +26,6 @@ const DIGITS = /[0-9][0-9A-Fa-f]*/;
 const RADIX_OVERRIDE = /[hoqtyHOQTY]/;
 const TEXT = /\!?[^>\n]+/;
 const CONSTANT = /[0-9][0-9A-Fa-f]*[hoqtyHOQTY]?/;
-const IDENTIFIER = /[a-zA-Z@_$?][a-zA-Z0-9@_$?]*/;
-
-// id aliases
-const GROUP_ID = IDENTIFIER;
-const TYPE_ID = IDENTIFIER;
-const ALT_ID = IDENTIFIER;
-const BIT_FIELD_ID = IDENTIFIER;
-const MACRO_FUNC_ID = IDENTIFIER;
-const MACRO_PROC_ID = IDENTIFIER;
-const MACRO_ID = IDENTIFIER;
-const MACRO_LABEL = IDENTIFIER;
-const TEXT_MACRO_ID = IDENTIFIER;
-const PARM_ID = IDENTIFIER;
-const PROC_ID = IDENTIFIER;
-const SEG_ID = IDENTIFIER;
-const RECORD_TAG = IDENTIFIER;
-const STRUCT_TAG = IDENTIFIER;
-const UNION_TAG = IDENTIFIER;
 
 const SIGN = /\+|\-/;
 const BINARY_OP = /==|\!=|>=|<=|>|<|&/;
@@ -128,6 +110,8 @@ export default grammar({
     $.comment_line,
   ],
 
+  word: $ => $.identifier,
+
   conflicts: $ => [
     [$.proto_spec],
     [$.proto_list],
@@ -140,11 +124,12 @@ export default grammar({
     [$.in_seg_dir_list],
     [$.segment_def],
     [$.parm_list],
+    [$.expression_terminal, $.macro_arg],
   ],
 
   // reserved: {
   //   global: $ => [
-  //     "for",
+  //     "proc",
   //   ],
   // },
 
@@ -163,6 +148,8 @@ export default grammar({
     ),
     instruction: $ => seq(optional($.instr_prefix), $._asm_instruction, $._eol), // official grammar error (possible): I belive there should be an eol (;;) here
 
+    identifier: _ => /[a-zA-Z@_$?][a-zA-Z0-9@_$?]*/,
+
     register: $ => choice(
       BYTE_REGISTER,
       GP_REGISTER,
@@ -179,7 +166,7 @@ export default grammar({
 
     // building blocks
     
-    id_list: $ => list(IDENTIFIER),
+    id_list: $ => list($.identifier),
     stext: $ => repeat1(ANY_CHAR_EXCEPT_QUOTE),
     string: $ => seq($.quote, optional($.stext), $.quote, $._eol),
     text_literal: $ => seq("<", TEXT, ">", $._eol),
@@ -235,16 +222,16 @@ export default grammar({
     expression_terminal: $ => choice(
       seq("(", $.expression, ")"),
       seq("[", $.expression, "]"),
-      seq("width", IDENTIFIER),
-      seq("mask", IDENTIFIER),
+      seq("width", $.identifier),
+      seq("mask", $.identifier),
       seq("size", $._size_arg),
       seq("sizeof", $._size_arg),
-      seq("length", IDENTIFIER),
-      seq("lengthof", IDENTIFIER),
+      seq("length", $.identifier),
+      seq("lengthof", $.identifier),
       CONSTANT,
       $.string,
       $.type,
-      prec(PREC.e11 + 1, IDENTIFIER),
+      prec(PREC.e11 + 1, $.identifier),
       "@f",
       "@b",
       "$",
@@ -258,12 +245,12 @@ export default grammar({
 
     expr_list: $ => list($.expression),
     _bit_field_size: $ => alias($.expression, $.bit_field_size),
-    bit_def: $ => seq(BIT_FIELD_ID, ":", $._bit_field_size, optional(seq("=", $.expression))),
+    bit_def: $ => seq($.identifier, ":", $._bit_field_size, optional(seq("=", $.expression))),
     bit_def_list: $ => listWithEol($.bit_def, $._eol),
-    record_dir: $ => seq(RECORD_TAG, "record", $.bit_def_list, $._eol),
+    record_dir: $ => seq($.identifier, "record", $.bit_def_list, $._eol),
 
     _comm_type: $ => alias($.expression, $.comm_type),
-    comm_decl: $ => seq(optional($.near_far), optional($.lang_type), IDENTIFIER, ":", $._comm_type, optional(seq(":", $.expression))),
+    comm_decl: $ => seq(optional($.near_far), optional($.lang_type), $.identifier, ":", $._comm_type, optional(seq(":", $.expression))),
     comm_list: $ => list($.comm_decl),
     comm_dir: $ => seq("comm", $.comm_list, $._eol),
 
@@ -288,29 +275,29 @@ export default grammar({
     ),
     record_inst_list: $ => listWithEol($.record_instance, $._eol),
     record_const: $ => choice(
-      seq(RECORD_TAG, "{", $.old_record_field_list, "}"),
-      seq(RECORD_TAG, "<", $.old_record_field_list, ">"),
+      seq($.identifier, "{", $.old_record_field_list, "}"),
+      seq($.identifier, "<", $.old_record_field_list, ">"),
     ),
 
     data_item: $ => choice(
       prec(1, seq(field("type", $._data_decl), field("value", $.scalar_inst_list))),
-      prec(2, seq(field("type", IDENTIFIER), field("value", $.struct_inst_list))),
-      prec(3, seq(field("type", RECORD_TAG), field("value", $.record_inst_list))),
+      prec(2, seq(field("type", $.identifier), field("value", $.struct_inst_list))),
+      prec(3, seq(field("type", $.identifier), field("value", $.record_inst_list))),
     ),
-    data_dir: $ => seq(optional(IDENTIFIER), $.data_item, $._eol),
+    data_dir: $ => seq(optional($.identifier), $.data_item, $._eol),
 
     seg_dir: $ => choice(
-      seq(".code", optional(SEG_ID)),
+      seq(".code", optional($.identifier)),
       ".data",
       ".data?",
       ".const",
-      seq(".fardata", optional(SEG_ID)),
-      seq(".fardata?", optional(SEG_ID)),
+      seq(".fardata", optional($.identifier)),
+      seq(".fardata?", optional($.identifier)),
       seq(".stack", optional($.expression)),
     ),
     simple_seg_dir: $ => seq($.seg_dir, $._eol),
 
-    text_item: $ => choice($.text_literal, TEXT_MACRO_ID, seq("%", $.expression)),
+    text_item: $ => choice($.text_literal, $.identifier, seq("%", $.expression)),
     text_list: $ => listWithEol($.text_item, $._eol),
     _text_len: $ => alias($.expression, $.text_len),
     _text_start: $ => alias($.expression, $.text_start),
@@ -321,7 +308,7 @@ export default grammar({
       seq("substr", $.text_item, ",", $._text_start, optional(seq(",", $._text_len))),
       seq("instr", optional(seq($._text_start, ",")), $.text_item, ",", $.text_item),
     ),
-    text_dir: $ => seq(IDENTIFIER, $.text_macro_dir, $._eol),
+    text_dir: $ => seq($.identifier, $.text_macro_dir, $._eol),
 
     // official grammar error: missing a | to indicate choice
     until_dir: $ => choice(
@@ -348,19 +335,19 @@ export default grammar({
       $.offset_dir,
       $.nested_struct,
     ),
-    nested_struct: $ => seq($.struct_hdr, optional(IDENTIFIER), $._eol, $.struct_body, "ends", $._eol),
+    nested_struct: $ => seq($.struct_hdr, optional($.identifier), $._eol, $.struct_body, "ends", $._eol),
     struct_body: $ => repeat1($.struct_item),
     _field_align: $ => alias($.expression, $.field_align),
     struct_dir: $ => seq(
-      STRUCT_TAG, $.struct_hdr, optional($._field_align), optional(seq(",", "nonunique")), $._eol,
+      $.identifier, $.struct_hdr, optional($._field_align), optional(seq(",", "nonunique")), $._eol,
       $.struct_body,
-      STRUCT_TAG, "ends", $._eol,
+      $.identifier, "ends", $._eol,
     ),
 
     macro_arg: $ => choice(
       seq("%", $.expression),
-      seq("%", TEXT_MACRO_ID),
-      seq("%", MACRO_FUNC_ID, "(", $.macro_arg_list, ")"),
+      seq("%", $.identifier),
+      seq("%", $.identifier, "(", $.macro_arg_list, ")"),
       $.string,
       SYNTACTICAL_TEXT,
       seq("<", SYNTACTICAL_TEXT, ">"),
@@ -371,8 +358,8 @@ export default grammar({
     macro_stmt: $ => choice(
       // $._directive,
       $.exitm_dir,
-      seq(":", MACRO_LABEL),
-      seq("goto", MACRO_LABEL),
+      seq(":", $.identifier),
+      seq("goto", $.identifier),
     ),
     macro_stmt_list: $ => repeat1(seq($.macro_stmt, $._eol)),
     macro_body: $ => seq(
@@ -380,7 +367,7 @@ export default grammar({
       choice($.macro_stmt_list, $.in_seg_dir_list)
     ),
     macro_dir: $ => seq(
-      IDENTIFIER, "macro", optional($.macro_parm_list), $._eol,
+      $.identifier, "macro", optional($.macro_parm_list), $._eol,
       $.macro_body,
       "endm", $._eol,
     ),
@@ -390,7 +377,7 @@ export default grammar({
       "endm", $._eol,
     ),
     macro_forc: $ => seq(
-      FORC_DIR, IDENTIFIER, ",", $.text_literal, $._eol,
+      FORC_DIR, $.identifier, ",", $.text_literal, $._eol,
       $.macro_body,
       "endm", $._eol,
     ),
@@ -405,13 +392,13 @@ export default grammar({
       "endm", $._eol,
     ),
     macro_call: $ => choice(
-      seq(IDENTIFIER, optional($.macro_arg_list), $._eol),
-      seq(IDENTIFIER, "(", optional($.macro_arg_list), ")"),
+      seq($.identifier, optional($.macro_arg_list), $._eol),
+      seq($.identifier, "(", optional($.macro_arg_list), ")"),
     ),
 
-    eq_dir: $ => seq(IDENTIFIER, "=", $.expression, $._eol),
+    eq_dir: $ => seq($.identifier, "=", $.expression, $._eol),
     equ_type: $ => choice($.expression, $.text_literal),
-    equ_dir: $ => seq(TEXT_MACRO_ID, "equ", $.equ_type, $._eol),
+    equ_dir: $ => seq($.identifier, "equ", $.equ_type, $._eol),
 
     radix_dir: $ => seq(".radix", $.expression, $._eol),
 
@@ -427,46 +414,42 @@ export default grammar({
     alias_dir: $ => seq("alias", $.text_literal, "=", $.text_literal),
 
     _general_dir: $ => choice(
-      prec(2, choice(
-        $.alias_dir,
-        $.assume_dir,
-        $.comm_dir,
-        $.context_dir,
-        $.cref_dir,
-        $.echo_dir,
-        $.eq_dir,
-        $.equ_dir,
-        $.error_dir,
-        $.extern_dir,
-        $.group_dir,
-        $.if_dir,
-        $.include_dir,
-        $.include_lib_dir,
-        $.list_dir,
-        $.macro_dir,
-        $.macro_for,
-        $.macro_forc,
-        $.macro_repeat,
-        $.macro_while,
-        $.model_dir,
-        $.name_dir,
-        $.option_dir,
-        $.page_dir,
-        $.processor_dir,
-        $.proto_type_dir,
-        $.public_dir,
-        $.purge_dir,
-        $.radix_dir,
-        $.record_dir,
-        $.seg_order_dir,
-        $.struct_dir,
-        $.text_dir,
-        $.title_dir,
-        $.typedef_dir,
-      )),
-      prec(1, choice(
-        // $.macro_call,
-      )),
+      $.alias_dir,
+      $.assume_dir,
+      $.comm_dir,
+      $.context_dir,
+      $.cref_dir,
+      $.echo_dir,
+      $.eq_dir,
+      $.equ_dir,
+      $.error_dir,
+      $.extern_dir,
+      $.group_dir,
+      $.if_dir,
+      $.include_dir,
+      $.include_lib_dir,
+      $.list_dir,
+      $.macro_dir,
+      $.macro_for,
+      $.macro_forc,
+      $.macro_repeat,
+      $.macro_while,
+      $.model_dir,
+      $.name_dir,
+      $.option_dir,
+      $.page_dir,
+      $.processor_dir,
+      $.proto_type_dir,
+      $.public_dir,
+      $.purge_dir,
+      $.radix_dir,
+      $.record_dir,
+      $.seg_order_dir,
+      $.struct_dir,
+      $.text_dir,
+      $.title_dir,
+      $.typedef_dir,
+      $.macro_call,
     ),
     _directive: $ => choice($._general_dir, $.segment_def),
     directive_list: $ => repeat1($._directive),
@@ -476,8 +459,8 @@ export default grammar({
       seq("ife", $.expression),
       seq("ifb", $.text_item),
       seq("ifnb", $.text_item),
-      seq("ifdef", IDENTIFIER),
-      seq("ifndef", IDENTIFIER),
+      seq("ifdef", $.identifier),
+      seq("ifndef", $.identifier),
       seq("ifdif", $.text_item , $.text_item),
       seq("ifdifi", $.text_item , $.text_item),
       seq("ifidn", $.text_item , $.text_item),
@@ -499,8 +482,8 @@ export default grammar({
       seq("elseife", $.expression),
       seq("elseifb", $.text_item),
       seq("elseifnb", $.text_item),
-      seq("elseifdef", IDENTIFIER),
-      seq("elseifndef", IDENTIFIER),
+      seq("elseifdef", $.identifier),
+      seq("elseifndef", $.identifier),
       seq("elseifdif", $.text_item, $.text_item),
       seq("elseifdifi", $.text_item, $.text_item),
       seq("elseifidn", $.text_item, $.text_item),
@@ -516,8 +499,8 @@ export default grammar({
       seq(".ERRNZ", $.expression, optional($.opt_text)),
       seq(".ERRB", $.text_item, optional($.opt_text)),
       seq(".ERRNB", $.text_item, optional($.opt_text)),
-      seq(".ERRDEF", IDENTIFIER, optional($.opt_text)),
-      seq(".ERRNDEF", IDENTIFIER, optional($.opt_text)),
+      seq(".ERRDEF", $.identifier, optional($.opt_text)),
+      seq(".ERRNDEF", $.identifier, optional($.opt_text)),
       seq(".ERRDIF", $.text_item, $.text_item, optional($.opt_text)),
       seq(".ERRDIFI", $.text_item, $.text_item, optional($.opt_text)),
       seq(".ERRIDN", $.text_item, $.text_item, optional($.opt_text)),
@@ -536,10 +519,10 @@ export default grammar({
       seq(".nocref", optional($.id_list)),
     ),
     cref_dir: $ => seq($.cref_option, $._eol),
-    _data_decl: $ => choice("db", "dw", "dd", "df", "dq", "dt", $._data_type, TYPE_ID),
+    _data_decl: $ => choice("db", "dw", "dd", "df", "dq", "dt", $._data_type, $.identifier),
     distance: $ => choice($.near_far, "near16", "near32", "far16", "far32"),
     type: $ => choice(
-      IDENTIFIER, // STRUCT_TAG, UNION_TAG, RECORD_TAG, TYPE_ID
+      $.identifier,
       $.distance,
       $._data_type,
     ),
@@ -548,13 +531,13 @@ export default grammar({
       seq(optional($.distance), "ptr", optional($.qualified_type)),
     ),
 
-    proto_arg: $ => seq(optional(IDENTIFIER), ":", $.qualified_type),
+    proto_arg: $ => seq(optional($.identifier), ":", $.qualified_type),
     proto_list: $ => listWithEol($.proto_arg, $._eol),
     proto_arg_list: $ => seq(
       optional(seq(",", optional($._eol))),
       choice(
-        seq($.proto_list, optional(seq(",", optional($._eol), optional(IDENTIFIER), ":vararg"))),
-        seq(optional(IDENTIFIER), ":vararg"),
+        seq($.proto_list, optional(seq(",", optional($._eol), optional($.identifier), ":vararg"))),
+        seq(optional($.identifier), ":vararg"),
       ),
     ),
     proto_spec: $ => choice(
@@ -566,29 +549,26 @@ export default grammar({
         seq($.lang_type, optional($.proto_arg_list)),
         $.proto_arg_list,
       ),
-      TYPE_ID,
+      $.identifier,
     ),
-    proto_type_dir: $ => seq(IDENTIFIER, "proto", optional($.proto_spec), $._eol), // official grammar error (possibly): I believe there should be an eol (;;) here
+    proto_type_dir: $ => seq($.identifier, "proto", optional($.proto_spec), $._eol), // official grammar error (possibly): I believe there should be an eol (;;) here
 
-    pub_def: $ => seq(optional($.lang_type), IDENTIFIER),
+    pub_def: $ => seq(optional($.lang_type), $.identifier),
     pub_list: $ => listWithEol($.pub_def, $._eol),
     public_dir: $ => seq("public", $.pub_list, $._eol),
 
-    macro_id: $ => choice(MACRO_PROC_ID, MACRO_FUNC_ID),
-    macro_id_list: $ => list(MACRO_ID),
-
-    purge_dir: $ => seq("purge", $.macro_id_list),
+    purge_dir: $ => seq("purge", $.id_list),
 
     parm_type: $ => choice(
       "req",
       seq("=", $.text_literal),
       "vararg",
     ),
-    macro_parm: $ => seq(IDENTIFIER, optional(seq(":", $.parm_type))),
+    macro_parm: $ => seq($.identifier, optional(seq(":", $.parm_type))),
     macro_parm_list: $ => listWithEol($.macro_parm, $._eol),
     parm: $ => choice(
-      seq(PARM_ID, optional(seq(":", $.qualified_type))),
-      seq(PARM_ID, optional($.expression), optional(seq(":", $.qualified_type))),
+      seq($.identifier, optional(seq(":", $.qualified_type))),
+      seq($.identifier, optional($.expression), optional(seq(":", $.qualified_type))),
     ),
     parm_list: $ => listWithEol($.parm, $._eol),
 
@@ -596,7 +576,7 @@ export default grammar({
     model_opt_list: $ => list($.model_opt),
     model_dir: $ => seq(".model", $.mem_option, optional(seq(",", $.model_opt_list)), $._eol),
 
-    name_dir: $ => seq("name", IDENTIFIER, $._eol),
+    name_dir: $ => seq("name", $.identifier, $._eol),
 
     p_options: $ => choice(
       seq($.distance, optional($.lang_type), optional($.o_visibility)),
@@ -605,39 +585,39 @@ export default grammar({
     ),
 
     for_parm_type: $ => choice("req", seq("=", $.text_literal)),
-    for_parm: $ => seq(IDENTIFIER, optional(seq(":", $.for_parm_type))),
+    for_parm: $ => seq($.identifier, optional(seq(":", $.for_parm_type))),
 
     frame_expr: $ => choice(
-      seq("seg", IDENTIFIER),
-      seq("dgroup", ":", IDENTIFIER),
-      seq(SEGMENT_REGISTER, ":", IDENTIFIER),
-      IDENTIFIER,
+      seq("seg", $.identifier),
+      seq("dgroup", ":", $.identifier),
+      seq(SEGMENT_REGISTER, ":", $.identifier),
+      $.identifier,
     ),
 
-    seg_id_list: $ => list(SEG_ID),
-    group_dir: $ => seq(GROUP_ID, "group", $.seg_id_list),
+    seg_id_list: $ => list($.identifier),
+    group_dir: $ => seq($.identifier, "group", $.seg_id_list),
 
     file_spec: $ => choice(FILE_CHAR_LIST, $.text_literal),
     include_dir: $ => seq("include", $.file_spec, $._eol),
     include_lib_dir: $ => seq("includelib", $.file_spec, $._eol),
 
     label_def: $ => choice(
-      seq(IDENTIFIER, ":"),
-      seq(IDENTIFIER, "::"),
+      seq($.identifier, ":"),
+      seq($.identifier, "::"),
       "@@:",
     ),
-    label_dir: $ => seq(IDENTIFIER, "label", $.qualified_type, $._eol),
+    label_dir: $ => seq($.identifier, "label", $.qualified_type, $._eol),
 
     qualifier: $ => choice(
       $.qualified_type,
       seq("proto", optional($.proto_spec)),
     ),
-    typedef_dir: $ => seq(TYPE_ID, "typedef", $.qualifier, $._eol), // official grammar error (possibly): I believe there should be an eol (;;) here
+    typedef_dir: $ => seq($.identifier, "typedef", $.qualifier, $._eol), // official grammar error (possibly): I believe there should be an eol (;;) here
 
     // NOTE: I think the bnf grammar might be incorrect. There's no way to get from "extern" to "proto" in the grammar.
     // If instead of `qualified_type`, it was `qualifier`, then it would make sense.
     extern_type: $ => choice("abs", $.qualifier), 
-    extern_def: $ => seq(optional($.lang_type), IDENTIFIER, optional(seq("(", ALT_ID, ")")), ":", $.extern_type),
+    extern_def: $ => seq(optional($.lang_type), $.identifier, optional(seq("(", $.identifier, ")")), ":", $.extern_type),
     extern_list: $ => listWithEol($.extern_def, $._eol),
     extern_dir: $ => seq($.extern_key, $.extern_list, $._eol),
 
@@ -681,7 +661,7 @@ export default grammar({
       $._class_name,
     ),
     seg_option_list: $ => repeat1($.seg_option),
-    segment_dir: $ => seq(SEG_ID, "segment", optional($.seg_option_list), $._eol),
+    segment_dir: $ => seq($.identifier, "segment", optional($.seg_option_list), $._eol),
     segment_def: $ => choice(
       seq($.segment_dir, optional($.in_seg_dir_list), $.ends_dir),
       seq($.simple_seg_dir, optional($.in_seg_dir_list), optional($.ends_dir)),
@@ -692,8 +672,8 @@ export default grammar({
       seq("popcontext", $.context_item_list, $._eol),
     ),
 
-    endp_dir: $ => seq(PROC_ID, "endp", $._eol),
-    ends_dir: $ => seq(IDENTIFIER, "ends", $._eol),
+    endp_dir: $ => seq($.identifier, "endp", $._eol),
+    ends_dir: $ => seq($.identifier, "ends", $._eol),
     exitm_dir: $ => choice(
       seq(":", "exitm"),
       seq("exitm", $.text_item),
@@ -779,12 +759,12 @@ export default grammar({
     proc_parm_list: $ => seq(
       optional(seq(",", optional($._eol))),
       choice(
-        seq($.parm_list, optional(seq(",", optional($._eol), PARM_ID, ":vararg"))),
-        seq(PARM_ID, ":vararg"),
+        seq($.parm_list, optional(seq(",", optional($._eol), $.identifier, ":vararg"))),
+        seq($.identifier, ":vararg"),
       ),
     ),
     proc_dir: $ => seq(
-      PROC_ID, "proc", optional($.p_options), optional(seq("<", $.macro_arg_list, ">")),
+      $.identifier, "proc", optional($.p_options), optional(seq("<", $.macro_arg_list, ">")),
       optional($.uses_regs), optional($.proc_parm_list), $._eol,
     ),
 
@@ -797,7 +777,7 @@ export default grammar({
       "nodotname",
       "emulator",
       "noemulator",
-      seq("epilogue", ":", MACRO_ID),
+      seq("epilogue", ":", $.identifier),
       "expr16",
       "expr32",
       seq("language", ":", $.lang_type),
@@ -813,7 +793,7 @@ export default grammar({
       "oldstructs",
       "nooldstructs",
       seq("proc", ":", $.o_visibility),
-      seq("prologue", ":", MACRO_ID),
+      seq("prologue", ":", $.identifier),
       "readonly",
       "noreadonly",
       "scoped",
