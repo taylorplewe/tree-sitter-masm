@@ -715,15 +715,6 @@ export default grammar({
     _in_seg_dir: $ => choice(
       seq($.label_def, $._eol),
       seq($.label_def, $._in_segment_dir),
-      // TODO: figure out how to parse either
-      //  1. seq($.label_def, $.eol)
-      //  OR
-      //  2. seq($.label_def, $._in_segment_dir)
-      //  in that order of precedence.
-      //  The issue is that TS is always choosing 2, and _in_segment_dir is just consuming whatever is on the next line, which leads to incorrect parse trees
-      //  prec() has no effect because the two choices technically do not conflict.
-      //  Tree Sitter chooses the longest parse tree, which is always 2 here.
-      //  might possibly need to do an external parser but that's last resort
       seq($._in_segment_dir),
     ),
     in_seg_dir_list: $ => repeat1($._in_seg_dir),
