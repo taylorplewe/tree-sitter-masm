@@ -292,10 +292,6 @@
       "required": true,
       "types": [
         {
-          "type": "comment_line",
-          "named": true
-        },
-        {
           "type": "quote",
           "named": true
         },
@@ -775,10 +771,6 @@
         },
         {
           "type": "list_dir",
-          "named": true
-        },
-        {
-          "type": "macro_call",
           "named": true
         },
         {
@@ -1665,10 +1657,6 @@
           "named": true
         },
         {
-          "type": "macro_call",
-          "named": true
-        },
-        {
           "type": "macro_dir",
           "named": true
         },
@@ -2119,29 +2107,6 @@
         },
         {
           "type": "macro_stmt_list",
-          "named": true
-        }
-      ]
-    }
-  },
-  {
-    "type": "macro_call",
-    "named": true,
-    "fields": {},
-    "children": {
-      "multiple": true,
-      "required": true,
-      "types": [
-        {
-          "type": "comment_line",
-          "named": true
-        },
-        {
-          "type": "identifier",
-          "named": true
-        },
-        {
-          "type": "macro_arg_list",
           "named": true
         }
       ]
@@ -3592,10 +3557,6 @@
       "required": true,
       "types": [
         {
-          "type": "comment_line",
-          "named": true
-        },
-        {
           "type": "quote",
           "named": true
         },
@@ -3773,10 +3734,6 @@
         },
         {
           "type": "list_dir",
-          "named": true
-        },
-        {
-          "type": "macro_call",
           "named": true
         },
         {

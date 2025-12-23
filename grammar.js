@@ -41,7 +41,7 @@ const BYTE_REGISTER = /[abcd][lh]/;
 const GP_REGISTER = /[er]?[abcd]x/;
 const INDEX_REGISTER = /[er]?[ds]i/;
 const STACK_REGISTER = /[er][sb]p/;
-const AMD_REGISTERS = /r(8|9|10|11|12|13|14|15)/;
+const AMD_REGISTERS = /r(8|9|10|11|12|13|14|15)[bwd]?/;
 const SPECIAL_REGISTERS = /cr0|cr2|cr3|dr[0-3]|dr[67]|tr[3-7]/;
 const SIMD_REGISTER = /[xyz]mm(0|1|2|3|4|5|6|7|8|9|10|11|12|13|14|15)/;
 const SEGMENT_REGISTER = /[cdefgs]s/;
@@ -78,6 +78,7 @@ const FLAG_NAME = /zero?|carry?|overflow?|sign?|parity?/;
 
 const list = listItem => seq(listItem, repeat(seq(",", listItem)));
 const listWithEol = (listItem, eol) => seq(listItem, repeat(seq(",", optional(eol), listItem)));
+const tokenFromRegex = regex => token(prec(1, regex));
 
 const PREC_ARR = [
   "logical_or", // cExpr
@@ -106,7 +107,7 @@ export default grammar({
   name: "masm",
 
   extras: $ => [
-    /[ \t\s]+/,
+    /[ \t]+/,
     $.comment_line,
   ],
 
@@ -129,6 +130,7 @@ export default grammar({
 
   // reserved: {
   //   global: $ => [
+  //     "include",
   //     "proc",
   //   ],
   // },
@@ -139,8 +141,8 @@ export default grammar({
     module: $ => seq($.directive_list, optional($.end_dir)),
     end_dir: $ => seq("end", optional($.expression), $._eol),
 
-    _eol: $ => choice($.comment_line, /\n/),
-    comment_line: _ => /;.*/,
+    _eol: $ => choice($.comment_line, /\n+/),
+    comment_line: _ => /;.*\n+/,
 
     _asm_instruction: $ => seq(
       field("mnemonic", token(prec(1, MNEMONIC))),
@@ -151,14 +153,14 @@ export default grammar({
     identifier: _ => /[a-zA-Z@_$?][a-zA-Z0-9@_$?]*/,
 
     register: $ => choice(
-      BYTE_REGISTER,
-      GP_REGISTER,
-      INDEX_REGISTER,
-      STACK_REGISTER,
-      AMD_REGISTERS,
-      SPECIAL_REGISTERS,
-      SIMD_REGISTER,
-      SEGMENT_REGISTER,
+      tokenFromRegex(BYTE_REGISTER),
+      tokenFromRegex(GP_REGISTER),
+      tokenFromRegex(INDEX_REGISTER),
+      tokenFromRegex(STACK_REGISTER),
+      tokenFromRegex(AMD_REGISTERS),
+      tokenFromRegex(SPECIAL_REGISTERS),
+      tokenFromRegex(SIMD_REGISTER),
+      tokenFromRegex(SEGMENT_REGISTER),
       seq("st", $.expression),
     ),
     reg_list: $ => repeat1($.register),
@@ -168,7 +170,7 @@ export default grammar({
     
     id_list: $ => list($.identifier),
     stext: $ => repeat1(ANY_CHAR_EXCEPT_QUOTE),
-    string: $ => seq($.quote, optional($.stext), $.quote, $._eol),
+    string: $ => seq($.quote, optional($.stext), $.quote),
     text_literal: $ => seq("<", TEXT, ">", $._eol),
     exponent: $ => seq("e", optional($.sign), DEC_NUMBER),
     float_number: $ => choice(
@@ -231,13 +233,13 @@ export default grammar({
       CONSTANT,
       $.string,
       $.type,
-      prec(PREC.e11 + 1, $.identifier),
-      "@f",
-      "@b",
+      "@f", // official grammar error: missing
+      "@b", // official grammar error: missing
       "$",
-      prec(PREC.e11 + 3, seq("st", "(", $.expression, ")")),
-      prec(PREC.e11 + 2, "st"),
-      prec(PREC.e11 + 1, $.register),
+      prec(PREC.e11 + 4, seq("st", "(", $.expression, ")")),
+      prec(PREC.e11 + 3, "st"),
+      prec(PREC.e11 + 2, $.register),
+      prec(PREC.e11 + 1, $.identifier),
     ),
 
 
@@ -449,7 +451,7 @@ export default grammar({
       $.text_dir,
       $.title_dir,
       $.typedef_dir,
-      $.macro_call,
+      // $.macro_call,
     ),
     _directive: $ => choice($._general_dir, $.segment_def),
     directive_list: $ => repeat1($._directive),
@@ -712,6 +714,7 @@ export default grammar({
     // official grammar error: it is possible to have a label with no inSegmentDir
     _in_seg_dir: $ => choice(
       seq($.label_def, $._eol),
+      seq($.label_def, $._in_segment_dir),
       // TODO: figure out how to parse either
       //  1. seq($.label_def, $.eol)
       //  OR

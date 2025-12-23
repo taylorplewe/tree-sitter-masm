@@ -62,13 +62,13 @@
         },
         {
           "type": "PATTERN",
-          "value": "\\n"
+          "value": "\\n+"
         }
       ]
     },
     "comment_line": {
       "type": "PATTERN",
-      "value": ";.*"
+      "value": ";.*\\n+"
     },
     "_asm_instruction": {
       "type": "SEQ",
@@ -139,36 +139,92 @@
       "type": "CHOICE",
       "members": [
         {
-          "type": "PATTERN",
-          "value": "[abcd][lh]"
+          "type": "TOKEN",
+          "content": {
+            "type": "PREC",
+            "value": 1,
+            "content": {
+              "type": "PATTERN",
+              "value": "[abcd][lh]"
+            }
+          }
         },
         {
-          "type": "PATTERN",
-          "value": "[er]?[abcd]x"
+          "type": "TOKEN",
+          "content": {
+            "type": "PREC",
+            "value": 1,
+            "content": {
+              "type": "PATTERN",
+              "value": "[er]?[abcd]x"
+            }
+          }
         },
         {
-          "type": "PATTERN",
-          "value": "[er]?[ds]i"
+          "type": "TOKEN",
+          "content": {
+            "type": "PREC",
+            "value": 1,
+            "content": {
+              "type": "PATTERN",
+              "value": "[er]?[ds]i"
+            }
+          }
         },
         {
-          "type": "PATTERN",
-          "value": "[er][sb]p"
+          "type": "TOKEN",
+          "content": {
+            "type": "PREC",
+            "value": 1,
+            "content": {
+              "type": "PATTERN",
+              "value": "[er][sb]p"
+            }
+          }
         },
         {
-          "type": "PATTERN",
-          "value": "r(8|9|10|11|12|13|14|15)"
+          "type": "TOKEN",
+          "content": {
+            "type": "PREC",
+            "value": 1,
+            "content": {
+              "type": "PATTERN",
+              "value": "r(8|9|10|11|12|13|14|15)[bwd]?"
+            }
+          }
         },
         {
-          "type": "PATTERN",
-          "value": "cr0|cr2|cr3|dr[0-3]|dr[67]|tr[3-7]"
+          "type": "TOKEN",
+          "content": {
+            "type": "PREC",
+            "value": 1,
+            "content": {
+              "type": "PATTERN",
+              "value": "cr0|cr2|cr3|dr[0-3]|dr[67]|tr[3-7]"
+            }
+          }
         },
         {
-          "type": "PATTERN",
-          "value": "[xyz]mm(0|1|2|3|4|5|6|7|8|9|10|11|12|13|14|15)"
+          "type": "TOKEN",
+          "content": {
+            "type": "PREC",
+            "value": 1,
+            "content": {
+              "type": "PATTERN",
+              "value": "[xyz]mm(0|1|2|3|4|5|6|7|8|9|10|11|12|13|14|15)"
+            }
+          }
         },
         {
-          "type": "PATTERN",
-          "value": "[cdefgs]s"
+          "type": "TOKEN",
+          "content": {
+            "type": "PREC",
+            "value": 1,
+            "content": {
+              "type": "PATTERN",
+              "value": "[cdefgs]s"
+            }
+          }
         },
         {
           "type": "SEQ",
@@ -246,10 +302,6 @@
         {
           "type": "SYMBOL",
           "name": "quote"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "_eol"
         }
       ]
     },
@@ -965,14 +1017,6 @@
           "name": "type"
         },
         {
-          "type": "PREC",
-          "value": 17,
-          "content": {
-            "type": "SYMBOL",
-            "name": "identifier"
-          }
-        },
-        {
           "type": "STRING",
           "value": "@f"
         },
@@ -986,7 +1030,7 @@
         },
         {
           "type": "PREC",
-          "value": 19,
+          "value": 20,
           "content": {
             "type": "SEQ",
             "members": [
@@ -1011,7 +1055,7 @@
         },
         {
           "type": "PREC",
-          "value": 18,
+          "value": 19,
           "content": {
             "type": "STRING",
             "value": "st"
@@ -1019,10 +1063,18 @@
         },
         {
           "type": "PREC",
-          "value": 17,
+          "value": 18,
           "content": {
             "type": "SYMBOL",
             "name": "register"
+          }
+        },
+        {
+          "type": "PREC",
+          "value": 17,
+          "content": {
+            "type": "SYMBOL",
+            "name": "identifier"
           }
         }
       ]
@@ -3242,10 +3294,6 @@
         {
           "type": "SYMBOL",
           "name": "typedef_dir"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "macro_call"
         }
       ]
     },
@@ -6151,6 +6199,19 @@
           "members": [
             {
               "type": "SYMBOL",
+              "name": "label_def"
+            },
+            {
+              "type": "SYMBOL",
+              "name": "_in_segment_dir"
+            }
+          ]
+        },
+        {
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "SYMBOL",
               "name": "_in_segment_dir"
             }
           ]
@@ -7676,7 +7737,7 @@
   "extras": [
     {
       "type": "PATTERN",
-      "value": "[ \\t\\s]+"
+      "value": "[ \\t]+"
     },
     {
       "type": "SYMBOL",

@@ -1,12 +1,13 @@
 .code
 
-fire_update proc
+main proc
+	labell:
+
+	mov rax, 1
+
+	mov r12d, 2
+
+	label2: mov eax, 1
+
 	ret
-
-	macroCall
-	; @@:
-
-	mylabel:
-fire_update endp
-
-end
+main endp
