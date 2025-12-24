@@ -17,6 +17,7 @@ endm
 .code
 
 otherproc proc uses rax rbx rdx rcx
+    mov dil, 2
 	ret
 otherproc endp
 

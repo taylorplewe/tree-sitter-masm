@@ -167,7 +167,7 @@
             "value": 1,
             "content": {
               "type": "PATTERN",
-              "value": "[er]?[ds]i"
+              "value": "[er]?[ds]i|[ds]il"
             }
           }
         },
@@ -1030,7 +1030,7 @@
         },
         {
           "type": "PREC",
-          "value": 20,
+          "value": 4,
           "content": {
             "type": "SEQ",
             "members": [
@@ -1055,7 +1055,7 @@
         },
         {
           "type": "PREC",
-          "value": 19,
+          "value": 3,
           "content": {
             "type": "STRING",
             "value": "st"
@@ -1063,7 +1063,7 @@
         },
         {
           "type": "PREC",
-          "value": 18,
+          "value": 2,
           "content": {
             "type": "SYMBOL",
             "name": "register"
@@ -1071,7 +1071,7 @@
         },
         {
           "type": "PREC",
-          "value": 17,
+          "value": 1,
           "content": {
             "type": "SYMBOL",
             "name": "identifier"

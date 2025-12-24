@@ -40,7 +40,7 @@ const BOOL = /true|false/;
 
 const BYTE_REGISTER = /[abcd][lh]/;
 const GP_REGISTER = /[er]?[abcd]x/;
-const INDEX_REGISTER = /[er]?[ds]i/;
+const INDEX_REGISTER = /[er]?[ds]i|[ds]il/;
 const STACK_REGISTER = /[er][sb]p/;
 const AMD_REGISTERS = /r(8|9|10|11|12|13|14|15)[bwd]?/;
 const SPECIAL_REGISTERS = /cr0|cr2|cr3|dr[0-3]|dr[67]|tr[3-7]/;
@@ -257,10 +257,10 @@ export default grammar({
         "@f", // official grammar error: missing
         "@b", // official grammar error: missing
         "$",
-        prec(PREC.e11 + 4, seq("st", "(", $.expression, ")")),
-        prec(PREC.e11 + 3, "st"),
-        prec(PREC.e11 + 2, $.register),
-        prec(PREC.e11 + 1, $.identifier),
+        prec(4, seq("st", "(", $.expression, ")")),
+        prec(3, "st"),
+        prec(2, $.register),
+        prec(1, $.identifier),
       ),
 
     // uses expressions
