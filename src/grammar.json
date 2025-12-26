@@ -139,105 +139,12 @@
       "type": "CHOICE",
       "members": [
         {
-          "type": "TOKEN",
-          "content": {
-            "type": "PREC",
-            "value": 1,
-            "content": {
-              "type": "PATTERN",
-              "value": "[abcd][lh]"
-            }
-          }
+          "type": "STRING",
+          "value": "si"
         },
         {
-          "type": "TOKEN",
-          "content": {
-            "type": "PREC",
-            "value": 1,
-            "content": {
-              "type": "PATTERN",
-              "value": "[er]?[abcd]x"
-            }
-          }
-        },
-        {
-          "type": "TOKEN",
-          "content": {
-            "type": "PREC",
-            "value": 1,
-            "content": {
-              "type": "PATTERN",
-              "value": "[er]?[ds]i|[ds]il"
-            }
-          }
-        },
-        {
-          "type": "TOKEN",
-          "content": {
-            "type": "PREC",
-            "value": 1,
-            "content": {
-              "type": "PATTERN",
-              "value": "[er][sb]p"
-            }
-          }
-        },
-        {
-          "type": "TOKEN",
-          "content": {
-            "type": "PREC",
-            "value": 1,
-            "content": {
-              "type": "PATTERN",
-              "value": "r(8|9|10|11|12|13|14|15)[bwd]?"
-            }
-          }
-        },
-        {
-          "type": "TOKEN",
-          "content": {
-            "type": "PREC",
-            "value": 1,
-            "content": {
-              "type": "PATTERN",
-              "value": "cr0|cr2|cr3|dr[0-3]|dr[67]|tr[3-7]"
-            }
-          }
-        },
-        {
-          "type": "TOKEN",
-          "content": {
-            "type": "PREC",
-            "value": 1,
-            "content": {
-              "type": "PATTERN",
-              "value": "[xyz]mm(0|1|2|3|4|5|6|7|8|9|10|11|12|13|14|15)"
-            }
-          }
-        },
-        {
-          "type": "TOKEN",
-          "content": {
-            "type": "PREC",
-            "value": 1,
-            "content": {
-              "type": "PATTERN",
-              "value": "[cdefgs]s"
-            }
-          }
-        },
-        {
-          "type": "SEQ",
-          "members": [
-            {
-              "type": "STRING",
-              "value": "st"
-            },
-            {
-              "type": "SYMBOL",
-              "name": "expression"
-            }
-          ]
+          "type": "STRING",
+          "value": "eax"
         }
       ]
     },
@@ -961,7 +868,7 @@
             },
             {
               "type": "SYMBOL",
-              "name": "_size_arg"
+              "name": "expression"
             }
           ]
         },
@@ -974,7 +881,7 @@
             },
             {
               "type": "SYMBOL",
-              "name": "_size_arg"
+              "name": "expression"
             }
           ]
         },
@@ -1062,12 +969,8 @@
           }
         },
         {
-          "type": "PREC",
-          "value": 2,
-          "content": {
-            "type": "SYMBOL",
-            "name": "register"
-          }
+          "type": "SYMBOL",
+          "name": "register"
         },
         {
           "type": "PREC",
@@ -1803,7 +1706,7 @@
         }
       ]
     },
-    "seg_dir": {
+    "_seg_dir": {
       "type": "CHOICE",
       "members": [
         {
@@ -1904,12 +1807,12 @@
         }
       ]
     },
-    "simple_seg_dir": {
+    "_simple_seg_dir": {
       "type": "SEQ",
       "members": [
         {
           "type": "SYMBOL",
-          "name": "seg_dir"
+          "name": "_seg_dir"
         },
         {
           "type": "SYMBOL",
@@ -5784,7 +5687,7 @@
           "members": [
             {
               "type": "SYMBOL",
-              "name": "simple_seg_dir"
+              "name": "_simple_seg_dir"
             },
             {
               "type": "CHOICE",
@@ -5947,15 +5850,6 @@
           "name": "reg_list"
         }
       ]
-    },
-    "_size_arg": {
-      "type": "ALIAS",
-      "content": {
-        "type": "SYMBOL",
-        "name": "expression"
-      },
-      "named": true,
-      "value": "size_arg"
     },
     "exit_dir": {
       "type": "SEQ",

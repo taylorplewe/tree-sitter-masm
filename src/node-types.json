@@ -1212,10 +1212,6 @@
           "named": true
         },
         {
-          "type": "size_arg",
-          "named": true
-        },
-        {
           "type": "string",
           "named": true
         },
@@ -3236,17 +3232,7 @@
   {
     "type": "register",
     "named": true,
-    "fields": {},
-    "children": {
-      "multiple": false,
-      "required": false,
-      "types": [
-        {
-          "type": "expression",
-          "named": true
-        }
-      ]
-    }
+    "fields": {}
   },
   {
     "type": "repeat_block",
@@ -3310,25 +3296,6 @@
       "types": [
         {
           "type": "expression",
-          "named": true
-        }
-      ]
-    }
-  },
-  {
-    "type": "seg_dir",
-    "named": true,
-    "fields": {},
-    "children": {
-      "multiple": false,
-      "required": false,
-      "types": [
-        {
-          "type": "expression",
-          "named": true
-        },
-        {
-          "type": "identifier",
           "named": true
         }
       ]
@@ -3416,10 +3383,22 @@
     "fields": {},
     "children": {
       "multiple": true,
-      "required": true,
+      "required": false,
       "types": [
         {
+          "type": "comment_line",
+          "named": true
+        },
+        {
           "type": "ends_dir",
+          "named": true
+        },
+        {
+          "type": "expression",
+          "named": true
+        },
+        {
+          "type": "identifier",
           "named": true
         },
         {
@@ -3428,10 +3407,6 @@
         },
         {
           "type": "segment_dir",
-          "named": true
-        },
-        {
-          "type": "simple_seg_dir",
           "named": true
         }
       ]
@@ -3464,48 +3439,6 @@
     "type": "sign",
     "named": true,
     "fields": {}
-  },
-  {
-    "type": "simple_seg_dir",
-    "named": true,
-    "fields": {},
-    "children": {
-      "multiple": true,
-      "required": true,
-      "types": [
-        {
-          "type": "comment_line",
-          "named": true
-        },
-        {
-          "type": "seg_dir",
-          "named": true
-        }
-      ]
-    }
-  },
-  {
-    "type": "size_arg",
-    "named": true,
-    "fields": {},
-    "children": {
-      "multiple": false,
-      "required": true,
-      "types": [
-        {
-          "type": "binary_expression",
-          "named": true
-        },
-        {
-          "type": "expression_terminal",
-          "named": true
-        },
-        {
-          "type": "prefix_expression",
-          "named": true
-        }
-      ]
-    }
   },
   {
     "type": "source_file",
@@ -4601,6 +4534,10 @@
     "named": false
   },
   {
+    "type": "eax",
+    "named": false
+  },
+  {
     "type": "echo",
     "named": false
   },
@@ -5162,6 +5099,10 @@
   },
   {
     "type": "setif2",
+    "named": false
+  },
+  {
+    "type": "si",
     "named": false
   },
   {

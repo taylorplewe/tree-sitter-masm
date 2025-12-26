@@ -156,15 +156,17 @@ export default grammar({
 
     register: ($) =>
       choice(
-        tokenFromRegex(BYTE_REGISTER),
-        tokenFromRegex(GP_REGISTER),
-        tokenFromRegex(INDEX_REGISTER),
-        tokenFromRegex(STACK_REGISTER),
-        tokenFromRegex(AMD_REGISTERS),
-        tokenFromRegex(SPECIAL_REGISTERS),
-        tokenFromRegex(SIMD_REGISTER),
-        tokenFromRegex(SEGMENT_REGISTER),
-        seq("st", $.expression),
+        // tokenFromRegex(BYTE_REGISTER),
+        // tokenFromRegex(GP_REGISTER),
+        // tokenFromRegex(INDEX_REGISTER),
+        // tokenFromRegex(STACK_REGISTER),
+        // tokenFromRegex(AMD_REGISTERS),
+        // tokenFromRegex(SPECIAL_REGISTERS),
+        // tokenFromRegex(SIMD_REGISTER),
+        // tokenFromRegex(SEGMENT_REGISTER),
+        // seq("st", $.expression),
+        "si",
+        "eax",
       ),
     reg_list: ($) => repeat1($.register),
 
@@ -247,8 +249,8 @@ export default grammar({
         seq("[", $.expression, "]"),
         seq("width", $.identifier),
         seq("mask", $.identifier),
-        seq("size", $._size_arg),
-        seq("sizeof", $._size_arg),
+        seq("size", $.expression),
+        seq("sizeof", $.expression),
         seq("length", $.identifier),
         seq("lengthof", $.identifier),
         CONSTANT,
@@ -259,7 +261,7 @@ export default grammar({
         "$",
         prec(4, seq("st", "(", $.expression, ")")),
         prec(3, "st"),
-        prec(2, $.register),
+        $.register,
         prec(1, $.identifier),
       ),
 
@@ -335,7 +337,7 @@ export default grammar({
       ),
     data_dir: ($) => seq(optional($.identifier), $.data_item, $._eol),
 
-    seg_dir: ($) =>
+    _seg_dir: ($) =>
       choice(
         seq(".code", optional($.identifier)),
         ".data",
@@ -345,7 +347,7 @@ export default grammar({
         seq(".fardata?", optional($.identifier)),
         seq(".stack", optional($.expression)),
       ),
-    simple_seg_dir: ($) => seq($.seg_dir, $._eol),
+    _simple_seg_dir: ($) => seq($._seg_dir, $._eol),
 
     text_item: ($) =>
       choice($.text_literal, $.identifier, seq("%", $.expression)),
@@ -779,7 +781,7 @@ export default grammar({
       choice(
         seq($.segment_dir, optional($.in_seg_dir_list), $.ends_dir),
         seq(
-          $.simple_seg_dir,
+          $._simple_seg_dir,
           optional($.in_seg_dir_list),
           optional($.ends_dir),
         ),
@@ -801,8 +803,6 @@ export default grammar({
     startup_dir: ($) => seq(".startup", $._eol),
 
     uses_regs: ($) => seq("uses", $.reg_list),
-
-    _size_arg: ($) => alias($.expression, $.size_arg),
 
     exit_dir: ($) => seq(".exit", $.expression, $._eol),
 
