@@ -140,11 +140,544 @@
       "members": [
         {
           "type": "STRING",
-          "value": "si"
+          "value": "al"
+        },
+        {
+          "type": "STRING",
+          "value": "ah"
+        },
+        {
+          "type": "STRING",
+          "value": "ax"
         },
         {
           "type": "STRING",
           "value": "eax"
+        },
+        {
+          "type": "STRING",
+          "value": "rax"
+        },
+        {
+          "type": "STRING",
+          "value": "bl"
+        },
+        {
+          "type": "STRING",
+          "value": "bh"
+        },
+        {
+          "type": "STRING",
+          "value": "bx"
+        },
+        {
+          "type": "STRING",
+          "value": "ebx"
+        },
+        {
+          "type": "STRING",
+          "value": "rbx"
+        },
+        {
+          "type": "STRING",
+          "value": "cl"
+        },
+        {
+          "type": "STRING",
+          "value": "ch"
+        },
+        {
+          "type": "STRING",
+          "value": "cx"
+        },
+        {
+          "type": "STRING",
+          "value": "ecx"
+        },
+        {
+          "type": "STRING",
+          "value": "rcx"
+        },
+        {
+          "type": "STRING",
+          "value": "dl"
+        },
+        {
+          "type": "STRING",
+          "value": "dh"
+        },
+        {
+          "type": "STRING",
+          "value": "dx"
+        },
+        {
+          "type": "STRING",
+          "value": "edx"
+        },
+        {
+          "type": "STRING",
+          "value": "rdx"
+        },
+        {
+          "type": "STRING",
+          "value": "sil"
+        },
+        {
+          "type": "STRING",
+          "value": "si"
+        },
+        {
+          "type": "STRING",
+          "value": "esi"
+        },
+        {
+          "type": "STRING",
+          "value": "rsi"
+        },
+        {
+          "type": "STRING",
+          "value": "dil"
+        },
+        {
+          "type": "STRING",
+          "value": "di"
+        },
+        {
+          "type": "STRING",
+          "value": "edi"
+        },
+        {
+          "type": "STRING",
+          "value": "rdi"
+        },
+        {
+          "type": "STRING",
+          "value": "ebp"
+        },
+        {
+          "type": "STRING",
+          "value": "rbp"
+        },
+        {
+          "type": "STRING",
+          "value": "esp"
+        },
+        {
+          "type": "STRING",
+          "value": "rsp"
+        },
+        {
+          "type": "STRING",
+          "value": "r8b"
+        },
+        {
+          "type": "STRING",
+          "value": "r9b"
+        },
+        {
+          "type": "STRING",
+          "value": "r10b"
+        },
+        {
+          "type": "STRING",
+          "value": "r11b"
+        },
+        {
+          "type": "STRING",
+          "value": "r12b"
+        },
+        {
+          "type": "STRING",
+          "value": "r13b"
+        },
+        {
+          "type": "STRING",
+          "value": "r14b"
+        },
+        {
+          "type": "STRING",
+          "value": "r15b"
+        },
+        {
+          "type": "STRING",
+          "value": "r8w"
+        },
+        {
+          "type": "STRING",
+          "value": "r9w"
+        },
+        {
+          "type": "STRING",
+          "value": "r10w"
+        },
+        {
+          "type": "STRING",
+          "value": "r11w"
+        },
+        {
+          "type": "STRING",
+          "value": "r12w"
+        },
+        {
+          "type": "STRING",
+          "value": "r13w"
+        },
+        {
+          "type": "STRING",
+          "value": "r14w"
+        },
+        {
+          "type": "STRING",
+          "value": "r15w"
+        },
+        {
+          "type": "STRING",
+          "value": "r8d"
+        },
+        {
+          "type": "STRING",
+          "value": "r9d"
+        },
+        {
+          "type": "STRING",
+          "value": "r10d"
+        },
+        {
+          "type": "STRING",
+          "value": "r11d"
+        },
+        {
+          "type": "STRING",
+          "value": "r12d"
+        },
+        {
+          "type": "STRING",
+          "value": "r13d"
+        },
+        {
+          "type": "STRING",
+          "value": "r14d"
+        },
+        {
+          "type": "STRING",
+          "value": "r15d"
+        },
+        {
+          "type": "STRING",
+          "value": "r8"
+        },
+        {
+          "type": "STRING",
+          "value": "r9"
+        },
+        {
+          "type": "STRING",
+          "value": "r10"
+        },
+        {
+          "type": "STRING",
+          "value": "r11"
+        },
+        {
+          "type": "STRING",
+          "value": "r12"
+        },
+        {
+          "type": "STRING",
+          "value": "r13"
+        },
+        {
+          "type": "STRING",
+          "value": "r14"
+        },
+        {
+          "type": "STRING",
+          "value": "r15"
+        },
+        {
+          "type": "STRING",
+          "value": "cr0"
+        },
+        {
+          "type": "STRING",
+          "value": "cr2"
+        },
+        {
+          "type": "STRING",
+          "value": "cr3"
+        },
+        {
+          "type": "STRING",
+          "value": "dr0"
+        },
+        {
+          "type": "STRING",
+          "value": "dr1"
+        },
+        {
+          "type": "STRING",
+          "value": "dr2"
+        },
+        {
+          "type": "STRING",
+          "value": "dr3"
+        },
+        {
+          "type": "STRING",
+          "value": "dr6"
+        },
+        {
+          "type": "STRING",
+          "value": "dr7"
+        },
+        {
+          "type": "STRING",
+          "value": "tr3"
+        },
+        {
+          "type": "STRING",
+          "value": "tr4"
+        },
+        {
+          "type": "STRING",
+          "value": "tr5"
+        },
+        {
+          "type": "STRING",
+          "value": "tr6"
+        },
+        {
+          "type": "STRING",
+          "value": "tr7"
+        },
+        {
+          "type": "STRING",
+          "value": "xmm0"
+        },
+        {
+          "type": "STRING",
+          "value": "xmm1"
+        },
+        {
+          "type": "STRING",
+          "value": "xmm2"
+        },
+        {
+          "type": "STRING",
+          "value": "xmm3"
+        },
+        {
+          "type": "STRING",
+          "value": "xmm4"
+        },
+        {
+          "type": "STRING",
+          "value": "xmm5"
+        },
+        {
+          "type": "STRING",
+          "value": "xmm6"
+        },
+        {
+          "type": "STRING",
+          "value": "xmm7"
+        },
+        {
+          "type": "STRING",
+          "value": "xmm8"
+        },
+        {
+          "type": "STRING",
+          "value": "xmm9"
+        },
+        {
+          "type": "STRING",
+          "value": "xmm10"
+        },
+        {
+          "type": "STRING",
+          "value": "xmm11"
+        },
+        {
+          "type": "STRING",
+          "value": "xmm12"
+        },
+        {
+          "type": "STRING",
+          "value": "xmm13"
+        },
+        {
+          "type": "STRING",
+          "value": "xmm14"
+        },
+        {
+          "type": "STRING",
+          "value": "xmm15"
+        },
+        {
+          "type": "STRING",
+          "value": "ymm0"
+        },
+        {
+          "type": "STRING",
+          "value": "ymm1"
+        },
+        {
+          "type": "STRING",
+          "value": "ymm2"
+        },
+        {
+          "type": "STRING",
+          "value": "ymm3"
+        },
+        {
+          "type": "STRING",
+          "value": "ymm4"
+        },
+        {
+          "type": "STRING",
+          "value": "ymm5"
+        },
+        {
+          "type": "STRING",
+          "value": "ymm6"
+        },
+        {
+          "type": "STRING",
+          "value": "ymm7"
+        },
+        {
+          "type": "STRING",
+          "value": "ymm8"
+        },
+        {
+          "type": "STRING",
+          "value": "ymm9"
+        },
+        {
+          "type": "STRING",
+          "value": "ymm10"
+        },
+        {
+          "type": "STRING",
+          "value": "ymm11"
+        },
+        {
+          "type": "STRING",
+          "value": "ymm12"
+        },
+        {
+          "type": "STRING",
+          "value": "ymm13"
+        },
+        {
+          "type": "STRING",
+          "value": "ymm14"
+        },
+        {
+          "type": "STRING",
+          "value": "ymm15"
+        },
+        {
+          "type": "STRING",
+          "value": "zmm0"
+        },
+        {
+          "type": "STRING",
+          "value": "zmm1"
+        },
+        {
+          "type": "STRING",
+          "value": "zmm2"
+        },
+        {
+          "type": "STRING",
+          "value": "zmm3"
+        },
+        {
+          "type": "STRING",
+          "value": "zmm4"
+        },
+        {
+          "type": "STRING",
+          "value": "zmm5"
+        },
+        {
+          "type": "STRING",
+          "value": "zmm6"
+        },
+        {
+          "type": "STRING",
+          "value": "zmm7"
+        },
+        {
+          "type": "STRING",
+          "value": "zmm8"
+        },
+        {
+          "type": "STRING",
+          "value": "zmm9"
+        },
+        {
+          "type": "STRING",
+          "value": "zmm10"
+        },
+        {
+          "type": "STRING",
+          "value": "zmm11"
+        },
+        {
+          "type": "STRING",
+          "value": "zmm12"
+        },
+        {
+          "type": "STRING",
+          "value": "zmm13"
+        },
+        {
+          "type": "STRING",
+          "value": "zmm14"
+        },
+        {
+          "type": "STRING",
+          "value": "zmm15"
+        },
+        {
+          "type": "STRING",
+          "value": "cs"
+        },
+        {
+          "type": "STRING",
+          "value": "ds"
+        },
+        {
+          "type": "STRING",
+          "value": "es"
+        },
+        {
+          "type": "STRING",
+          "value": "fs"
+        },
+        {
+          "type": "STRING",
+          "value": "gs"
+        },
+        {
+          "type": "STRING",
+          "value": "ss"
+        },
+        {
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "STRING",
+              "value": "st"
+            },
+            {
+              "type": "SYMBOL",
+              "name": "expression"
+            }
+          ]
         }
       ]
     },
